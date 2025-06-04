@@ -1,5 +1,6 @@
 import React from 'react';
-import ContactForm from '@/components/forms/ContactForm';
+import Logo from '../../components/ui/Logo';
+import ContactForm from '../../components/forms/ContactForm';
 import { Mail, Phone, MapPin, Clock, Calendar, CheckCircle } from 'lucide-react';
 
 export const metadata = {
@@ -14,12 +15,7 @@ export default function KontaktPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center">
-                <div className="w-6 h-6 bg-emerald-500 rounded"></div>
-              </div>
-              <span className="text-2xl font-bold text-slate-800">homigo</span>
-            </div>
+            <Logo showText={true} size="md" />
             <a href="/" className="text-emerald-600 hover:text-emerald-700 font-medium">
               ← Zurück zur Hauptseite
             </a>
@@ -66,8 +62,8 @@ export default function KontaktPage() {
                       </div>
                       <div>
                         <p className="font-medium text-slate-800">E-Mail</p>
-                        <a href="mailto:damon@homigo.tech" className="text-emerald-600 hover:underline">
-                          damon@homigo.tech
+                        <a href="mailto:hallo@homigo.tech" className="text-emerald-600 hover:underline">
+                          hallo@homigo.tech
                         </a>
                       </div>
                     </div>
@@ -78,8 +74,8 @@ export default function KontaktPage() {
                       </div>
                       <div>
                         <p className="font-medium text-slate-800">Telefon</p>
-                        <a href="tel:+4912345678" className="text-emerald-600 hover:underline">
-                          +49 (0) XXX XXXXXX
+                        <a href="tel:+4915227178595" className="text-emerald-600 hover:underline">
+                          +49 152 27178595
                         </a>
                       </div>
                     </div>
@@ -131,11 +127,11 @@ export default function KontaktPage() {
                   <div className="space-y-2 text-sm text-emerald-700">
                     <div className="flex items-center space-x-2">
                       <Clock className="w-4 h-4" />
-                      <span>Mo - Fr: 9:00 - 18:00 Uhr</span>
+                      <span>Mo - Fr: 17:00 - 21:00 Uhr</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="w-4 h-4" />
-                      <span>Sa: 10:00 - 14:00 Uhr</span>
+                      <span>Sa: 09:00 - 17:00 Uhr</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Calendar className="w-4 h-4" />
