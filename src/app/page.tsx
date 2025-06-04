@@ -66,9 +66,8 @@ export default function HomePage() {
               </div>
               <span className="text-2xl font-bold text-slate-800">homigo</span>
             </div>
-            <button className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors">
-              Beratung buchen
-            </button>
+            <a href="/kontakt" className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors">Beratung buchen
+            </a>
           </div>
         </div>
       </header>
@@ -86,10 +85,8 @@ export default function HomePage() {
               Smart-Home-Lösungen in der Rhein-Main-Region – und darüber hinaus online.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 inline-flex items-center justify-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Jetzt Beratung buchen
-              </button>
+              <a href="/kontakt" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 inline-flex items-center justify-center"> <Calendar className="w-5 h-5 mr-2" /> Jetzt Beratung buchen
+              </a>
               <button className="border-2 border-white text-white hover:bg-white hover:text-slate-800 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
                 Leistungen ansehen
               </button>
@@ -210,10 +207,8 @@ export default function HomePage() {
           <p className="text-xl mb-8 text-emerald-100">
             Komm gerne auf uns zu! Kostenlose Erstberatung für alle deine Smart Home Wünsche.
           </p>
-          <button className="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105">
-            <Calendar className="w-5 h-5 inline mr-2" />
-            Jetzt Beratung buchen
-          </button>
+          <a href="/kontakt" className="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105"> <Calendar className="w-5 h-5 inline mr-2" /> Jetzt Beratung buchen
+          </a>
         </div>
       </section>
 
