@@ -239,11 +239,11 @@ export default function HomePage() {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-emerald-400" />
-                  <span>damon@homigo.de</span>
+                  <span>hallo@homigo.de</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-emerald-400" />
-                  <span>+49 (0) XXX XXXXXX</span>
+                  <span>+49 152 27178595</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <MapPin className="w-5 h-5 text-emerald-400" />
