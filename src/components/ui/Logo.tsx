@@ -9,24 +9,23 @@ interface LogoProps {
 
 export default function Logo({ className = "", showText = true, size = 'md' }: LogoProps) {
   const sizes = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12', 
-    lg: 'w-16 h-16'
+    sm: { width: 32, height: 32 },
+    md: { width: 48, height: 48 }, 
+    lg: { width: 64, height: 64 }
   };
 
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      {/* Echtes Logo */}
-      <div className={`${sizes[size]} relative`}>
+      <div className="relative">
         <Image
-          src="/images/logo.png"
+          src="/images/Logo.png"
           alt="homigo Logo"
-          fill
+          width={sizes[size].width}
+          height={sizes[size].height}
           className="object-contain"
           priority
         />
       </div>
-      
       {showText && (
         <span className="text-2xl font-bold text-slate-800">homigo</span>
       )}
