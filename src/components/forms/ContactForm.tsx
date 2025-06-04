@@ -194,7 +194,7 @@ export default function ContactForm() {
             />
             <label className="text-sm text-gray-700">
               Ich habe die <a href="/datenschutz" className="text-emerald-600 hover:underline">Datenschutzerklärung</a> gelesen 
-              und stimme der Verarbeitung meiner Daten zur Beantwortung meiner Anfrage zu. *
+              und stimme der Verarbeitung meiner Daten zur Beantwortung meiner Anfrage zu! *
             </label>
           </div>
         </div>
