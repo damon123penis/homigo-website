@@ -5,6 +5,7 @@ import {
   Camera, Zap, Droplets, Wind, Eye, Lock,
   ArrowRight, Sparkles, Check, Activity, Sun
 } from 'lucide-react';
+import Link from 'next/link';
 
 // RoomCard-Komponente
 const RoomCard = ({ room, isSelected, onClick, deviceCount, hasConnection, installedDevices }) => {
@@ -24,10 +25,19 @@ const RoomCard = ({ room, isSelected, onClick, deviceCount, hasConnection, insta
     >
       <div className="h-full flex flex-col">
         <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 rounded-xl ${isSelected ? 'bg-white bg-opacity-40' : 'bg-white bg-opacity-70'}`}>
-            <Icon className="w-10 h-10 text-slate-700" aria-hidden="true" />
+          <div className="flex items-center gap-2">
+            <div className={`p-3 rounded-xl ${isSelected ? 'bg-white bg-opacity-40' : 'bg-white bg-opacity-70'}`}>
+              <Icon className="w-10 h-10 text-slate-700" aria-hidden="true" />
+            </div>
+            {deviceCount > 0 && (
+              <div className={`ml-2 text-xs font-semibold px-2 py-1 rounded-lg ${isSelected ? 'bg-white bg-opacity-20 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
+                {deviceCount} Gerät{deviceCount > 1 ? 'e' : ''}
+              </div>
+            )}
           </div>
-          {hasConnection && <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" aria-label="Verbindung aktiv"></div>}
+          {hasConnection && (
+            <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" aria-label="Verbindung aktiv"></div>
+          )}
         </div>
         <div className={`font-bold text-lg mb-2 ${isSelected ? 'text-white' : 'text-slate-800'}`}>{room.name}</div>
         {deviceIcons.length > 0 && (
@@ -40,9 +50,6 @@ const RoomCard = ({ room, isSelected, onClick, deviceCount, hasConnection, insta
               ))}
             </div>
           </div>
-        )}
-        {deviceCount > 0 && (
-          <div className={`text-sm font-semibold mt-2 text-center ${isSelected ? 'text-white' : 'text-emerald-600'}`}>$1</div>
         )}
       </div>
     </div>
@@ -88,132 +95,132 @@ const ModernSmartHomeConfigurator = () => {
   const [activeConnections, setActiveConnections] = useState([]);
 
   const rooms = {
-  wohnzimmer: {
-    id: 'wohnzimmer',
-    name: 'Wohnzimmer',
-    icon: Sofa,
-    color: 'from-violet-500 to-purple-600',
-    bgColor: 'bg-violet-50',
-    devices: [
-      {
-        id: 'hue_lights',
-        name: 'Philips Hue System',
-        icon: Lightbulb,
-        price: '199€',
-        description: 'Farbiges Ambiente-Licht für jede Stimmung',
-        features: ['16 Mio. Farben', 'App-Steuerung', 'Zeitpläne']
-      },
-      {
-        id: 'smart_speaker',
-        name: 'Smart Speaker',
-        icon: Speaker,
-        price: '89€',
-        description: 'Sprachassistent für Entertainment & Steuerung',
-        features: ['Alexa/Google', 'Multiroom', 'Musikstreaming']
-      },
-      {
-        id: 'thermostat',
-        name: 'Smart Thermostat',
-        icon: Thermometer,
-        price: '129€',
-        description: 'Intelligente Heizungssteuerung spart bis zu 30%',
-        features: ['Lernfähig', 'Fernzugriff', 'Energiesparen']
-      }
-    ]
-  },
-  schlafzimmer: {
-    id: 'schlafzimmer',
-    name: 'Schlafzimmer',
-    icon: Bed,
-    color: 'from-indigo-500 to-blue-600',
-    bgColor: 'bg-indigo-50',
-    devices: [
-      {
-        id: 'sleep_light',
-        name: 'Wake-Up Light',
-        icon: Sun,
-        price: '149€',
-        description: 'Natürliches Aufwachen mit Sonnenaufgang',
-        features: ['Schlaf-Tracking', 'Sonnenaufgang', 'Einschlafhilfe']
-      },
-      {
-        id: 'air_sensor',
-        name: 'Luftqualitätssensor',
-        icon: Wind,
-        price: '79€',
-        description: 'Überwacht Temperatur, Luftfeuchtigkeit & CO2',
-        features: ['Echtzeit-Daten', 'Gesundheit', 'Warnungen']
-      }
-    ]
-  },
-  kueche: {
-    id: 'kueche',
-    name: 'Küche',
-    icon: ChefHat,
-    color: 'from-emerald-500 to-green-600',
-    bgColor: 'bg-emerald-50',
-    devices: [
-      {
-        id: 'smart_plug',
-        name: 'Smart Steckdosen',
-        icon: Zap,
-        price: '39€',
-        description: 'Kontrolle über alle Küchengeräte',
-        features: ['Timer', 'Verbrauchsmessung', 'Fernsteuerung']
-      },
-      {
-        id: 'water_sensor',
-        name: 'Wassersensor',
-        icon: Droplets,
-        price: '49€',
-        description: 'Frühwarnung bei Wasserschäden',
-        features: ['24/7 Überwachung', 'Push-Benachrichtigung', 'Batterie 2 Jahre']
-      }
-    ]
-  },
-  bad: {
-    id: 'bad',
-    name: 'Badezimmer',
-    icon: Bath,
-    color: 'from-cyan-500 to-teal-600',
-    bgColor: 'bg-cyan-50',
-    devices: [
-      {
-        id: 'motion_sensor',
-        name: 'Bewegungsmelder',
-        icon: Eye,
-        price: '59€',
-        description: 'Automatisches Licht bei Bewegung',
-        features: ['Nachtmodus', 'Batteriebetrieb', 'Einstellbar']
-      }
-    ]
-  },
-  eingang: {
-    id: 'eingang',
-    name: 'Eingang',
-    icon: DoorOpen,
-    color: 'from-amber-500 to-orange-600',
-    bgColor: 'bg-amber-50',
-    devices: [
-      {
-        id: 'smart_lock',
-        name: 'Smart Lock',
-        icon: Lock,
-        price: '249€',
-        description: 'Schlüsselloser Zugang für Familie & Freunde',
-        features: ['App-Zugang', 'Gastzugänge', 'Protokoll']
-      },
-      {
-        id: 'doorbell',
-        name: 'Video-Türklingel',
-        icon: Camera,
-        price: '179€',
-        description: 'Sehen Sie, wer vor der Tür steht',
-        features: ['HD-Video', 'Nachtsicht', 'Bewegungserkennung']
-      }
-    ]
-  }
-};
+    wohnzimmer: {
+      id: 'wohnzimmer',
+      name: 'Wohnzimmer',
+      icon: Sofa,
+      color: 'from-violet-500 to-purple-600',
+      bgColor: 'bg-violet-50',
+      devices: [
+        {
+          id: 'hue_lights',
+          name: 'Philips Hue System',
+          icon: Lightbulb,
+          price: '199€',
+          description: 'Farbiges Ambiente-Licht für jede Stimmung',
+          features: ['16 Mio. Farben', 'App-Steuerung', 'Zeitpläne']
+        },
+        {
+          id: 'smart_speaker',
+          name: 'Smarte Speaker',
+          icon: Speaker,
+          price: '89€',
+          description: 'Sprachassistent für Entertainment & Steuerung',
+          features: ['Alexa/Google', 'Multiroom', 'Musikstreaming']
+        },
+        {
+          id: 'thermostat',
+          name: 'Smartes Thermostat',
+          icon: Thermometer,
+          price: '129€',
+          description: 'Intelligente Heizungssteuerung spart bis zu 30%',
+          features: ['Lernfähig', 'Fernzugriff', 'Energiesparen']
+        }
+      ]
+    },
+    schlafzimmer: {
+      id: 'schlafzimmer',
+      name: 'Schlafzimmer',
+      icon: Bed,
+      color: 'from-indigo-500 to-blue-600',
+      bgColor: 'bg-indigo-50',
+      devices: [
+        {
+          id: 'sleep_light',
+          name: 'Wake-Up Light',
+          icon: Sun,
+          price: '149€',
+          description: 'Natürliches Aufwachen mit Sonnenaufgang',
+          features: ['Schlaf-Tracking', 'Sonnenaufgang', 'Einschlafhilfe']
+        },
+        {
+          id: 'air_sensor',
+          name: 'Luftqualitätssensor',
+          icon: Wind,
+          price: '79€',
+          description: 'Überwacht Temperatur, Luftfeuchtigkeit & CO2',
+          features: ['Echtzeit-Daten', 'Gesundheit', 'Warnungen']
+        }
+      ]
+    },
+    kueche: {
+      id: 'kueche',
+      name: 'Küche',
+      icon: ChefHat,
+      color: 'from-emerald-500 to-green-600',
+      bgColor: 'bg-emerald-50',
+      devices: [
+        {
+          id: 'smart_plug',
+          name: 'Smarte Steckdosen',
+          icon: Zap,
+          price: '39€',
+          description: 'Kontrolle über alle Küchengeräte',
+          features: ['Timer', 'Verbrauchsmessung', 'Fernsteuerung']
+        },
+        {
+          id: 'water_sensor',
+          name: 'Wassersensor',
+          icon: Droplets,
+          price: '49€',
+          description: 'Frühwarnung bei Wasserschäden',
+          features: ['24/7 Überwachung', 'Push-Benachrichtigung', 'Batterie 2 Jahre']
+        }
+      ]
+    },
+    bad: {
+      id: 'bad',
+      name: 'Badezimmer',
+      icon: Bath,
+      color: 'from-cyan-500 to-teal-600',
+      bgColor: 'bg-cyan-50',
+      devices: [
+        {
+          id: 'motion_sensor',
+          name: 'Bewegungsmelder',
+          icon: Eye,
+          price: '59€',
+          description: 'Automatisches Licht bei Bewegung',
+          features: ['Nachtmodus', 'Batteriebetrieb', 'Einstellbar']
+        }
+      ]
+    },
+    eingang: {
+      id: 'eingang',
+      name: 'Eingang',
+      icon: DoorOpen,
+      color: 'from-amber-500 to-orange-600',
+      bgColor: 'bg-amber-50',
+      devices: [
+        {
+          id: 'smart_lock',
+          name: 'Smartes Schloss',
+          icon: Lock,
+          price: '249€',
+          description: 'Schlüsselloser Zugang für Familie & Freunde',
+          features: ['App-Zugang', 'Gastzugänge', 'Protokoll']
+        },
+        {
+          id: 'doorbell',
+          name: 'Video-Türklingel',
+          icon: Camera,
+          price: '179€',
+          description: 'Sehen Sie, wer vor der Tür steht',
+          features: ['HD-Video', 'Nachtsicht', 'Bewegungserkennung']
+        }
+      ]
+    }
+  };
 
   useEffect(() => {
     if (installedDevices.length === 0) {
@@ -222,7 +229,7 @@ const ModernSmartHomeConfigurator = () => {
     }
     const timer = setInterval(() => {
       setActiveConnections(prev => {
-        const nextIndex = prev.length > 0 
+        const nextIndex = prev.length > 0
           ? (installedDevices.findIndex(d => d.id === prev[0]) + 1) % installedDevices.length
           : 0;
         return [installedDevices[nextIndex].id];
@@ -248,27 +255,17 @@ const ModernSmartHomeConfigurator = () => {
   };
 
   const gradientClasses = {
-  wohnzimmer: 'from-violet-500 to-purple-600',
-  schlafzimmer: 'from-indigo-500 to-blue-600',
-  kueche: 'from-emerald-500 to-green-600',
-  bad: 'from-cyan-500 to-teal-600',
-  eingang: 'from-amber-500 to-orange-600'
-};
+    wohnzimmer: 'from-violet-500 to-purple-600',
+    schlafzimmer: 'from-indigo-500 to-blue-600',
+    kueche: 'from-emerald-500 to-green-600',
+    bad: 'from-cyan-500 to-teal-600',
+    eingang: 'from-amber-500 to-orange-600'
+  };
 
   const SelectedRoomIcon = selectedRoom ? rooms[selectedRoom].icon : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl mb-4">
-            <Home className="w-8 h-8 text-white" aria-hidden="true" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2">Smart Home Konfigurator</h1>
-          $1
-          <p className="text-sm text-slate-400 mt-1 italic">Alle Preise sind Richtwerte und können im konkreten Konzept variieren.</p>
-        </div>
-      </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -322,7 +319,7 @@ const ModernSmartHomeConfigurator = () => {
 
         <div className="space-y-6">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Dashboard</h3>
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Zusammenfassung</h3>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-violet-50 rounded-xl p-4 text-center">
                 <div className="text-3xl font-bold text-violet-600">{installedDevices.length}</div>
@@ -345,7 +342,7 @@ const ModernSmartHomeConfigurator = () => {
                         <Icon className="w-4 h-4 text-slate-600" aria-hidden="true" />
                         <div>
                           <div className="text-sm font-medium text-slate-800">{device.name}</div>
-                          <div className="text-xs text-slate-500">{rooms[device.roomId].name}</div>
+                          <div className="text-xs text-slate-500">{device.roomId ? rooms[device.roomId].name : ''}</div>
                         </div>
                       </div>
                       <div className="text-sm font-bold text-slate-700">{device.price}</div>
@@ -354,14 +351,18 @@ const ModernSmartHomeConfigurator = () => {
                 })}
               </div>
             )}
-          </div>
 
-          {installedDevices.length > 0 && (
-            <button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105">
-              Kostenlose Beratung
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          )}
+            {installedDevices.length > 0 && (
+              <Link
+                href="/kontakt"
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105 mt-4"
+              >
+                Kostenlose Beratung
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            )}
+
+          </div>
         </div>
       </div>
 

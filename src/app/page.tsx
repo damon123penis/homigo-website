@@ -222,7 +222,7 @@ export default function HomePage() {
             Perfekt, um Inspiration für dein persönliches Smart Home Konzept zu bekommen – völlig unverbindlich.
           </p>
           <Link 
-            href="/smart-home-generator/smart-home-generator"
+            href="/smart-home-generator"
             className="inline-flex items-center px-8 py-4 bg-emerald-600 text-white rounded-lg shadow-lg hover:bg-emerald-700 text-lg font-semibold transition-all transform hover:scale-105"
           >
             Jetzt ausprobieren
