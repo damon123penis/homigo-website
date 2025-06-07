@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Logo from '../components/ui/Logo';
+import Link from 'next/link'; 
 import { CheckCircle, Calendar, Mail, Phone, MapPin, Wifi, Shield, Lightbulb, Speaker, Zap, Home, Smartphone, Monitor, Wrench, Headphones } from 'lucide-react';
 
 export default function HomePage() {
@@ -62,9 +63,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Logo showText={true} size="md" />
-            <a href="/kontakt" className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors">
+            <Link href="/kontakt" className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors">
               Beratung buchen
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -82,10 +83,10 @@ export default function HomePage() {
               Smart-Home-Lösungen in der Rhein-Main-Region – und darüber hinaus online.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <a href="/kontakt" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 inline-flex items-center justify-center">
+              <Link href="/kontakt" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 inline-flex items-center justify-center">
                 <Calendar className="w-5 h-5 mr-2" />
                 Jetzt Beratung buchen
-              </a>
+              </Link>
               <a href="#services" className="border-2 border-white text-white hover:bg-white hover:text-slate-800 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
                 Leistungen ansehen
               </a>
@@ -141,72 +142,72 @@ export default function HomePage() {
       </section>
 
       {/* About Section */}
-     {/* About Section */}
-<section className="py-20 bg-slate-800 text-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
-      
-      {/* Text Content */}
-      <div>
-        <h2 className="text-4xl font-bold mb-8">Hi, ich bin Damon!</h2>
-        <p className="text-xl text-gray-300 mb-8">
-          Als Smart Home-Enthusiast und Gründer von homigo ist es meine Mission, 
-          Technologie für jeden zugänglich zu machen. Statt auf teure und komplizierte 
-          Systeme setzen wir auf bewährte Smart Home Produkte, die du auch aus dem Handel kennst.
-        </p>
-        
-        {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="flex items-start space-x-3">
-            <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
+      <section className="py-20 bg-slate-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            {/* Text Content */}
             <div>
-              <h3 className="font-semibold mb-2">Verständliche Sprache</h3>
-              <p className="text-gray-400 text-sm">Keine Fachbegriffe, alles erklärt</p>
+              <h2 className="text-4xl font-bold mb-8">Hi, ich bin Damon!</h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Als Smart Home-Enthusiast und Gründer von homigo ist es meine Mission, 
+                Technologie für jeden zugänglich zu machen. Statt auf teure und komplizierte 
+                Systeme setzen wir auf bewährte Smart Home Produkte, die du auch aus dem Handel kennst.
+              </p>
+              
+              {/* Benefits Grid */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Verständliche Sprache</h3>
+                    <p className="text-gray-400 text-sm">Keine Fachbegriffe, alles erklärt</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Flexible Lösungen</h3>
+                    <p className="text-gray-400 text-sm">Einfach statt kompliziert</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Transparente Preise</h3>
+                    <p className="text-gray-400 text-sm">Festpreise, keine Überraschungen</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-2">Online & Vor-Ort</h3>
+                    <p className="text-gray-400 text-sm">Flexible Beratungsoptionen</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold mb-2">Flexible Lösungen</h3>
-              <p className="text-gray-400 text-sm">Einfach statt kompliziert</p>
+
+            {/* Photo */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-emerald-500/20">
+                  <img
+                    src="/images/damon-portrait.jpg"
+                    alt="Damon Schacht - homigo Gründer und Smart Home Berater"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+                {/* Decorative elements */}
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-emerald-500 rounded-full opacity-20"></div>
+                <div className="absolute -top-4 -left-4 w-16 h-16 bg-emerald-400 rounded-full opacity-30"></div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold mb-2">Transparente Preise</h3>
-              <p className="text-gray-400 text-sm">Festpreise, keine Überraschungen</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <CheckCircle className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold mb-2">Online & Vor-Ort</h3>
-              <p className="text-gray-400 text-sm">Flexible Beratungsoptionen</p>
-            </div>
+
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Photo */}
-      <div className="flex justify-center lg:justify-end">
-        <div className="relative">
-          <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-emerald-500/20">
-            <img
-              src="/images/damon-portrait.jpg"
-              alt="Damon Schacht - homigo Gründer und Smart Home Berater"
-              className="w-full h-full object-cover object-center"
-            />
-          </div>
-          {/* Decorative elements */}
-          <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-emerald-500 rounded-full opacity-20"></div>
-          <div className="absolute -top-4 -left-4 w-16 h-16 bg-emerald-400 rounded-full opacity-30"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -237,10 +238,10 @@ export default function HomePage() {
           <p className="text-xl mb-8 text-emerald-100">
             Komm gerne auf uns zu! Kostenlose Erstberatung für alle deine Smart Home Wünsche.
           </p>
-          <a href="/kontakt" className="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105">
-            <Calendar className="w-5 h-5 inline mr-2" />
+          <Link href="/kontakt" className="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 inline-flex items-center">
+            <Calendar className="w-5 h-5 mr-2" />
             Jetzt Beratung buchen
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -275,25 +276,22 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-
+            
             <div>
-              <h3 className="text-lg font-semibold mb-6">Links</h3>
+              <h3 className="text-lg font-semibold mb-6">Rechtliches</h3>
               <div className="space-y-3">
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">
-                  Impressum & Datenschutz
-                </a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">
-                  FAQ
-                </a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors">
-                  Leistungen im Detail
-                </a>
+                <Link href="/impressum" className="block text-gray-400 hover:text-white transition-colors">
+                  Impressum
+                </Link>
+                <Link href="/datenschutz" className="block text-gray-400 hover:text-white transition-colors">
+                  Datenschutz
+                </Link>
               </div>
             </div>
           </div>
-
+          
           <div className="border-t border-gray-700 pt-8 mt-12 text-center text-gray-400">
-            <p>&copy; 2024 homigo. Alle Rechte vorbehalten.</p>
+            <p>&copy; 2025 homigo. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>
