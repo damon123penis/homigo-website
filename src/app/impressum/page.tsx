@@ -173,7 +173,7 @@ export default function ImpressumPage() {
           </div>
 
           <div className="border-t border-gray-700 pt-8 mt-12 text-center text-gray-400">
-            <p>&copy; 2024 homigo. Alle Rechte vorbehalten.</p>
+            <p>&copy; 2025 homigo. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>
