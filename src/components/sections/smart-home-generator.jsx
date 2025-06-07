@@ -202,6 +202,14 @@ const ModernSmartHomeConfigurator = () => {
           price: '59€',
           description: 'Automatisches Licht bei Bewegung',
           features: ['Nachtmodus', 'Batteriebetrieb', 'Einstellbar']
+        },
+        {
+          id: 'water_sensor',
+          name: 'Wassersensor',
+          icon: Droplets,
+          price: '49€',
+          description: 'Frühwarnung bei Wasserschäden',
+          features: ['24/7 Überwachung', 'Push-Benachrichtigung', 'Batterie 2 Jahre']
         }
       ]
     },
