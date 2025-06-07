@@ -412,13 +412,6 @@ const ModernSmartHomeConfigurator = () => {
                 </div>
               </div>
             )}
-
-            {installedDevices.length > 0 && (
-              <button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105 mt-4">
-                Kostenlose Beratung
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            )}
           </div>
         </div>
       </div>
