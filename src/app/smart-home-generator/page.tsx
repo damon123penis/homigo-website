@@ -29,7 +29,7 @@ export default function SmartHomeGeneratorPage() {
                 className="bg-emerald-600 text-white px-3 sm:px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
               >
                 <span className="hidden sm:inline">Beratung </span>
-                <span>buchen</span>
+                <span>Jetzt buchen!</span>
               </Link>
             </div>
           </div>
