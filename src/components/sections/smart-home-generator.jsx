@@ -3,9 +3,9 @@ import {
   Home, Sofa, Bed, Bath, ChefHat, DoorOpen,
   Lightbulb, Thermometer, Wifi, Speaker,
   Camera, Zap, Droplets, Wind, Eye, Lock,
-  ArrowRight, Sparkles, Check, Activity, Sun
+  ArrowRight, Sparkles, Check, Activity, Sun,
+  Leaf, Sprout, CloudRain, ShieldCheck
 } from 'lucide-react';
-import Link from 'next/link';
 
 // RoomCard-Komponente
 const RoomCard = ({ room, isSelected, onClick, deviceCount, hasConnection, installedDevices }) => {
@@ -19,35 +19,45 @@ const RoomCard = ({ room, isSelected, onClick, deviceCount, hasConnection, insta
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className={`cursor-pointer rounded-2xl p-6 shadow-md border transition-all duration-300 h-48 w-full
+      className={`cursor-pointer rounded-2xl p-4 shadow-md border transition-all duration-300 h-40 w-full relative
         ${isSelected ? 'border-emerald-500 ring-2 ring-emerald-300 bg-gradient-to-br ' + room.color + ' text-white' : 'border-slate-200 ' + room.bgColor}
         hover:shadow-lg hover:scale-105`}
     >
       <div className="h-full flex flex-col">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className={`p-3 rounded-xl ${isSelected ? 'bg-white bg-opacity-40' : 'bg-white bg-opacity-70'}`}>
-              <Icon className="w-10 h-10 text-slate-700" aria-hidden="true" />
-            </div>
-            {deviceCount > 0 && (
-              <div className={`ml-2 text-xs font-semibold px-2 py-1 rounded-lg ${isSelected ? 'bg-white bg-opacity-20 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
-                {deviceCount} Gerät{deviceCount > 1 ? 'e' : ''}
-              </div>
-            )}
+        {/* Header mit Icon und Geräteanzahl */}
+        <div className="flex items-start justify-between mb-3">
+          <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-white bg-opacity-40' : 'bg-white bg-opacity-70'}`}>
+            <Icon className="w-7 h-7 text-slate-700" aria-hidden="true" />
           </div>
+          {deviceCount > 0 && (
+            <div className={`text-xs font-semibold px-2 py-1 rounded-full ${isSelected ? 'bg-white bg-opacity-30 text-white' : 'bg-emerald-100 text-emerald-700'}`}>
+              {deviceCount}
+            </div>
+          )}
           {hasConnection && (
-            <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" aria-label="Verbindung aktiv"></div>
+            <div className="absolute top-3 right-3 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse" aria-label="Verbindung aktiv"></div>
           )}
         </div>
-        <div className={`font-bold text-lg mb-2 ${isSelected ? 'text-white' : 'text-slate-800'}`}>{room.name}</div>
+        
+        {/* Raumname - zentriert */}
+        <div className={`font-bold text-base mb-2 text-center ${isSelected ? 'text-white' : 'text-slate-800'}`}>
+          {room.name}
+        </div>
+        
+        {/* Device Icons */}
         {deviceIcons.length > 0 && (
           <div className="flex-1 flex items-center justify-center">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {deviceIcons.map((DeviceIcon, index) => (
-                <div key={index} className={`p-2 rounded-lg ${isSelected ? 'bg-white bg-opacity-20' : 'bg-white shadow-sm'}`}>
-                  <DeviceIcon className={`w-6 h-6 ${isSelected ? 'text-white' : 'text-slate-600'}`} aria-hidden="true" />
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {deviceIcons.slice(0, 4).map((DeviceIcon, index) => (
+                <div key={index} className={`p-1.5 rounded-lg ${isSelected ? 'bg-white bg-opacity-20' : 'bg-white shadow-sm'}`}>
+                  <DeviceIcon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-600'}`} aria-hidden="true" />
                 </div>
               ))}
+              {deviceIcons.length > 4 && (
+                <div className={`p-1.5 rounded-lg text-xs font-medium ${isSelected ? 'bg-white bg-opacity-20 text-white' : 'bg-white shadow-sm text-slate-600'}`}>
+                  +{deviceIcons.length - 4}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -219,6 +229,55 @@ const ModernSmartHomeConfigurator = () => {
           features: ['HD-Video', 'Nachtsicht', 'Bewegungserkennung']
         }
       ]
+    },
+    terrasse: {
+      id: 'terrasse',
+      name: 'Terrasse',
+      icon: Leaf,
+      color: 'from-green-500 to-lime-600',
+      bgColor: 'bg-green-50',
+      devices: [
+        {
+          id: 'balcony_power',
+          name: 'Balkonkraftwerk',
+          icon: Sun,
+          price: '599€',
+          description: 'Saubere Solarenergie für bis zu 800W Eigenverbrauch',
+          features: ['Plug & Play', 'App-Monitoring', 'CO2-neutral']
+        },
+        {
+          id: 'outdoor_lights',
+          name: 'Außenbeleuchtung',
+          icon: Lightbulb,
+          price: '149€',
+          description: 'Wetterfeste LED-Beleuchtung mit Farbwechsel',
+          features: ['IP65', 'Dimmbar', 'Zeitsteuerung']
+        },
+        {
+          id: 'irrigation_system',
+          name: 'Smarte Bewässerung',
+          icon: Sprout,
+          price: '89€',
+          description: 'Automatische Pflanzenbewässerung mit Bodensensor',
+          features: ['Feuchtigkeitssensor', 'Timer', 'Wassersparend']
+        },
+        {
+          id: 'weather_station',
+          name: 'Wetterstation',
+          icon: CloudRain,
+          price: '119€',
+          description: 'Lokale Wetterdaten für optimale Gartenpflege',
+          features: ['Temperatur', 'Luftfeuchte', 'UV-Index']
+        },
+        {
+          id: 'outdoor_camera',
+          name: 'Überwachungskamera',
+          icon: ShieldCheck,
+          price: '199€',
+          description: 'Wetterfeste Sicherheitskamera mit Nachtsicht',
+          features: ['4K-Auflösung', 'Bewegungsalarm', 'Cloud-Speicher']
+        }
+      ]
     }
   };
 
@@ -259,20 +318,49 @@ const ModernSmartHomeConfigurator = () => {
     schlafzimmer: 'from-indigo-500 to-blue-600',
     kueche: 'from-emerald-500 to-green-600',
     bad: 'from-cyan-500 to-teal-600',
-    eingang: 'from-amber-500 to-orange-600'
+    eingang: 'from-amber-500 to-orange-600',
+    terrasse: 'from-green-500 to-lime-600'
   };
 
   const SelectedRoomIcon = selectedRoom ? rooms[selectedRoom].icon : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-3 sm:p-6">
+      {/* Mobile-optimierter Header */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl">
+                <Home className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-800">Smart Home Generator</h1>
+                <p className="text-sm text-slate-600">Stelle dein persönliches Smart Home zusammen</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile-optimierte Navigation */}
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button className="flex-1 bg-slate-100 text-slate-700 px-3 py-2 rounded-xl text-sm font-medium transition-all hover:bg-slate-200 flex items-center justify-center gap-2">
+              <Home className="w-4 h-4" />
+              Startseite
+            </button>
+            <button className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-2 rounded-xl text-sm font-medium transition-all hover:shadow-lg flex items-center justify-center gap-2">
+              <span>Beratung</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              Wählen Sie einen Raum
+              Wählen Sie einen Raum:
               {installedDevices.length > 0 && (
                 <span className="ml-auto flex items-center gap-2 text-sm font-normal text-emerald-600">
                   <Activity className="w-4 h-4" />
@@ -280,7 +368,7 @@ const ModernSmartHomeConfigurator = () => {
                 </span>
               )}
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {Object.values(rooms).map(room => (
                 <RoomCard
                   key={room.id}
@@ -297,7 +385,7 @@ const ModernSmartHomeConfigurator = () => {
 
           {selectedRoom && (
             <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-              <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                 {SelectedRoomIcon && <SelectedRoomIcon className="w-5 h-5" aria-hidden="true" />}
                 {rooms[selectedRoom].name} – Verfügbare Geräte
               </h3>
@@ -319,14 +407,14 @@ const ModernSmartHomeConfigurator = () => {
 
         <div className="space-y-6">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Zusammenfassung</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Zusammenfassung</h3>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-violet-50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-violet-600">{installedDevices.length}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-violet-600">{installedDevices.length}</div>
                 <div className="text-sm text-violet-700">Geräte</div>
               </div>
               <div className="bg-emerald-50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-emerald-600">{getTotalPrice()}€</div>
+                <div className="text-2xl sm:text-3xl font-bold text-emerald-600">{getTotalPrice()}€</div>
                 <div className="text-sm text-emerald-700">Gesamt</div>
               </div>
             </div>
@@ -334,42 +422,40 @@ const ModernSmartHomeConfigurator = () => {
             {installedDevices.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-slate-600 uppercase">Ihre Auswahl</h4>
-                {installedDevices.map(device => {
-                  const Icon = device.icon;
-                  return (
-                    <div key={`${device.id}-${device.roomId}`} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-slate-600" aria-hidden="true" />
-                        <div>
-                          <div className="text-sm font-medium text-slate-800">{device.name}</div>
-                          <div className="text-xs text-slate-500">{device.roomId ? rooms[device.roomId].name : ''}</div>
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {installedDevices.map(device => {
+                    const Icon = device.icon;
+                    return (
+                      <div key={`${device.id}-${device.roomId}`} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <Icon className="w-4 h-4 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-medium text-slate-800 truncate">{device.name}</div>
+                            <div className="text-xs text-slate-500">{device.roomId ? rooms[device.roomId].name : ''}</div>
+                          </div>
                         </div>
+                        <div className="text-sm font-bold text-slate-700 flex-shrink-0">{device.price}</div>
                       </div>
-                      <div className="text-sm font-bold text-slate-700">{device.price}</div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
 
             {installedDevices.length > 0 && (
-              <Link
-                href="/kontakt"
-                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105 mt-4"
-              >
+              <button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105 mt-4">
                 Kostenlose Beratung
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </button>
             )}
-
           </div>
         </div>
       </div>
 
       {showSuccess && (
-        <div className="fixed bottom-8 right-8 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-2 z-50 animate-slide-in">
+        <div className="fixed bottom-4 right-4 bg-emerald-500 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 z-50 animate-slide-in">
           <Check className="w-5 h-5" />
-          Gerät hinzugefügt!
+          <span className="text-sm font-medium">Gerät hinzugefügt!</span>
         </div>
       )}
 
