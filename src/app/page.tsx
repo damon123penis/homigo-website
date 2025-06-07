@@ -208,6 +208,29 @@ export default function HomePage() {
         </div>
       </section>
 
+            {/* Smart Home Generator Bereich */}
+      <section className="py-20 bg-gradient-to-br from-emerald-50 to-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex justify-center mb-8">
+            <Smartphone className="w-16 h-16 text-emerald-500 drop-shadow-lg" />
+          </div>
+          <h2 className="text-4xl font-bold text-slate-800 mb-4">
+            Stelle dein eigenes Smart Home zusammen!
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Mit unserem interaktiven Smart Home Generator kannst du verschiedene Geräte und Räume ganz einfach zusammenstellen.
+            Perfekt, um Inspiration für dein persönliches Smart Home Konzept zu bekommen – völlig unverbindlich.
+          </p>
+          <Link 
+            href="/smart-home-generator/smart-home-generator"
+            className="inline-flex items-center px-8 py-4 bg-emerald-600 text-white rounded-lg shadow-lg hover:bg-emerald-700 text-lg font-semibold transition-all transform hover:scale-105"
+          >
+            Jetzt ausprobieren
+            <span className="ml-3"><Wifi className="w-6 h-6" /></span>
+          </Link>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
