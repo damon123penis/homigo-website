@@ -4,7 +4,7 @@ import {
   Lightbulb, Thermometer, Wifi, Speaker,
   Camera, Zap, Droplets, Wind, Eye, Lock,
   ArrowRight, Sparkles, Check, Activity, Sun,
-  Leaf, Sprout, CloudRain, ShieldCheck
+  Leaf, Sprout, CloudRain, ShieldCheck, ArrowLeft
 } from 'lucide-react';
 
 // RoomCard-Komponente
@@ -242,7 +242,7 @@ const ModernSmartHomeConfigurator = () => {
           name: 'Balkonkraftwerk',
           icon: Sun,
           price: '599€',
-          description: 'Saubere Solarenergie für bis zu 800W Eigenverbrauch',
+          description: 'Saubere Solarenergie für bis zu 600W Eigenverbrauch',
           features: ['Plug & Play', 'App-Monitoring', 'CO2-neutral']
         },
         {
@@ -255,7 +255,7 @@ const ModernSmartHomeConfigurator = () => {
         },
         {
           id: 'irrigation_system',
-          name: 'Smarte Bewässerung',
+          name: 'Smart Bewässerung',
           icon: Sprout,
           price: '89€',
           description: 'Automatische Pflanzenbewässerung mit Bodensensor',
@@ -326,35 +326,6 @@ const ModernSmartHomeConfigurator = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-3 sm:p-6">
-      {/* Mobile-optimierter Header */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="bg-white rounded-2xl shadow-lg p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl">
-                <Home className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-800">Smart Home Generator</h1>
-                <p className="text-sm text-slate-600">Stelle dein persönliches Smart Home zusammen</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Mobile-optimierte Navigation */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button className="flex-1 bg-slate-100 text-slate-700 px-3 py-2 rounded-xl text-sm font-medium transition-all hover:bg-slate-200 flex items-center justify-center gap-2">
-              <Home className="w-4 h-4" />
-              Startseite
-            </button>
-            <button className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-2 rounded-xl text-sm font-medium transition-all hover:shadow-lg flex items-center justify-center gap-2">
-              <span>Beratung</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
