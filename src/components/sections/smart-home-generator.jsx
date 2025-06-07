@@ -331,7 +331,7 @@ const ModernSmartHomeConfigurator = () => {
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
             <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              Wählen Sie einen Raum:
+              Wähle einen Raum:
               {installedDevices.length > 0 && (
                 <span className="ml-auto flex items-center gap-2 text-sm font-normal text-emerald-600">
                   <Activity className="w-4 h-4" />
