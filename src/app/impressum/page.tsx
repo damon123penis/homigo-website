@@ -49,7 +49,7 @@ export default function ImpressumPage() {
             <div className="bg-gray-50 rounded-xl p-6 border-l-4 border-emerald-500">
               <address className="not-italic space-y-2 text-gray-700">
                 <div className="font-semibold text-lg text-slate-800">Damon Schacht</div>
-                <div>homigo - Smart Home Service</div>
+                <div>homigo - Smart Home Beratung</div>
                 <div className="flex items-center mt-3">
                   <MapPin className="w-4 h-4 mr-2 text-emerald-600" />
                   Frankenallee 23A, 60327 Frankfurt am Main
