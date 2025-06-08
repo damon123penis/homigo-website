@@ -250,7 +250,7 @@ const ModernSmartHomeConfigurator = () => {
           name: 'Balkonkraftwerk',
           icon: Sun,
           price: '599€',
-          description: 'Saubere Solarenergie für bis zu 600W Eigenverbrauch',
+          description: 'Saubere Solarenergie für bis zu 800W Eigenverbrauch',
           features: ['Plug & Play', 'App-Monitoring', 'CO2-neutral']
         },
         {

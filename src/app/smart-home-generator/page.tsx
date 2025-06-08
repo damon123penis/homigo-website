@@ -28,7 +28,7 @@ export default function SmartHomeGeneratorPage() {
                 href="/kontakt" 
                 className="bg-emerald-600 text-white px-3 sm:px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
               >
-                <span className="hidden sm:inline">Jetzt Beratung buchen</span>
+                <span className="hidden sm:inline">Beratung buchen</span>
               </Link>
             </div>
           </div>
