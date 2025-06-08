@@ -43,9 +43,24 @@ module.exports = {
           700: '#374151',
           800: '#1f2937',
           900: '#111827',
-        }
+        },
+      },
+      animation: {
+        'fade-in-up': 'fadeInUp 1s ease-out',
+      },
+      keyframes: {
+        fadeInUp: {
+          from: {
+            opacity: '0',
+            transform: 'translateY(30px)',
+          },
+          to: {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
       },
     },
   },
   plugins: [],
-}
+};

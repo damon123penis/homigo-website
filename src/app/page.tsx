@@ -4,6 +4,7 @@ import React from 'react';
 import Logo from '../components/ui/Logo';
 import Link from 'next/link'; 
 import { CheckCircle, Calendar, Mail, Phone, MapPin, Wifi, Shield, Lightbulb, Speaker, Zap, Home, Smartphone, Monitor, Wrench, Headphones } from 'lucide-react';
+import SmartHomeBanner from '../components/layout/banner';
 
 export default function HomePage() {
   const services = [
@@ -71,45 +72,9 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Smart Home 
-              <span className="text-emerald-400"> ohne Kabelsalat</span>
-            </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Willkommen bei homigo, deinem persönlichen Service für einfache, digitale 
-              Smart-Home-Lösungen in der Rhein-Main-Region – und darüber hinaus online.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/kontakt" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 inline-flex items-center justify-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Jetzt Beratung buchen
-              </Link>
-              <a href="#services" className="border-2 border-white text-white hover:bg-white hover:text-slate-800 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
-                Leistungen ansehen
-              </a>
-            </div>
-            
-            <div className="flex justify-center gap-8 text-sm">
-              <div className="flex items-center space-x-2">
-                <Zap className="w-4 h-4 text-emerald-400" />
-                <span>komfortabler</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Shield className="w-4 h-4 text-emerald-400" />
-                <span>sicherer</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Lightbulb className="w-4 h-4 text-emerald-400" />
-                <span>energieeffizienter</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    <div>
+      <SmartHomeBanner />
+    </div>
       {/* Services Section */}
       <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
