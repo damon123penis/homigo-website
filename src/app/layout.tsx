@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.homigo.tech'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://www.homigo.tech/',
   },
 
   title: 'homigo - Smart Home Beratung',
