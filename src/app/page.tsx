@@ -224,7 +224,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">Du willst dein Zuhause smarter machen?</h2>
           <p className="text-xl mb-8 text-emerald-100">
-            Komm gerne auf uns zu! Kostenlose Erstberatung für alle deine Smart Home Wünsche.
+            Komm gerne auf uns zu! Erstberatung für alle deine Smart Home Wünsche.
           </p>
           <Link href="/kontakt" className="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 inline-flex items-center">
             <Calendar className="w-5 h-5 mr-2" />

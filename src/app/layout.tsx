@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,6 +31,66 @@ export default function RootLayout({
     <html lang="de">
       <body className={inter.className}>
         {children}
+
+        {/* Klaro-Konfiguration (inline) */}
+        <Script id="klaro-config" strategy="afterInteractive">
+          {`
+            window.klaroConfig = {
+              elementID: 'klaro',
+              storageMethod: 'cookie',
+              storageName: 'klaro',
+              cookieExpiresAfterDays: 365,
+              default: false,
+
+              translations: {
+                de: {
+                  privacyPolicyUrl: '/datenschutz',
+                  consentNotice: {
+                    description: 'Wir nutzen Cookies für Statistik, Marketing und externe Inhalte (z. B. Terminbuchung).',
+                    learnMore: 'Einstellungen',
+                    acceptAll: 'Alle akzeptieren',
+                    decline: 'Ablehnen'
+                  },
+                  purposes: {
+                    analytics: 'Statistik',
+                    marketing: 'Marketing',
+                    functional: 'Funktional'
+                  }
+                }
+              },
+
+              services: [
+                {
+                  name: 'google-analytics',
+                  title: 'Google Analytics (GA4)',
+                  purposes: ['analytics'],
+                  cookies: [/^_ga/, /^_gid/, /^_gat/, /^_ga_/, /^_gac_/],
+                  onlyOnce: true
+                },
+                {
+                  name: 'meta-pixel',
+                  title: 'Meta Pixel',
+                  purposes: ['marketing'],
+                  cookies: ['_fbp', 'fr'],
+                  onlyOnce: true
+                },
+                {
+                  name: 'calendly',
+                  title: 'Calendly (Terminbuchung)',
+                  purposes: ['functional'],
+                  onlyOnce: true
+                }
+              ]
+            };
+          `}
+        </Script>
+
+        {/* Klaro-Library vom CDN */}
+        <Script
+          src="https://cdn.kiprotect.com/klaro/v0.7/klaro.js"
+          strategy="afterInteractive"
+        />
+
         <Analytics />
       </body>
     </html>
