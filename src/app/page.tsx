@@ -1,10 +1,33 @@
-'use client'
-
-import React from 'react';
+import type { Metadata } from 'next';
+import Script from 'next/script';
 import Logo from '../components/ui/Logo';
-import Link from 'next/link'; 
-import { CheckCircle, Calendar, Mail, Phone, MapPin, Wifi, Shield, Lightbulb, Speaker, Zap, Home, Smartphone, Monitor, Wrench, Headphones } from 'lucide-react';
+import Link from 'next/link';
+import { CheckCircle, Calendar, Mail, Phone, MapPin, Wifi, Smartphone, Monitor, Wrench, Headphones, Home } from 'lucide-react';
 import SmartHomeBanner from '../components/layout/banner';
+
+export const metadata: Metadata = {
+  title: 'homigo – Smart Home ohne Kabelsalat',
+  description:
+    'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'homigo – Smart Home ohne Kabelsalat',
+    description:
+      'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+    url: 'https://homigo.tech/',
+    siteName: 'homigo',
+    locale: 'de_DE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'homigo – Smart Home ohne Kabelsalat',
+    description:
+      'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region.',
+  },
+};
 
 export default function HomePage() {
   const services = [
@@ -56,13 +79,6 @@ export default function HomePage() {
       answer: "Absolut! Die meisten Lösungen lassen sich rückstandsfrei wieder entfernen – perfekt für Mieter."
     }
   ];
-
-  const openCookieSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && (window as any).klaro?.show) {
-      (window as any).klaro.show();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -282,8 +298,8 @@ export default function HomePage() {
                   Datenschutz
                 </Link>
                 <button
+                  id="cookie-settings-btn"
                   type="button"
-                  onClick={openCookieSettings}
                   className="block text-gray-400 hover:text-white transition-colors"
                 >
                   Cookie-Einstellungen
@@ -297,6 +313,19 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+      <Script id="cookie-settings-handler" strategy="afterInteractive">
+        {`
+          (function () {
+            var btn = document.getElementById('cookie-settings-btn');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+              if (window.klaro && typeof window.klaro.show === 'function') {
+                window.klaro.show();
+              }
+            });
+          })();
+        `}
+      </Script>
     </div>
   );
 }
