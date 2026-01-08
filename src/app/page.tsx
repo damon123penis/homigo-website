@@ -83,8 +83,63 @@ export default function HomePage() {
     },
   ];
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': ['LocalBusiness', 'ProfessionalService'],
+    name: 'homigo',
+    description:
+      'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+    url: 'https://homigo.tech/',
+    areaServed: [
+      {
+        '@type': 'AdministrativeArea',
+        name: 'Rhein-Main-Region',
+      },
+      {
+        '@type': 'Country',
+        name: 'Deutschland',
+      },
+    ],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Frankenallee 23A',
+      postalCode: '60327',
+      addressLocality: 'Frankfurt am Main',
+      addressCountry: 'DE',
+    },
+    telephone: '+49-152-27178595',
+    email: 'hallo@homigo.tech',
+    priceRange: '€€',
+    founder: {
+      '@type': 'Person',
+      name: 'Damon Schacht',
+    },
+    makesOffer: [
+      {
+        '@type': 'Offer',
+        name: 'Smart Home Starterpaket (Online)',
+        price: '69',
+        priceCurrency: 'EUR',
+        category: 'https://schema.org/Service',
+        url: 'https://homigo.tech/',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Smart Home Starterpaket (Vor Ort)',
+        price: '119',
+        priceCurrency: 'EUR',
+        category: 'https://schema.org/Service',
+        url: 'https://homigo.tech/',
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
