@@ -83,13 +83,15 @@ export default function HomePage() {
     },
   ];
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'ProfessionalService'],
-    name: 'homigo',
-    description:
-      'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
-    url: 'https://homigo.tech/',
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ProfessionalService'],
+  name: 'homigo',
+  image: ['https://homigo.tech/images/Logo.png'],
+  logo: 'https://homigo.tech/images/Logo.png',
+  description:
+    'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+  url: 'https://homigo.tech/',
     areaServed: [
       {
         '@type': 'AdministrativeArea',
