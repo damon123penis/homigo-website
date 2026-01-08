@@ -3,14 +3,14 @@ import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: [
-        '/api/',
-        '/_next/',
-      ],
-    },
-    sitemap: 'https://www.homigo.tech/sitemap.xml',
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        // NICHT `/_next/` blocken – sonst kann Google die Seite nicht korrekt rendern
+        disallow: ['/api/'],
+      },
+    ],
+    sitemap: 'https://homigo.tech/sitemap.xml',
   };
 }
