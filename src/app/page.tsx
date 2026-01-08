@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: 'homigo – Smart Home ohne Kabelsalat',
     description:
       'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
-    url: 'https://homigo.tech/',
+    url: 'https://www.homigo.tech/',
     siteName: 'homigo',
     locale: 'de_DE',
     type: 'website',
@@ -87,8 +87,8 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': ['LocalBusiness', 'ProfessionalService'],
   name: 'homigo',
-  image: ['https://homigo.tech/images/Logo.png'],
-  logo: 'https://homigo.tech/images/Logo.png',
+  image: ['https://www.homigo.tech/images/Logo.png'],
+  logo: 'https://www.homigo.tech/images/Logo.png',
   description:
     'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
   url: 'https://homigo.tech/',
@@ -123,7 +123,7 @@ const structuredData = {
         price: '69',
         priceCurrency: 'EUR',
         category: 'https://schema.org/Service',
-        url: 'https://homigo.tech/',
+        url: 'https://www.homigo.tech/',
       },
       {
         '@type': 'Offer',
@@ -131,7 +131,7 @@ const structuredData = {
         price: '119',
         priceCurrency: 'EUR',
         category: 'https://schema.org/Service',
-        url: 'https://homigo.tech/',
+        url: 'https://www.homigo.tech/',
       },
     ],
   };

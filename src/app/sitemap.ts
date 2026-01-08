@@ -1,7 +1,7 @@
 // src/app/sitemap.ts
 import type { MetadataRoute } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://homigo.tech';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.homigo.tech';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

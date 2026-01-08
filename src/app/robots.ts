@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://homigo.tech/sitemap.xml',
+    sitemap: 'https://www.homigo.tech/sitemap.xml',
   };
 }
