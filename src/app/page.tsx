@@ -57,6 +57,13 @@ export default function HomePage() {
     }
   ];
 
+  const openCookieSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (typeof window !== 'undefined' && (window as any).klaro?.show) {
+      (window as any).klaro.show();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -274,12 +281,19 @@ export default function HomePage() {
                 <Link href="/datenschutz" className="block text-gray-400 hover:text-white transition-colors">
                   Datenschutz
                 </Link>
+                <button
+                  type="button"
+                  onClick={openCookieSettings}
+                  className="block text-gray-400 hover:text-white transition-colors"
+                >
+                  Cookie-Einstellungen
+                </button>
               </div>
             </div>
           </div>
           
           <div className="border-t border-gray-700 pt-8 mt-12 text-center text-gray-400">
-            <p>&copy; 2025 homigo. Alle Rechte vorbehalten.</p>
+            <p>&copy; 2026 homigo. Alle Rechte vorbehalten.</p>
           </div>
         </div>
       </footer>
