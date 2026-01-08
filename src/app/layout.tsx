@@ -7,18 +7,23 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.homigo.tech'),
+  alternates: {
+    canonical: '/',
+  },
+
   title: 'homigo - Smart Home Beratung',
-  description: 'Smart Home ohne Kabelsalat. Dein persönlicher Service für einfache, digitale Smart-Home-Lösungen in der Rhein-Main-Region.',
+  description:
+    'Smart Home ohne Kabelsalat. Dein persönlicher Service für einfache, digitale Smart-Home-Lösungen in der Rhein-Main-Region.',
   keywords: 'Smart Home, Beratung, Rhein-Main, Hausautomation',
   authors: [{ name: 'homigo' }],
   creator: 'homigo',
   publisher: 'homigo',
   robots: 'index, follow',
-
   icons: {
     icon: '/favicon.ico',
   },
-}
+};
 
 export const viewport: Viewport = {
   width: 'device-width',
