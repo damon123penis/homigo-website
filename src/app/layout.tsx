@@ -9,11 +9,15 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'homigo - Smart Home Beratung',
   description: 'Smart Home ohne Kabelsalat. Dein persönlicher Service für einfache, digitale Smart-Home-Lösungen in der Rhein-Main-Region.',
-  keywords: 'Smart Home, Beratung, Rhein-Main, Hausautomation, Damon',
+  keywords: 'Smart Home, Beratung, Rhein-Main, Hausautomation',
   authors: [{ name: 'homigo' }],
   creator: 'homigo',
   publisher: 'homigo',
   robots: 'index, follow',
+
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export const viewport: Viewport = {
