@@ -118,16 +118,6 @@ export default function RootLayout({
           #mobile-nav-panel {
             margin-top: 0.5rem;
           }
-
-          /* Hide sticky CTA when footer is visible */
-          #mobile-sticky-cta.is-hidden {
-            opacity: 0;
-            transform: translateY(12px);
-            pointer-events: none;
-          }
-          #mobile-sticky-cta {
-            transition: opacity 180ms ease, transform 180ms ease;
-          }
         `}</style>
 
         {/* Header / Navigation */}
@@ -187,9 +177,16 @@ export default function RootLayout({
             {/* Primary CTA */}
             <a
               href="https://calendly.com/deinname/erstberatung"
-              className="hidden rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 md:inline-flex"
+              className="hidden md:inline-flex rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
             >
               Erstgespräch buchen
+            </a>
+
+            <a
+              href="https://calendly.com/deinname/erstberatung"
+              className="md:hidden text-sm font-semibold text-emerald-700 hover:text-emerald-600"
+            >
+              Erstgespräch
             </a>
 
             {/* Mobile menu (no JS) */}
@@ -313,17 +310,6 @@ export default function RootLayout({
           </div>
         </footer>
 
-        {/* Mobile sticky CTA (Conversion) */}
-        <div id="mobile-sticky-cta" className="fixed bottom-4 left-0 right-0 z-40 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
-          <div className="mx-auto flex max-w-md items-center justify-center rounded-2xl bg-slate-900/90 p-2 shadow-lg backdrop-blur">
-            <a
-              href="https://calendly.com/deinname/erstberatung"
-              className="w-full rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-slate-900 hover:bg-emerald-400"
-            >
-              Kostenloses Kennenlernen buchen
-            </a>
-          </div>
-        </div>
 
         {/* Klaro-Konfiguration (inline) */}
         <Script id="klaro-config" strategy="afterInteractive">
@@ -424,41 +410,6 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Hide sticky CTA when footer is visible (better UX) */}
-        <Script id="sticky-cta-hide-on-footer" strategy="afterInteractive">
-          {`
-            (function () {
-              var cta = document.getElementById('mobile-sticky-cta');
-              var footer = document.getElementById('site-footer');
-              if (!cta || !footer) return;
-
-              // Prefer IntersectionObserver if available
-              if ('IntersectionObserver' in window) {
-                var io = new IntersectionObserver(function (entries) {
-                  var entry = entries && entries[0];
-                  if (!entry) return;
-                  if (entry.isIntersecting) cta.classList.add('is-hidden');
-                  else cta.classList.remove('is-hidden');
-                }, { root: null, threshold: 0.01 });
-
-                io.observe(footer);
-                return;
-              }
-
-              // Fallback: simple scroll check
-              function onScroll() {
-                var footerRect = footer.getBoundingClientRect();
-                var viewH = window.innerHeight || document.documentElement.clientHeight;
-                var isVisible = footerRect.top < viewH && footerRect.bottom > 0;
-                if (isVisible) cta.classList.add('is-hidden');
-                else cta.classList.remove('is-hidden');
-              }
-
-              onScroll();
-              window.addEventListener('scroll', onScroll, { passive: true });
-            })();
-          `}
-        </Script>
 
         <Analytics />
       </body>
