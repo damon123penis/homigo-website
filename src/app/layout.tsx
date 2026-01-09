@@ -69,17 +69,64 @@ export default function RootLayout({
         >
           Zum Inhalt springen
         </a>
+        <style>{`
+          /* Responsive logo sizing */
+          #site-logo img {
+            height: 32px;
+            width: auto;
+            transition: transform 200ms ease;
+          }
+          @media (min-width: 640px) {
+            #site-logo img {
+              height: 36px;
+            }
+          }
+
+          /* Subtle hover animation */
+          #site-logo:hover img {
+            transform: scale(1.02);
+          }
+
+          /* Shrink header on scroll */
+          #site-header.scrolled {
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+          }
+          #site-header.scrolled #site-header-inner {
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
+          }
+          #site-header.scrolled #site-logo img {
+            height: 28px;
+          }
+          @media (min-width: 640px) {
+            #site-header.scrolled #site-logo img {
+              height: 32px;
+            }
+          }
+        `}</style>
 
         {/* Header / Navigation */}
-        <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tight text-slate-900">
-                homigo
-              </span>
-              <span className="hidden rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800 sm:inline">
-                Smart Home
-              </span>
+        <header
+          id="site-header"
+          className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur transition-all duration-200"
+        >
+          <div
+            id="site-header-inner"
+            className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 transition-all duration-200"
+          >
+            <Link
+              id="site-logo"
+              href="/"
+              className="flex items-center gap-3"
+              aria-label="homigo Startseite"
+            >
+              <Image
+                src="/images/Logo.png"
+                alt="homigo – Smart Home ohne Kabelsalat"
+                width={180}
+                height={48}
+                priority
+              />
             </Link>
 
             {/* Desktop Nav */}
@@ -327,6 +374,24 @@ export default function RootLayout({
               } else {
                 bind();
               }
+            })();
+          `}
+        </Script>
+
+        {/* Header shrink on scroll (no client component needed) */}
+        <Script id="header-scroll-shrink" strategy="afterInteractive">
+          {`
+            (function () {
+              var header = document.getElementById('site-header');
+              if (!header) return;
+
+              function onScroll() {
+                if (window.scrollY > 8) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+              }
+
+              onScroll();
+              window.addEventListener('scroll', onScroll, { passive: true });
             })();
           `}
         </Script>

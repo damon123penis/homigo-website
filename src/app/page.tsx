@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
-import Logo from '../components/ui/Logo';
 import Link from 'next/link';
-import { CheckCircle, Calendar, Mail, Phone, MapPin, Wifi, Smartphone, Monitor, Wrench, Headphones, Home } from 'lucide-react';
+import { CheckCircle, Calendar, Wifi, Smartphone, Monitor, Wrench, Headphones, Home } from 'lucide-react';
 import SmartHomeBanner from '../components/layout/banner';
 
 export const metadata: Metadata = {
@@ -142,20 +140,6 @@ const structuredData = {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Logo showText={true} size="md" />
-            <Link
-              href="/kontakt"
-              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Beratung buchen
-            </Link>
-          </div>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <div>
@@ -318,72 +302,6 @@ const structuredData = {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div>
-              <div className="mb-6">
-                <Logo showText={true} size="lg" />
-              </div>
-              <p className="text-gray-400">
-                Smart Home ohne Kabelsalat. Dein persönlicher Service für einfache, digitale Smart-Home-Lösungen in der Rhein-Main-Region.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-6">Kontakt</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-emerald-400" />
-                  <span>hallo@homigo.tech</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-emerald-400" />
-                  <span>+49 152 27178595</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <MapPin className="w-5 h-5 text-emerald-400" />
-                  <span>Frankenallee 23a, 60327 Frankfurt am Main</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-6">Rechtliches</h3>
-              <div className="space-y-3">
-                <Link href="/impressum" className="block text-gray-400 hover:text-white transition-colors">
-                  Impressum
-                </Link>
-                <Link href="/datenschutz" className="block text-gray-400 hover:text-white transition-colors">
-                  Datenschutz
-                </Link>
-                <button id="cookie-settings-btn" type="button" className="block text-gray-400 hover:text-white transition-colors">
-                  Cookie-Einstellungen
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 pt-8 mt-12 text-center text-gray-400">
-            <p>&copy; 2026 homigo. Alle Rechte vorbehalten.</p>
-          </div>
-        </div>
-      </footer>
-
-      <Script id="cookie-settings-handler" strategy="afterInteractive">
-        {`
-          (function () {
-            var btn = document.getElementById('cookie-settings-btn');
-            if (!btn) return;
-            btn.addEventListener('click', function () {
-              if (window.klaro && typeof window.klaro.show === 'function') {
-                window.klaro.show();
-              }
-            });
-          })();
-        `}
-      </Script>
     </div>
   );
 }
