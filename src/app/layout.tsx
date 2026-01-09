@@ -519,19 +519,35 @@ export default function RootLayout({
                 }
               }
 
-              // Hook into Klaro consent changes
-              if (window.klaro && typeof window.klaro.applyConsents === 'function') {
-                var originalApply = window.klaro.applyConsents.bind(window.klaro);
-                window.klaro.applyConsents = function () {
-                  originalApply();
-                  if (hasConsent()) loadGA();
-                };
+              function attachKlaroHooks() {
+                if (!window.klaro || typeof window.klaro.applyConsents !== 'function') return false;
+
+                // Hook into Klaro consent changes (only once)
+                if (!window.__homigoGaKlaroHooked) {
+                  window.__homigoGaKlaroHooked = true;
+                  var originalApply = window.klaro.applyConsents.bind(window.klaro);
+                  window.klaro.applyConsents = function () {
+                    originalApply();
+                    if (hasConsent()) loadGA();
+                  };
+                }
+
+                // If consent already exists (returning visitor)
+                if (hasConsent()) loadGA();
+                return true;
               }
 
-              // If consent already exists (returning visitor)
-              if (hasConsent()) {
-                loadGA();
-              }
+              // Klaro loads asynchronously (external script). Poll briefly until it's ready.
+              if (attachKlaroHooks()) return;
+
+              var tries = 0;
+              var maxTries = 80; // ~8s at 100ms
+              var t = setInterval(function () {
+                tries += 1;
+                if (attachKlaroHooks() || tries >= maxTries) {
+                  clearInterval(t);
+                }
+              }, 100);
             })();
           `}
         </Script>
