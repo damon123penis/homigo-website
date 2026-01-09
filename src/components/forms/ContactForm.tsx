@@ -156,9 +156,8 @@ export default function ContactForm() {
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
             >
-              <option value="beratung">Erstberatung Online buchen</option>
-              <option value="planung">Erstberatung Vor Ort buchen</option>
-              <option value="installation">Allgemeine Anfrage</option>
+              <option value="beratung">Allgemeine Anfrage</option>
+              <option value="planung">Termin buchen</option>
             </select>
           </div>
         </div>
