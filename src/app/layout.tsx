@@ -491,6 +491,11 @@ export default function RootLayout({
             (function () {
               var GA_ID = '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
               if (!GA_ID) return;
+              try {
+                if (localStorage.getItem('homigoGaDebug') === '1') {
+                  console.log('[homigo][ga4] GA_ID present:', GA_ID);
+                }
+              } catch (e) {}
 
               function loadGA() {
                 if (window.gtag) return;
@@ -499,6 +504,11 @@ export default function RootLayout({
                 s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
                 s.async = true;
                 document.head.appendChild(s);
+                try {
+                  if (localStorage.getItem('homigoGaDebug') === '1') {
+                    console.log('[homigo][ga4] gtag.js appended');
+                  }
+                } catch (e) {}
 
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -531,6 +541,12 @@ export default function RootLayout({
                     if (hasConsent()) loadGA();
                   };
                 }
+
+                try {
+                  if (localStorage.getItem('homigoGaDebug') === '1') {
+                    console.log('[homigo][ga4] Klaro ready. Consent:', hasConsent());
+                  }
+                } catch (e) {}
 
                 // If consent already exists (returning visitor)
                 if (hasConsent()) loadGA();
