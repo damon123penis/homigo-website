@@ -152,7 +152,7 @@ const structuredData = {
           <img
             src="/images/Logo.png"
             alt="homigo Logo"
-            className="w-56 md:w-72 lg:w-80 opacity-90"
+            className="w-28 md:w-36 lg:w-40 opacity-90"
             loading="eager"
           />
         </div>
