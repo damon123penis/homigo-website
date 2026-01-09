@@ -236,7 +236,7 @@ export default function RootLayout({
                     So arbeiten wir
                   </Link>
                   <Link
-                    href="/customerjourney"
+                    href="/smart-home-generator"
                     className={mobileNavClass(isActive('/smart-home-generator'))}
                     aria-current={
                       isActive('/smart-home-generator') ? 'page' : undefined
@@ -328,6 +328,38 @@ export default function RootLayout({
         </footer>
 
 
+        {/* GA4 setup (loaded only after Klaro consent via service callback) */}
+        <Script id="ga4-setup" strategy="afterInteractive">
+          {`
+            (function () {
+              var GA_ID = '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
+              if (!GA_ID) return;
+
+              window.homigoLoadGA4 = function () {
+                try {
+                  if (window.gtag) return;
+
+                  var s = document.createElement('script');
+                  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+                  s.async = true;
+                  document.head.appendChild(s);
+
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+
+                  gtag('js', new Date());
+                  gtag('config', GA_ID, {
+                    anonymize_ip: true,
+                    send_page_view: true
+                  });
+                } catch (e) {
+                  // ignore
+                }
+              };
+            })();
+          `}
+        </Script>
         {/* Klaro-Konfiguration (inline) */}
         <Script id="klaro-config" strategy="afterInteractive">
           {`
@@ -361,7 +393,12 @@ export default function RootLayout({
                   title: 'Google Analytics (GA4)',
                   purposes: ['analytics'],
                   cookies: [/^_ga/, /^_gid/, /^_gat/, /^_ga_/, /^_gac_/],
-                  onlyOnce: true
+                  onlyOnce: true,
+                  callback: function(consent, service) {
+                    if (consent && window.homigoLoadGA4) {
+                      window.homigoLoadGA4();
+                    }
+                  }
                 },
                 {
                   name: 'meta-pixel',
@@ -485,88 +522,6 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Google Analytics 4 – DSGVO-konform via Klaro */}
-        <Script id="ga4-loader" strategy="afterInteractive">
-          {`
-            (function () {
-              var GA_ID = '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
-              if (!GA_ID) return;
-              try {
-                if (localStorage.getItem('homigoGaDebug') === '1') {
-                  console.log('[homigo][ga4] GA_ID present:', GA_ID);
-                }
-              } catch (e) {}
-
-              function loadGA() {
-                if (window.gtag) return;
-
-                var s = document.createElement('script');
-                s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-                s.async = true;
-                document.head.appendChild(s);
-                try {
-                  if (localStorage.getItem('homigoGaDebug') === '1') {
-                    console.log('[homigo][ga4] gtag.js appended');
-                  }
-                } catch (e) {}
-
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                window.gtag = gtag;
-
-                gtag('js', new Date());
-                gtag('config', GA_ID, {
-                  anonymize_ip: true,
-                  send_page_view: true
-                });
-              }
-
-              function hasConsent() {
-                try {
-                  return window.klaro && window.klaro.getConsent && window.klaro.getConsent('google-analytics');
-                } catch (e) {
-                  return false;
-                }
-              }
-
-              function attachKlaroHooks() {
-                if (!window.klaro || typeof window.klaro.applyConsents !== 'function') return false;
-
-                // Hook into Klaro consent changes (only once)
-                if (!window.__homigoGaKlaroHooked) {
-                  window.__homigoGaKlaroHooked = true;
-                  var originalApply = window.klaro.applyConsents.bind(window.klaro);
-                  window.klaro.applyConsents = function () {
-                    originalApply();
-                    if (hasConsent()) loadGA();
-                  };
-                }
-
-                try {
-                  if (localStorage.getItem('homigoGaDebug') === '1') {
-                    console.log('[homigo][ga4] Klaro ready. Consent:', hasConsent());
-                  }
-                } catch (e) {}
-
-                // If consent already exists (returning visitor)
-                if (hasConsent()) loadGA();
-                return true;
-              }
-
-              // Klaro loads asynchronously (external script). Poll briefly until it's ready.
-              if (attachKlaroHooks()) return;
-
-              var tries = 0;
-              var maxTries = 80; // ~8s at 100ms
-              var t = setInterval(function () {
-                tries += 1;
-                if (attachKlaroHooks() || tries >= maxTries) {
-                  clearInterval(t);
-                }
-              }, 100);
-            })();
-          `}
-        </Script>
 
         <Analytics />
       </body>
