@@ -114,9 +114,25 @@ export default function RootLayout({
             }
           }
 
-          /* Mobile menu dropdown: slightly closer + aligned */
+          /* Mobile menu dropdown: closer + smoother */
           #mobile-nav-panel {
             margin-top: 0.5rem;
+            opacity: 0;
+            transform: translateY(-6px) scale(0.98);
+            pointer-events: none;
+            transition: opacity 160ms ease, transform 160ms ease;
+            transform-origin: top left;
+          }
+          details[open] #mobile-nav-panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+          }
+          #mobile-nav-chevron {
+            transition: transform 160ms ease;
+          }
+          details[open] #mobile-nav-chevron {
+            transform: rotate(180deg);
           }
         `}</style>
 
@@ -127,12 +143,12 @@ export default function RootLayout({
         >
           <div
             id="site-header-inner"
-            className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 transition-all duration-200"
+            className="mx-auto relative flex max-w-6xl items-center justify-center md:justify-between px-6 py-4 transition-all duration-200"
           >
             <Link
               id="site-logo"
               href="/"
-              className="flex items-center gap-3"
+              className="mx-auto flex items-center gap-3 md:mx-0"
               aria-label="homigo Startseite"
             >
               <Image
@@ -182,23 +198,17 @@ export default function RootLayout({
               Erstgespräch buchen
             </a>
 
-            <a
-              href="https://calendly.com/homigo-de/30min"
-              className="md:hidden text-sm font-semibold text-emerald-700 hover:text-emerald-600"
-            >
-              Erstgespräch buchen
-            </a>
-
             {/* Mobile menu (no JS) */}
-            <details className="relative md:hidden">
-              <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
-                Menü
+            <details className="absolute left-0 top-1/2 -translate-y-1/2 md:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40">
+                <span>Menü</span>
+                <span id="mobile-nav-chevron" className="text-slate-500">⌄</span>
               </summary>
               <div
                 id="mobile-nav-panel"
-                className="absolute right-0 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
+                className="absolute left-0 w-64 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
               >
-                <div className="flex flex-col p-2">
+                <div className="flex flex-col p-2.5">
                   <Link
                     href="/leistungen-im-detail"
                     className={mobileNavClass(isActive('/leistungen-im-detail'))}
@@ -224,7 +234,7 @@ export default function RootLayout({
                   >
                     Kontakt
                   </Link>
-                  <div className="my-2 h-px bg-slate-200" />
+                  <div className="my-2.5 h-px bg-slate-200" />
                   <a
                     href="https://calendly.com/homigo-de/30min"
                     className="rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-900 hover:bg-emerald-400"
@@ -396,6 +406,64 @@ export default function RootLayout({
 
               onScroll();
               window.addEventListener('scroll', onScroll, { passive: true });
+            })();
+          `}
+        </Script>
+
+        {/* Close mobile menu after click/tap outside (no client component needed) */}
+        <Script id="mobile-menu-close" strategy="afterInteractive">
+          {`
+            (function () {
+              function bind() {
+                var panel = document.getElementById('mobile-nav-panel');
+                if (!panel) return;
+
+                var details = panel.closest('details');
+                if (!details) return;
+
+                // Close when a link/button inside the panel is clicked
+                panel.addEventListener('click', function (e) {
+                  var t = e.target;
+                  if (!t) return;
+
+                  var el = t.closest('a,button');
+                  if (!el) return;
+
+                  if (details.open) {
+                    details.open = false;
+                  }
+                });
+
+                // Tap/click outside to close
+                document.addEventListener(
+                  'click',
+                  function (e) {
+                    if (!details.open) return;
+                    var t = e.target;
+                    if (!t) return;
+
+                    // If the click is inside the details (summary or panel), do nothing
+                    if (t.closest('details') === details) return;
+
+                    details.open = false;
+                  },
+                  true
+                );
+
+                // ESC to close (nice-to-have)
+                document.addEventListener('keydown', function (e) {
+                  if (!details.open) return;
+                  if (e.key === 'Escape') {
+                    details.open = false;
+                  }
+                });
+              }
+
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bind);
+              } else {
+                bind();
+              }
             })();
           `}
         </Script>
