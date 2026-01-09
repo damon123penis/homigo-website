@@ -9,7 +9,7 @@ const SmartHomeBanner = ({
   poster = "/video/homigo-banner-poster.jpg",
 }) => {
   return (
-    <div className={`relative w-full overflow-hidden aspect-[5/3] ${className}`}>
+    <div className={`relative w-full overflow-hidden aspect-[5/3] max-h-[75vh] ${className}`}>
       <video
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
@@ -23,7 +23,7 @@ const SmartHomeBanner = ({
         <source src={videoMp4} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/35 to-slate-950/60" />
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-5">
+      <div className="relative z-10 flex flex-col items-center justify-end h-full text-center px-5 pb-12 md:pb-16">
         <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
           {title}
         </h1>
