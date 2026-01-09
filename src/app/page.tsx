@@ -147,7 +147,7 @@ const structuredData = {
       </div>
 
       {/* Brand Logo Section */}
-      <section className="bg-white py-16 md:py-20">
+      <section className="bg-white pt-12 pb-6 md:pt-16 md:pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
           <img
             src="/images/Logo.png"
