@@ -2,7 +2,22 @@
 
 import React, { useState } from 'react';
 
-const steps = [
+type StepOption = {
+  id: string;
+  label: string;
+  icon?: string;
+};
+
+type Step = {
+  id: string;
+  title: string;
+  description: string;
+  options?: StepOption[];
+};
+
+type SelectedOptions = Record<string, string[]>;
+
+const steps: Step[] = [
   {
     id: 'goals',
     title: 'Ziele auswählen',
@@ -42,12 +57,12 @@ const steps = [
 
 export default function ModernSmartHomeConfigurator() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({});
 
   const currentStep = steps[currentStepIndex];
 
-  const toggleOption = (optionId) => {
-    setSelectedOptions((prev) => {
+  const toggleOption = (optionId: string) => {
+    setSelectedOptions((prev: SelectedOptions) => {
       const currentSelected = prev[currentStep.id] || [];
       if (currentSelected.includes(optionId)) {
         return {
