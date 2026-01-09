@@ -3,14 +3,13 @@ import React from 'react';
 const SmartHomeBanner = ({ 
   title = "Smart Home ohne Kabelsalat", 
   subtitle = "Moderne Hausautomation – einfach, kabellos und intelligent vernetzt",
-  height = "400px",
   className = "",
   videoMp4 = "/video/homigo-banner.mp4",
   videoWebm = "/video/homigo-banner.webm",
   poster = "/video/homigo-banner-poster.jpg",
 }) => {
   return (
-    <div className={`relative w-full overflow-hidden ${className}`} style={{ height }}>
+    <div className={`relative w-full overflow-hidden aspect-[5/3] ${className}`}>
       <video
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
