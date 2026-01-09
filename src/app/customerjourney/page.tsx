@@ -306,7 +306,7 @@ export default function CustomerJourneyPage() {
                   href="https://calendly.com/homigo-de/30min"
                   className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                 >
-                  Kennenlern-Call buchen
+                  Kennenlern-Call buchen über Calendly (externer Anbieter)
                 </a>
                 <Link
                   href="/kontakt"

@@ -198,7 +198,7 @@ export default function RootLayout({
               data-ga-position="header"
               className="hidden md:inline-flex rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
             >
-              Erstgespräch buchen
+              Erstgespräch buchen über Calendly (externer Anbieter)
             </a>
 
             {/* Mobile menu (no JS) */}
@@ -260,7 +260,7 @@ export default function RootLayout({
                     data-ga-position="mobile_menu"
                     className="rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                   >
-                    Erstgespräch buchen
+                    Erstgespräch buchen über Calendly (externer Anbieter)
                   </a>
         {/* GA4 CTA Tracking – Erstgespräch buchen (consent-aware) */}
         <Script id="ga4-cta-tracking" strategy="afterInteractive">

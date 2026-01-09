@@ -35,7 +35,7 @@ export default function KontaktPage() {
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                 >
                   <Calendar className="h-4 w-4" />
-                  Erstgespräch buchen
+                  Erstgespräch buchen über Calendly (externer Anbieter)
                 </a>
                 <Link
                   href="/customerjourney"
@@ -70,7 +70,7 @@ export default function KontaktPage() {
                       href="https://calendly.com/homigo-de/30min"
                       className="hidden whitespace-nowrap rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-emerald-400 sm:inline-flex"
                     >
-                      Erstgespräch
+                      Erstgespräch buchen über Calendly (externer Anbieter)
                     </a>
                   </div>
 
@@ -123,7 +123,7 @@ export default function KontaktPage() {
                         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                       >
                         <Calendar className="h-4 w-4" />
-                        Erstgespräch buchen
+                        Erstgespräch buchen über Calendly (externer Anbieter)
                       </a>
                       <Link
                         href="/leistungen-im-detail"

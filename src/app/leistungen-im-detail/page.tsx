@@ -490,7 +490,7 @@ export default function LeistungenImDetailPage() {
                 href="https://calendly.com/homigo-de/30min"
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
               >
-                Kostenloses Erstgespräch buchen
+                Kostenloses Erstgespräch buchen über Calendly (externer Anbieter)
               </a>
               <Link
                 href="/smart-home-generator"
@@ -517,7 +517,7 @@ export default function LeistungenImDetailPage() {
               price={PRICING.online.main.price}
               highlight={PRICING.online.main.highlight}
               bullets={PRICING.online.main.bullets}
-              ctaLabel="Online Erstgespräch buchen"
+              ctaLabel="Online Erstgespräch buchen über Calendly (externer Anbieter)"
               ctaHref="https://calendly.com/homigo-de/30min"
             />
             <AddonList items={PRICING.online.addons} />
@@ -531,7 +531,7 @@ export default function LeistungenImDetailPage() {
               price={PRICING.onsite.main.price}
               highlight={PRICING.onsite.main.highlight}
               bullets={PRICING.onsite.main.bullets}
-              ctaLabel="Vor-Ort Erstgespräch buchen"
+              ctaLabel="Vor-Ort Erstgespräch buchen über Calendly (externer Anbieter)"
               ctaHref="https://calendly.com/homigo-de/30min"
             />
             <AddonList items={PRICING.onsite.addons} />

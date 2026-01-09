@@ -156,7 +156,7 @@ export default function ImpressumPage() {
                         href="https://calendly.com/homigo-de/30min"
                         className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                       >
-                        Erstgespräch buchen
+                        Erstgespräch buchen über Calendly (externer Anbieter)
                       </a>
                       <Link
                         href="/kontakt"
