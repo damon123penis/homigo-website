@@ -176,14 +176,14 @@ export default function RootLayout({
 
             {/* Primary CTA */}
             <a
-              href="https://calendly.com/deinname/erstberatung"
+              href="https://calendly.com/homigo-de/30min"
               className="hidden md:inline-flex rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
             >
               Erstgespräch buchen
             </a>
 
             <a
-              href="https://calendly.com/deinname/erstberatung"
+              href="https://calendly.com/homigo-de/30min"
               className="md:hidden text-sm font-semibold text-emerald-700 hover:text-emerald-600"
             >
               Erstgespräch
@@ -226,7 +226,7 @@ export default function RootLayout({
                   </Link>
                   <div className="my-2 h-px bg-slate-200" />
                   <a
-                    href="https://calendly.com/deinname/erstberatung"
+                    href="https://calendly.com/homigo-de/30min"
                     className="rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                   >
                     Erstgespräch buchen

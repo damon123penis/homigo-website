@@ -452,7 +452,7 @@ export default function LeistungenImDetailPage() {
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
               <a
-                href="https://calendly.com/deinname/erstberatung"
+                href="https://calendly.com/homigo-de/30min"
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
               >
                 Kostenloses Erstgespräch buchen
@@ -483,7 +483,7 @@ export default function LeistungenImDetailPage() {
               highlight={PRICING.online.main.highlight}
               bullets={PRICING.online.main.bullets}
               ctaLabel="Online Erstgespräch buchen"
-              ctaHref="https://calendly.com/deinname/erstberatung"
+              ctaHref="https://calendly.com/homigo-de/30min"
             />
             <AddonList items={PRICING.online.addons} />
           </div>
@@ -497,7 +497,7 @@ export default function LeistungenImDetailPage() {
               highlight={PRICING.onsite.main.highlight}
               bullets={PRICING.onsite.main.bullets}
               ctaLabel="Vor-Ort Erstgespräch buchen"
-              ctaHref="https://calendly.com/deinname/erstberatung"
+              ctaHref="https://calendly.com/homigo-de/30min"
             />
             <AddonList items={PRICING.onsite.addons} />
           </div>
@@ -519,7 +519,7 @@ export default function LeistungenImDetailPage() {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <a
-                href="https://calendly.com/deinname/erstberatung"
+                href="https://calendly.com/homigo-de/30min"
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
               >
                 Termin sichern

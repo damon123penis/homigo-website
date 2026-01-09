@@ -102,7 +102,7 @@ function CTAButtons() {
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <a
-        href="https://calendly.com/deinname/erstberatung"
+        href="https://calendly.com/homigo-de/30min"
         className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
       >
         Kostenloses Kennenlernen buchen
@@ -261,7 +261,7 @@ export default function CustomerJourneyPage() {
               {s.step === '01' && (
                 <div className="mt-5">
                   <a
-                    href="https://calendly.com/deinname/erstberatung"
+                    href="https://calendly.com/homigo-de/30min"
                     className="inline-flex items-center text-sm font-semibold text-emerald-700 hover:text-emerald-600"
                   >
                     Kostenloses Kennenlernen buchen →
@@ -303,7 +303,7 @@ export default function CustomerJourneyPage() {
             <div className="lg:col-span-4">
               <div className="flex flex-col gap-3 sm:items-start">
                 <a
-                  href="https://calendly.com/deinname/erstberatung"
+                  href="https://calendly.com/homigo-de/30min"
                   className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                 >
                   Kennenlern-Call buchen

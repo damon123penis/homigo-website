@@ -153,7 +153,7 @@ export default function ImpressumPage() {
                     </p>
                     <div className="mt-5 grid gap-2">
                       <a
-                        href="https://calendly.com/deinname/erstberatung"
+                        href="https://calendly.com/homigo-de/30min"
                         className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                       >
                         Erstgespräch buchen

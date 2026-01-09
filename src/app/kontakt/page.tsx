@@ -31,7 +31,7 @@ export default function KontaktPage() {
 
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <a
-                  href="https://calendly.com/deinname/erstberatung"
+                  href="https://calendly.com/homigo-de/30min"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                 >
                   <Calendar className="h-4 w-4" />
@@ -67,7 +67,7 @@ export default function KontaktPage() {
                       </p>
                     </div>
                     <a
-                      href="https://calendly.com/deinname/erstberatung"
+                      href="https://calendly.com/homigo-de/30min"
                       className="hidden whitespace-nowrap rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-emerald-400 sm:inline-flex"
                     >
                       Erstgespräch
@@ -119,7 +119,7 @@ export default function KontaktPage() {
 
                     <div className="mt-6 grid gap-2">
                       <a
-                        href="https://calendly.com/deinname/erstberatung"
+                        href="https://calendly.com/homigo-de/30min"
                         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                       >
                         <Calendar className="h-4 w-4" />
