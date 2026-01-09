@@ -236,11 +236,13 @@ export default function RootLayout({
                     So arbeiten wir
                   </Link>
                   <Link
-                href="/smart-home-generator"
-                className={navClass(isActive('/smart-home-generator'))}
-                aria-current={isActive('/smart-home-generator') ? 'page' : undefined}
-              >
-                Smart Home Generator
+                    href="/customerjourney"
+                    className={mobileNavClass(isActive('/smart-home-generator'))}
+                    aria-current={
+                      isActive('/smart-home-generator') ? 'page' : undefined
+                    }
+                  >
+                    Smart Home Generator
                   </Link>
                   <Link
                     href="/kontakt"
