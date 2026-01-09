@@ -186,7 +186,7 @@ export default function RootLayout({
               href="https://calendly.com/homigo-de/30min"
               className="md:hidden text-sm font-semibold text-emerald-700 hover:text-emerald-600"
             >
-              Erstgespräch
+              Erstgespräch buchen
             </a>
 
             {/* Mobile menu (no JS) */}
@@ -248,15 +248,13 @@ export default function RootLayout({
             <div className="grid items-center gap-6 md:grid-cols-3">
               {/* Left */}
               <div className="flex flex-col items-center gap-2 text-center text-sm text-slate-600 md:items-start md:text-left">
-                <Link href="/leistungen-im-detail" className="hover:text-slate-900">
-                  Leistungen
-                </Link>
-                <Link href="/customerjourney" className="hover:text-slate-900">
-                  So arbeiten wir
-                </Link>
-                <Link href="/kontakt" className="hover:text-slate-900">
+                <Link href="/impressum" className="hover:text-slate-900">
+                    Impressum
+                  </Link>
+                  <Link href="/datenschutz" className="hover:text-slate-900">
+                    Datenschutz
+                  </Link>
                   Kontakt
-                </Link>
               </div>
 
               {/* Center (always centered logo) */}
@@ -284,14 +282,6 @@ export default function RootLayout({
                 <a href="tel:+4915227178595" className="hover:text-slate-900">
                   +49 152 27178595
                 </a>
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 md:justify-end">
-                  <Link href="/impressum" className="hover:text-slate-900">
-                    Impressum
-                  </Link>
-                  <Link href="/datenschutz" className="hover:text-slate-900">
-                    Datenschutz
-                  </Link>
-                </div>
               </div>
             </div>
 
