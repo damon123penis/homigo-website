@@ -335,6 +335,8 @@ export default function RootLayout({
               var GA_ID = '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
               if (!GA_ID) return;
 
+              window.__HOMIGO_GA_ID__ = GA_ID;
+
               window.homigoLoadGA4 = function () {
                 try {
                   if (window.gtag) return;
@@ -395,8 +397,63 @@ export default function RootLayout({
                   cookies: [/^_ga/, /^_gid/, /^_gat/, /^_ga_/, /^_gac_/],
                   onlyOnce: true,
                   callback: function(consent, service) {
-                    if (consent && window.homigoLoadGA4) {
-                      window.homigoLoadGA4();
+                    var GA_ID = window.__HOMIGO_GA_ID__;
+
+                    if (consent) {
+                      if (window.homigoLoadGA4) {
+                        window.homigoLoadGA4();
+                      }
+                      return;
+                    }
+
+                    // Consent revoked: stop further tracking immediately
+                    try {
+                      // 1) Disable further dispatches for this GA4 property
+                      if (GA_ID) {
+                        window['ga-disable-' + GA_ID] = true;
+                      }
+
+                      // 2) Ask gtag Consent Mode to deny analytics storage (if gtag is present)
+                      if (typeof window.gtag === 'function') {
+                        window.gtag('consent', 'update', {
+                          analytics_storage: 'denied'
+                        });
+                      }
+
+                      // 3) Best-effort: remove GA cookies immediately
+                      var host = window.location.hostname;
+                      function expireCookie(name, domain) {
+                        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=' + domain;
+                      }
+                      var cookies = document.cookie ? document.cookie.split(';') : [];
+                      cookies.forEach(function (c) {
+                        var name = c.split('=')[0].trim();
+                        if (/^_ga/.test(name) || /^_gid$/.test(name) || /^_gat/.test(name) || /^_gac_/.test(name)) {
+                          // current host
+                          expireCookie(name, host);
+                          // parent domain
+                          if (host.split('.').length > 2) {
+                            expireCookie(name, '.' + host.split('.').slice(-2).join('.'));
+                          } else {
+                            expireCookie(name, '.' + host);
+                          }
+                          // no-domain fallback
+                          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+                        }
+                      });
+
+                      // 4) If GA script was already loaded, reload once so no GA code remains active in memory.
+                      // Some browsers may continue to send queued beacons in the current session otherwise.
+                      if (!sessionStorage.getItem('homigoGaRevokedReloaded')) {
+                        sessionStorage.setItem('homigoGaRevokedReloaded', '1');
+                        if (window.gtag) {
+                          setTimeout(function () {
+                            window.location.reload();
+                          }, 50);
+                        }
+                      }
+                    } catch (e) {
+                      // ignore
                     }
                   }
                 },
