@@ -19,20 +19,11 @@ const SmartHomeBanner = ({
         loop
         playsInline
         preload="auto"
-        onEnded={(e) => {
-          const v = e.currentTarget;
-          try {
-            v.currentTime = 0;
-            v.play();
-          } catch (_) {
-            // ignore autoplay restrictions
-          }
-        }}
         disablePictureInPicture
         poster={poster}
       >
-        <source src={videoWebm} type="video/webm" />
         <source src={videoMp4} type="video/mp4" />
+        <source src={videoWebm} type="video/webm" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/35 to-slate-950/60" />
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-end text-center px-5 pb-10 md:pb-14">

@@ -146,6 +146,18 @@ const structuredData = {
         <SmartHomeBanner />
       </div>
 
+      {/* Brand Logo Section */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
+          <img
+            src="/images/Logo.png"
+            alt="homigo Logo"
+            className="w-56 md:w-72 lg:w-80 opacity-90"
+            loading="eager"
+          />
+        </div>
+      </section>
+
       {/* Services Section */}
       <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
