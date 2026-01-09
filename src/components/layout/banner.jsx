@@ -4,7 +4,7 @@ import React from 'react';
 
 const SmartHomeBanner = ({ 
   title = "Smart Home ohne Kabelsalat", 
-  subtitle = "Moderne Hausautomation – einfach, kabellos und intelligent vernetzt",
+  subtitle = "einfach, kabellos und intelligent vernetzt.",
   className = "",
   videoMp4 = "/video/homigo-banner.mp4",
   videoWebm = "/video/homigo-banner.webm",
