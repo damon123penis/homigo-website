@@ -37,11 +37,11 @@ const PRICING = {
     main: {
       name: 'Smart Home Starterpaket',
       price: '69 €',
-      highlight: 'Ideal für einen klaren Start ohne Fehlkäufe – mit konkreter Einkaufsliste und Anleitung.',
+      highlight: 'Klarer Start ohne Fehlkäufe – mit Einkaufsliste und einfacher Anleitung.',
       bullets: [
-        '30-minütiger Videocall zur Analyse deines Bedarfs',
-        'Individuelles Konzept mit Produktempfehlungen',
-        'Detaillierte Einrichtungsanleitung (Schritt-für-Schritt)',
+        '30 Minuten Videocall: Wir klären Ziele und Bestand.',
+        'Empfehlung inkl. konkreter Einkaufsliste.',
+        'Einfache Schritt-für-Schritt-Anleitung für die Einrichtung.',
       ],
     },
     addons: [
@@ -73,12 +73,12 @@ const PRICING = {
     main: {
       name: 'Smart Home Starterpaket',
       price: '119 €',
-      highlight: 'Für alle, die direkt ein funktionierendes Setup möchten – inkl. Einrichtung & Tests.',
+      highlight: 'Für alle, die direkt ein funktionierendes Setup wollen – wir richten alles ein und testen es.',
       bullets: [
-        'Persönliche Beratung vor Ort',
-        'Maßgeschneidertes Konzept mit Einkaufsliste',
-        'Komplette Einrichtung & App-Integration',
-        'Anfahrt bis 40 km inklusive',
+        'Beratung und Planung bei dir vor Ort.',
+        'Einkaufsliste mit passenden Produkten.',
+        'Einrichtung, App-Integration und Funktionstest.',
+        'Anfahrt bis 40 km inklusive.',
       ],
     },
     addons: [
@@ -201,7 +201,7 @@ function PricingCard({
         </a>
 
         <p className="mt-3 text-center text-xs text-slate-500">
-          Kostenloses Kennenlernen, danach transparentes Paket – ohne Überraschungen.
+          Erst kurz kostenlos sprechen – danach klarer Paketpreis.
         </p>
       </div>
     </div>
@@ -212,7 +212,7 @@ function AddonList({ items }: { items: { name: string; price: string; desc: stri
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 className="text-base font-bold text-slate-900">Zusätzliche Services</h3>
-      <p className="mt-1 text-sm text-slate-600">Flexibel buchbar – passend zu deinem Setup und Budget.</p>
+      <p className="mt-1 text-sm text-slate-600">Du buchst nur, was du wirklich brauchst.</p>
 
       <div className="mt-5 space-y-3">
         {items.map((it) => (
@@ -232,8 +232,7 @@ function AddonList({ items }: { items: { name: string; price: string; desc: stri
 
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
         <p className="text-sm text-slate-600">
-          Im Erstgespräch klären wir Ziele, Geräte, App-Ökosystem (iOS/Android), WLAN/Router und Budget – danach erhältst
-          du eine klare Empfehlung.
+          Im Erstgespräch klären wir Ziele, Geräte, Handy-System (iOS/Android), WLAN und Budget. Danach bekommst du eine klare Empfehlung.
         </p>
       </div>
     </div>
@@ -241,63 +240,100 @@ function AddonList({ items }: { items: { name: string; price: string; desc: stri
 }
 
 function DifferentiationTable() {
+  const rows = [
+    {
+      k: 'Systemansatz',
+      homigo: 'Hersteller-übergreifend, Plug-&-Play, pragmatisch',
+      electrician: 'Oft fest verdrahtet, projekthaft, teils proprietär',
+    },
+    {
+      k: 'Bedienbarkeit',
+      homigo: 'App-First, einfache Routinen, verständliche Übergabe',
+      electrician: 'Technikfokus, Übergabe teils knapp dokumentiert',
+    },
+    {
+      k: 'Transparenz',
+      homigo: 'Klare Pakete + optionale Add-ons',
+      electrician: 'Häufig nach Aufwand, schwer vergleichbar',
+    },
+    {
+      k: 'Online-Abwicklung',
+      homigo: 'Remote möglich (bundesweit), schnelle Iterationen',
+      electrician: 'Meist vor Ort, längere Vorlaufzeiten',
+    },
+    {
+      k: 'Kompatibilität',
+      homigo: 'Ökosystem-Check (iOS/Android, Alexa/Google/Apple)',
+      electrician: 'Fokus auf Elektro-/Gebäudetechnik, weniger App-Ökosystem',
+    },
+    {
+      k: 'Nachbetreuung',
+      homigo: 'Optionaler Wartungsservice, Remote-Feinschliff',
+      electrician: 'Service meist für Installation, weniger für Apps/Automationen',
+    },
+  ]
+
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-base font-bold text-slate-900">Warum homigo statt klassischer Elektriker?</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Fokus auf nutzerfreundliche Plug-&-Play-Systeme, saubere App-Integration und nachvollziehbare Automationen.
+            Wir setzen auf einfache Plug-&-Play-Systeme, saubere App-Einrichtung und verständliche Automationen.
           </p>
         </div>
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-700">
-            <tr>
-              <th className="px-4 py-3 font-semibold">Kriterium</th>
-              <th className="px-4 py-3 font-semibold">homigo</th>
-              <th className="px-4 py-3 font-semibold">Elektrikerbetrieb (typisch)</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200">
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Systemansatz</td>
-              <td className="px-4 py-3 text-slate-700">Hersteller-übergreifend, Plug-&-Play, pragmatisch</td>
-              <td className="px-4 py-3 text-slate-700">Oft fest verdrahtet, projekthaft, teils proprietär</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Bedienbarkeit</td>
-              <td className="px-4 py-3 text-slate-700">App-First, einfache Routinen, verständliche Übergabe</td>
-              <td className="px-4 py-3 text-slate-700">Technikfokus, Übergabe teils knapp dokumentiert</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Transparenz</td>
-              <td className="px-4 py-3 text-slate-700">Klare Pakete + optionale Add-ons</td>
-              <td className="px-4 py-3 text-slate-700">Häufig nach Aufwand, schwer vergleichbar</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Online-Abwicklung</td>
-              <td className="px-4 py-3 text-slate-700">Remote möglich (bundesweit), schnelle Iterationen</td>
-              <td className="px-4 py-3 text-slate-700">Meist vor Ort, längere Vorlaufzeiten</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Kompatibilität</td>
-              <td className="px-4 py-3 text-slate-700">Ökosystem-Check (iOS/Android, Alexa/Google/Apple)</td>
-              <td className="px-4 py-3 text-slate-700">Fokus auf Elektro-/Gebäudetechnik, weniger App-Ökosystem</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3 font-semibold text-slate-900">Nachbetreuung</td>
-              <td className="px-4 py-3 text-slate-700">Optionaler Wartungsservice, Remote-Feinschliff</td>
-              <td className="px-4 py-3 text-slate-700">Service meist für Installation, weniger für Apps/Automationen</td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Mobile: compact comparison cards */}
+      <div className="mt-5 space-y-3 md:hidden">
+        {rows.map((r) => (
+          <div key={r.k} className="rounded-2xl bg-slate-50 p-4">
+            <div className="text-sm font-semibold text-slate-900">{r.k}</div>
+            <div className="mt-3 grid gap-3">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700">homigo</div>
+                <div className="mt-1 text-sm text-slate-700">{r.homigo}</div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Elektrikerbetrieb</div>
+                <div className="mt-1 text-sm text-slate-700">{r.electrician}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="mt-5 hidden md:block">
+        <div className="w-full overflow-x-auto rounded-2xl border border-slate-200">
+          <table className="min-w-[720px] w-full table-fixed text-left text-sm">
+            <colgroup>
+              <col className="w-[24%]" />
+              <col className="w-[38%]" />
+              <col className="w-[38%]" />
+            </colgroup>
+            <thead className="bg-slate-50 text-slate-700">
+              <tr>
+                <th className="px-4 py-3 font-semibold">Kriterium</th>
+                <th className="px-4 py-3 font-semibold">homigo</th>
+                <th className="px-4 py-3 font-semibold">Elektrikerbetrieb (typisch)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {rows.map((r) => (
+                <tr key={r.k}>
+                  <td className="px-4 py-3 font-semibold text-slate-900 break-words whitespace-normal">{r.k}</td>
+                  <td className="px-4 py-3 text-slate-700 break-words whitespace-normal">{r.homigo}</td>
+                  <td className="px-4 py-3 text-slate-700 break-words whitespace-normal">{r.electrician}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <p className="mt-4 text-xs text-slate-500">
-        Hinweis: Elektrikerbetriebe unterscheiden sich stark. Die Tabelle beschreibt typische Unterschiede in Projekten
+        Hinweis: Elektrikerbetriebe unterscheiden sich stark. Die Darstellung beschreibt typische Unterschiede in Projekten
         mit Fokus auf fest verdrahtete Elektroinstallationen.
       </p>
     </div>
@@ -306,21 +342,20 @@ function DifferentiationTable() {
 
 function Brands() {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-base font-bold text-slate-900">Hersteller & Systeme, mit denen wir häufig arbeiten</h2>
       <p className="mt-1 text-sm text-slate-600">
-        Schwerpunkt: massenmarkttaugliche Komponenten, die sich sauber integrieren lassen. Abhängig von deinem Use-Case
-        empfehlen wir die passendste Kombination.
+        Wir nutzen vor allem Geräte, die zuverlässig sind und gut zusammenarbeiten. Je nach Ziel empfehlen wir die beste Kombination.
       </p>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
         {SUPPORTED_BRANDS.map((b) => (
-          <div key={b.title} className="rounded-2xl bg-slate-50 p-5">
+          <div key={b.title} className="rounded-2xl bg-slate-50 p-4 sm:p-5">
             <div className="text-sm font-semibold text-slate-900">{b.title}</div>
-            <ul className="mt-3 space-y-2 text-sm text-slate-700">
+            <ul className="mt-3 space-y-1.5 text-sm text-slate-700">
               {b.items.map((it) => (
                 <li key={it} className="flex gap-2">
-                  <span className="mt-0.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
+                  <span className="mt-1 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
                   <span>{it}</span>
                 </li>
               ))}
@@ -341,19 +376,19 @@ function FAQ() {
   const faqs = [
     {
       q: 'Ist das Erstgespräch wirklich kostenlos?',
-      a: 'Ja. Wir klären kurz Ziele, Ausgangslage und ob du eher Online oder Vor-Ort brauchst. Für die Konzepterstellung (Starterpaket) fällt dann der Paketpreis an.',
+      a: 'Ja. Wir klären Ziele, Ausgangslage und ob Online oder Vor-Ort besser passt. Das Konzept (Starterpaket) kostet dann den Paketpreis.',
     },
     {
       q: 'Welche Systeme unterstützt du?',
-      a: 'Fokus auf Plug-&-Play-Lösungen (z. B. Philips Hue, Shelly) und bei Bedarf erweiterte Setups (z. B. Home Assistant).',
+      a: 'Vor allem Plug-&-Play (z. B. Philips Hue, Shelly). Wenn nötig auch fortgeschrittene Setups (z. B. Home Assistant).',
     },
     {
       q: 'Kann ich Hardware direkt über dich beziehen?',
-      a: 'Optional ja (Hardware-Lieferung). Mittelfristig kann dein Setup auch direkt über ein Shop-Modul als vorkonfiguriertes Bundle bestellbar werden.',
+      a: 'Optional ja. Später können auch fertige Bundles pro Raum über ein Shop-Modul möglich sein.',
     },
     {
       q: 'Wie läuft Vor-Ort ab?',
-      a: 'Wir stimmen vorab ab, welche Komponenten vorhanden sind. Vor Ort kümmern wir uns um Einrichtung, Integration und Tests. Anfahrt bis 40 km ist im Starterpaket enthalten.',
+      a: 'Wir stimmen vorher ab, was schon da ist. Vor Ort richten wir alles ein, integrieren es in die Apps und testen es. Anfahrt bis 40 km ist im Starterpaket enthalten.',
     },
   ]
 
