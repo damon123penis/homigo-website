@@ -2,16 +2,27 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Leistungen im Detail | homigo',
+  title: 'Leistungen im Detail | homigo – Smart Home Beratung & Setup',
   description:
-    'Pakete und Zusatzservices von homigo: Smart-Home-Beratung online bundesweit und Vor-Ort-Setup in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+    'Pakete und Zusatzservices von homigo: Smart-Home-Beratung online (bundesweit) und Vor-Ort-Setup in der Rhein-Main-Region. Plug & Play statt Kabelsalat – persönlich, einfach, digital.',
+  keywords: [
+    'Smart Home Beratung',
+    'Smart Home Setup',
+    'Rhein-Main',
+    'Frankfurt Smart Home',
+    'Philips Hue Einrichtung',
+    'Shelly Installation',
+    'Home Assistant Integration',
+    'EcoFlow Smart Home',
+    'Alexa Google Home Apple HomeKit',
+  ],
   alternates: {
     canonical: 'https://www.homigo.tech/leistungen-im-detail',
   },
   openGraph: {
     title: 'Leistungen im Detail | homigo',
     description:
-      'Pakete & Zusatzservices: Online-Beratung bundesweit und Vor-Ort-Service in der Rhein-Main-Region.',
+      'Online-Beratung bundesweit oder Vor-Ort-Service im Rhein-Main-Gebiet. Transparente Pakete, klare Empfehlungen, saubere Integration.',
     url: 'https://www.homigo.tech/leistungen-im-detail',
     siteName: 'homigo',
     locale: 'de_DE',
@@ -26,7 +37,7 @@ const PRICING = {
     main: {
       name: 'Smart Home Starterpaket',
       price: '69 €',
-      highlight: 'Ideal für einen klaren Start ohne Fehlkäufe.',
+      highlight: 'Ideal für einen klaren Start ohne Fehlkäufe – mit konkreter Einkaufsliste und Anleitung.',
       bullets: [
         '30-minütiger Videocall zur Analyse deines Bedarfs',
         'Individuelles Konzept mit Produktempfehlungen',
@@ -34,10 +45,26 @@ const PRICING = {
       ],
     },
     addons: [
-      { name: 'Remote-Setup-Hilfe', price: '39 €', desc: 'Persönliche Begleitung bei der Einrichtung per Videocall' },
-      { name: 'Erweitertes System', price: '69 €', desc: 'Integration komplexer Systeme (z. B. Home Assistant)' },
-      { name: 'Hardware-Lieferung', price: 'individuell', desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen' },
-      { name: 'Wartungsservice', price: 'individuell', desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase' },
+      {
+        name: 'Remote-Setup-Hilfe',
+        price: '39 €',
+        desc: 'Persönliche Begleitung bei der Einrichtung per Videocall',
+      },
+      {
+        name: 'Erweitertes System',
+        price: '69 €',
+        desc: 'Integration komplexer Systeme (z. B. Home Assistant)',
+      },
+      {
+        name: 'Hardware-Lieferung',
+        price: 'individuell',
+        desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen',
+      },
+      {
+        name: 'Wartungsservice',
+        price: 'individuell',
+        desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase',
+      },
     ],
   },
   onsite: {
@@ -46,7 +73,7 @@ const PRICING = {
     main: {
       name: 'Smart Home Starterpaket',
       price: '119 €',
-      highlight: 'Für alle, die direkt ein funktionierendes Setup möchten.',
+      highlight: 'Für alle, die direkt ein funktionierendes Setup möchten – inkl. Einrichtung & Tests.',
       bullets: [
         'Persönliche Beratung vor Ort',
         'Maßgeschneidertes Konzept mit Einkaufsliste',
@@ -55,12 +82,47 @@ const PRICING = {
       ],
     },
     addons: [
-      { name: 'Erweitertes System', price: '69 €', desc: 'Integration komplexer Systeme (z. B. Home Assistant)' },
-      { name: 'Hardware-Lieferung', price: 'individuell', desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen' },
-      { name: 'Wartungsservice', price: 'individuell', desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase' },
+      {
+        name: 'Erweitertes System',
+        price: '69 €',
+        desc: 'Integration komplexer Systeme (z. B. Home Assistant)',
+      },
+      {
+        name: 'Hardware-Lieferung',
+        price: 'individuell',
+        desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen',
+      },
+      {
+        name: 'Wartungsservice',
+        price: 'individuell',
+        desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase',
+      },
     ],
   },
 }
+
+const SUPPORTED_BRANDS = [
+  {
+    title: 'Beleuchtung & Ambiente',
+    items: ['Philips Hue', 'IKEA TRÅDFRI', 'Govee (je nach Use-Case)'],
+  },
+  {
+    title: 'Schalter, Relais & Sensorik',
+    items: ['Shelly', 'Sonoff (je nach Modell)', 'Aqara (v. a. Sensorik)'],
+  },
+  {
+    title: 'Zentrale / Automationen',
+    items: ['Home Assistant (advanced)', 'Apple Home / HomeKit', 'Google Home', 'Amazon Alexa'],
+  },
+  {
+    title: 'Energie & Balkonkraftwerk-Integration',
+    items: ['EcoFlow (PowerStream/Powerstations)', 'Tibber (preisbasierte Logik – sofern genutzt)'],
+  },
+  {
+    title: 'Netzwerk & Stabilität',
+    items: ['Fritz!Box / gängige Router-Setups (Analyse & Optimierung)'],
+  },
+]
 
 function SectionHeader({
   eyebrow,
@@ -170,10 +232,107 @@ function AddonList({ items }: { items: { name: string; price: string; desc: stri
 
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
         <p className="text-sm text-slate-600">
-          Du bist unsicher, was sinnvoll ist? Im Erstgespräch klären wir Ziele, Geräte, App-Ökosystem (iOS/Android),
-          WLAN/Router und Budget – danach erhältst du eine klare Empfehlung.
+          Im Erstgespräch klären wir Ziele, Geräte, App-Ökosystem (iOS/Android), WLAN/Router und Budget – danach erhältst
+          du eine klare Empfehlung.
         </p>
       </div>
+    </div>
+  )
+}
+
+function DifferentiationTable() {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-base font-bold text-slate-900">Warum homigo statt klassischer Elektriker?</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Fokus auf nutzerfreundliche Plug-&-Play-Systeme, saubere App-Integration und nachvollziehbare Automationen.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50 text-slate-700">
+            <tr>
+              <th className="px-4 py-3 font-semibold">Kriterium</th>
+              <th className="px-4 py-3 font-semibold">homigo</th>
+              <th className="px-4 py-3 font-semibold">Elektrikerbetrieb (typisch)</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Systemansatz</td>
+              <td className="px-4 py-3 text-slate-700">Hersteller-übergreifend, Plug-&-Play, pragmatisch</td>
+              <td className="px-4 py-3 text-slate-700">Oft fest verdrahtet, projekthaft, teils proprietär</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Bedienbarkeit</td>
+              <td className="px-4 py-3 text-slate-700">App-First, einfache Routinen, verständliche Übergabe</td>
+              <td className="px-4 py-3 text-slate-700">Technikfokus, Übergabe teils knapp dokumentiert</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Transparenz</td>
+              <td className="px-4 py-3 text-slate-700">Klare Pakete + optionale Add-ons</td>
+              <td className="px-4 py-3 text-slate-700">Häufig nach Aufwand, schwer vergleichbar</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Online-Abwicklung</td>
+              <td className="px-4 py-3 text-slate-700">Remote möglich (bundesweit), schnelle Iterationen</td>
+              <td className="px-4 py-3 text-slate-700">Meist vor Ort, längere Vorlaufzeiten</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Kompatibilität</td>
+              <td className="px-4 py-3 text-slate-700">Ökosystem-Check (iOS/Android, Alexa/Google/Apple)</td>
+              <td className="px-4 py-3 text-slate-700">Fokus auf Elektro-/Gebäudetechnik, weniger App-Ökosystem</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-3 font-semibold text-slate-900">Nachbetreuung</td>
+              <td className="px-4 py-3 text-slate-700">Optionaler Wartungsservice, Remote-Feinschliff</td>
+              <td className="px-4 py-3 text-slate-700">Service meist für Installation, weniger für Apps/Automationen</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-4 text-xs text-slate-500">
+        Hinweis: Elektrikerbetriebe unterscheiden sich stark. Die Tabelle beschreibt typische Unterschiede in Projekten
+        mit Fokus auf fest verdrahtete Elektroinstallationen.
+      </p>
+    </div>
+  )
+}
+
+function Brands() {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="text-base font-bold text-slate-900">Hersteller & Systeme, mit denen wir häufig arbeiten</h2>
+      <p className="mt-1 text-sm text-slate-600">
+        Schwerpunkt: massenmarkttaugliche Komponenten, die sich sauber integrieren lassen. Abhängig von deinem Use-Case
+        empfehlen wir die passendste Kombination.
+      </p>
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        {SUPPORTED_BRANDS.map((b) => (
+          <div key={b.title} className="rounded-2xl bg-slate-50 p-5">
+            <div className="text-sm font-semibold text-slate-900">{b.title}</div>
+            <ul className="mt-3 space-y-2 text-sm text-slate-700">
+              {b.items.map((it) => (
+                <li key={it} className="flex gap-2">
+                  <span className="mt-0.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
+                  <span>{it}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-4 text-xs text-slate-500">
+        Markenhinweis: Alle genannten Marken sind Eigentum der jeweiligen Rechteinhaber. Nennungen dienen der
+        Beschreibung von Kompatibilität/typischen Setups.
+      </p>
     </div>
   )
 }
@@ -186,11 +345,11 @@ function FAQ() {
     },
     {
       q: 'Welche Systeme unterstützt du?',
-      a: 'Fokus auf massenmarkttauglichen Plug-&-Play-Lösungen (z. B. Philips Hue, Shelly, smarte Steckdosen/Sensorik) und bei Bedarf erweiterte Setups (z. B. Home Assistant).',
+      a: 'Fokus auf Plug-&-Play-Lösungen (z. B. Philips Hue, Shelly) und bei Bedarf erweiterte Setups (z. B. Home Assistant).',
     },
     {
       q: 'Kann ich Hardware direkt über dich beziehen?',
-      a: 'Optional ja (Hardware-Lieferung). Mittelfristig kannst du dein Setup auch direkt über ein Shop-Modul erwerben.',
+      a: 'Optional ja (Hardware-Lieferung). Mittelfristig kann dein Setup auch direkt über ein Shop-Modul als vorkonfiguriertes Bundle bestellbar werden.',
     },
     {
       q: 'Wie läuft Vor-Ort ab?',
@@ -200,7 +359,7 @@ function FAQ() {
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="text-base font-bold text-slate-900">FAQ</h3>
+      <h2 className="text-base font-bold text-slate-900">FAQ</h2>
       <div className="mt-4 divide-y divide-slate-200">
         {faqs.map((f) => (
           <details key={f.q} className="group py-4">
@@ -217,9 +376,50 @@ function FAQ() {
 }
 
 export default function LeistungenImDetailPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': ['LocalBusiness', 'ProfessionalService'],
+    name: 'homigo',
+    description:
+      'Persönliche Smart-Home-Beratung und Setup – online bundesweit und vor Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat.',
+    url: 'https://www.homigo.tech/leistungen-im-detail',
+    image: 'https://www.homigo.tech/images/Logo.png',
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Rhein-Main-Region' },
+      { '@type': 'Country', name: 'Deutschland' },
+    ],
+    offers: {
+      '@type': 'OfferCatalog',
+      name: 'homigo Leistungspakete',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          name: 'Smart Home Starterpaket (Online)',
+          price: 69,
+          priceCurrency: 'EUR',
+          url: 'https://www.homigo.tech/leistungen-im-detail',
+          category: 'https://schema.org/Service',
+        },
+        {
+          '@type': 'Offer',
+          name: 'Smart Home Starterpaket (Vor Ort)',
+          price: 119,
+          priceCurrency: 'EUR',
+          url: 'https://www.homigo.tech/leistungen-im-detail',
+          category: 'https://schema.org/Service',
+        },
+      ],
+    },
+  }
+
   return (
     <main className="bg-gradient-to-b from-slate-50 to-white">
-      {/* Hero */}
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <section className="px-4 pt-10 sm:pt-14">
         <SectionHeader
           eyebrow="Pakete & Zusatzservices"
@@ -264,11 +464,14 @@ export default function LeistungenImDetailPage() {
                 Smart Home Generator starten
               </Link>
             </div>
+
+            <p className="mt-4 text-center text-xs text-slate-500">
+              Tipp: Wenn du schon Geräte hast, sag es im Call – wir prüfen Kompatibilität und vermeiden doppelte Käufe.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Pricing grid */}
       <section className="mx-auto max-w-6xl px-4 pb-14 pt-10">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-6">
@@ -301,13 +504,18 @@ export default function LeistungenImDetailPage() {
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <Brands />
+          <DifferentiationTable />
+        </div>
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <FAQ />
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-base font-bold text-slate-900">Nächster Schritt</h3>
+            <h2 className="text-base font-bold text-slate-900">Nächster Schritt</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Wenn du möchtest, können wir dein Setup nach dem Konzept auch direkt so vorbereiten, dass es später über ein
-              Shop-Modul bestellbar ist (konfiguriertes Bundle pro Raum).
+              Wenn du möchtest, können wir dein Setup nach dem Konzept so vorbereiten, dass es später über ein Shop-Modul
+              als vorkonfiguriertes Bundle pro Raum bestellbar ist.
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <a
