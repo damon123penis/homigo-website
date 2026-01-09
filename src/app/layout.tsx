@@ -485,6 +485,56 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* Google Analytics 4 – DSGVO-konform via Klaro */}
+        <Script id="ga4-loader" strategy="afterInteractive">
+          {`
+            (function () {
+              var GA_ID = '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}';
+              if (!GA_ID) return;
+
+              function loadGA() {
+                if (window.gtag) return;
+
+                var s = document.createElement('script');
+                s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+                s.async = true;
+                document.head.appendChild(s);
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+
+                gtag('js', new Date());
+                gtag('config', GA_ID, {
+                  anonymize_ip: true,
+                  send_page_view: true
+                });
+              }
+
+              function hasConsent() {
+                try {
+                  return window.klaro && window.klaro.getConsent && window.klaro.getConsent('google-analytics');
+                } catch (e) {
+                  return false;
+                }
+              }
+
+              // Hook into Klaro consent changes
+              if (window.klaro && typeof window.klaro.applyConsents === 'function') {
+                var originalApply = window.klaro.applyConsents.bind(window.klaro);
+                window.klaro.applyConsents = function () {
+                  originalApply();
+                  if (hasConsent()) loadGA();
+                };
+              }
+
+              // If consent already exists (returning visitor)
+              if (hasConsent()) {
+                loadGA();
+              }
+            })();
+          `}
+        </Script>
 
         <Analytics />
       </body>
