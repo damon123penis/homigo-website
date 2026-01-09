@@ -72,13 +72,13 @@ export default function RootLayout({
         <style>{`
           /* Responsive logo sizing */
           #site-logo img {
-            height: 32px;
+            height: 44px;
             width: auto;
             transition: transform 200ms ease;
           }
           @media (min-width: 640px) {
             #site-logo img {
-              height: 36px;
+              height: 52px;
             }
           }
 
@@ -96,12 +96,37 @@ export default function RootLayout({
             padding-bottom: 0.6rem;
           }
           #site-header.scrolled #site-logo img {
-            height: 28px;
+            height: 38px;
           }
           @media (min-width: 640px) {
             #site-header.scrolled #site-logo img {
-              height: 32px;
+              height: 46px;
             }
+          }
+
+          /* Make mobile header slightly more compact */
+          @media (max-width: 767px) {
+            #site-header-inner {
+              padding-top: 0.75rem;
+              padding-bottom: 0.75rem;
+              padding-left: 1rem;
+              padding-right: 1rem;
+            }
+          }
+
+          /* Mobile menu dropdown: slightly closer + aligned */
+          #mobile-nav-panel {
+            margin-top: 0.5rem;
+          }
+
+          /* Hide sticky CTA when footer is visible */
+          #mobile-sticky-cta.is-hidden {
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+          }
+          #mobile-sticky-cta {
+            transition: opacity 180ms ease, transform 180ms ease;
           }
         `}</style>
 
@@ -123,8 +148,8 @@ export default function RootLayout({
               <Image
                 src="/images/Logo.png"
                 alt="homigo – Smart Home ohne Kabelsalat"
-                width={180}
-                height={48}
+                width={220}
+                height={60}
                 priority
               />
             </Link>
@@ -172,7 +197,10 @@ export default function RootLayout({
               <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50">
                 Menü
               </summary>
-              <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+              <div
+                id="mobile-nav-panel"
+                className="absolute right-0 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
+              >
                 <div className="flex flex-col p-2">
                   <Link
                     href="/leistungen-im-detail"
@@ -218,11 +246,11 @@ export default function RootLayout({
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-slate-200 bg-white">
+        <footer id="site-footer" className="border-t border-slate-200 bg-white pb-28 md:pb-0">
           <div className="mx-auto max-w-6xl px-6 py-10">
             <div className="grid items-center gap-6 md:grid-cols-3">
               {/* Left */}
-              <div className="flex flex-col gap-2 text-sm text-slate-600 md:items-start">
+              <div className="flex flex-col items-center gap-2 text-center text-sm text-slate-600 md:items-start md:text-left">
                 <Link href="/leistungen-im-detail" className="hover:text-slate-900">
                   Leistungen
                 </Link>
@@ -252,14 +280,14 @@ export default function RootLayout({
               </div>
 
               {/* Right */}
-              <div className="flex flex-col gap-2 text-sm text-slate-600 md:items-end">
+              <div className="flex flex-col items-center gap-2 text-center text-sm text-slate-600 md:items-end md:text-right">
                 <a href="mailto:hallo@homigo.tech" className="hover:text-slate-900">
                   hallo@homigo.tech
                 </a>
                 <a href="tel:+4915227178595" className="hover:text-slate-900">
                   +49 152 27178595
                 </a>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 md:justify-end">
                   <Link href="/impressum" className="hover:text-slate-900">
                     Impressum
                   </Link>
@@ -286,7 +314,7 @@ export default function RootLayout({
         </footer>
 
         {/* Mobile sticky CTA (Conversion) */}
-        <div className="fixed bottom-4 left-0 right-0 z-40 px-4 md:hidden">
+        <div id="mobile-sticky-cta" className="fixed bottom-4 left-0 right-0 z-40 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
           <div className="mx-auto flex max-w-md items-center justify-center rounded-2xl bg-slate-900/90 p-2 shadow-lg backdrop-blur">
             <a
               href="https://calendly.com/deinname/erstberatung"
@@ -388,6 +416,42 @@ export default function RootLayout({
               function onScroll() {
                 if (window.scrollY > 8) header.classList.add('scrolled');
                 else header.classList.remove('scrolled');
+              }
+
+              onScroll();
+              window.addEventListener('scroll', onScroll, { passive: true });
+            })();
+          `}
+        </Script>
+
+        {/* Hide sticky CTA when footer is visible (better UX) */}
+        <Script id="sticky-cta-hide-on-footer" strategy="afterInteractive">
+          {`
+            (function () {
+              var cta = document.getElementById('mobile-sticky-cta');
+              var footer = document.getElementById('site-footer');
+              if (!cta || !footer) return;
+
+              // Prefer IntersectionObserver if available
+              if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                  var entry = entries && entries[0];
+                  if (!entry) return;
+                  if (entry.isIntersecting) cta.classList.add('is-hidden');
+                  else cta.classList.remove('is-hidden');
+                }, { root: null, threshold: 0.01 });
+
+                io.observe(footer);
+                return;
+              }
+
+              // Fallback: simple scroll check
+              function onScroll() {
+                var footerRect = footer.getBoundingClientRect();
+                var viewH = window.innerHeight || document.documentElement.clientHeight;
+                var isVisible = footerRect.top < viewH && footerRect.bottom > 0;
+                if (isVisible) cta.classList.add('is-hidden');
+                else cta.classList.remove('is-hidden');
               }
 
               onScroll();

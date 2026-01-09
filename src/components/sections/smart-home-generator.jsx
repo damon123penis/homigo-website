@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import {
   Home, Sofa, Bed, Bath, ChefHat, DoorOpen,
   Lightbulb, Thermometer, Wifi, Speaker,
