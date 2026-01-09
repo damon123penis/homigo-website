@@ -194,6 +194,8 @@ export default function RootLayout({
             {/* Primary CTA */}
             <a
               href="https://calendly.com/homigo-de/30min"
+              data-ga-cta="erstgespraech"
+              data-ga-position="header"
               className="hidden md:inline-flex rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
             >
               Erstgespräch buchen
@@ -254,10 +256,37 @@ export default function RootLayout({
                   <div className="my-2.5 h-px bg-slate-200" />
                   <a
                     href="https://calendly.com/homigo-de/30min"
+                    data-ga-cta="erstgespraech"
+                    data-ga-position="mobile_menu"
                     className="rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                   >
                     Erstgespräch buchen
                   </a>
+        {/* GA4 CTA Tracking – Erstgespräch buchen (consent-aware) */}
+        <Script id="ga4-cta-tracking" strategy="afterInteractive">
+          {`
+            (function () {
+              document.addEventListener('click', function (e) {
+                var el = e.target && e.target.closest && e.target.closest('[data-ga-cta="erstgespraech"]');
+                if (!el) return;
+
+                // Only track if GA is active (consent given)
+                if (typeof window.gtag !== 'function') return;
+
+                try {
+                  window.gtag('event', 'cta_erstgespraech_click', {
+                    event_category: 'engagement',
+                    event_label: 'erstgespraech',
+                    position: el.getAttribute('data-ga-position') || 'unknown',
+                    page_path: window.location.pathname
+                  });
+                } catch (e) {
+                  // ignore
+                }
+              }, true);
+            })();
+          `}
+        </Script>
                 </div>
               </div>
             </details>
