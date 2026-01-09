@@ -128,12 +128,6 @@ export default function RootLayout({
             transform: translateY(0) scale(1);
             pointer-events: auto;
           }
-          #mobile-nav-chevron {
-            transition: transform 160ms ease;
-          }
-          details[open] #mobile-nav-chevron {
-            transform: rotate(180deg);
-          }
         `}</style>
 
         {/* Header / Navigation */}
@@ -200,9 +194,16 @@ export default function RootLayout({
 
             {/* Mobile menu (no JS) */}
             <details className="absolute left-0 top-1/2 -translate-y-1/2 md:hidden">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40">
-                <span>Menü</span>
-                <span id="mobile-nav-chevron" className="text-slate-500">⌄</span>
+              <summary
+                aria-label="Menü öffnen"
+                className="cursor-pointer list-none rounded-2xl border border-slate-200 bg-white p-2 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+              >
+                <span className="sr-only">Menü</span>
+                <span aria-hidden="true" className="block w-6">
+                  <span className="block h-0.5 w-full rounded bg-slate-900" />
+                  <span className="mt-1.5 block h-0.5 w-full rounded bg-slate-900" />
+                  <span className="mt-1.5 block h-0.5 w-full rounded bg-slate-900" />
+                </span>
               </summary>
               <div
                 id="mobile-nav-panel"
