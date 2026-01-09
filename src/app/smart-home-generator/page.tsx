@@ -1,150 +1,40 @@
-'use client';
+import type { Metadata } from 'next';
+import SmartHomeGenerator from '@/components/sections/smart-home-generator';
 
-import React, { useState } from 'react';
-
-type StepOption = {
-  id: string;
-  label: string;
-  icon?: string;
+export const metadata: Metadata = {
+  title: 'Smart Home Generator | homigo',
+  description:
+    'Stelle dir in wenigen Minuten dein Smart-Home-Setup zusammen: Räume wählen, Geräte hinzufügen und eine übersichtliche Auswahl erhalten.',
+  alternates: {
+    canonical: 'https://www.homigo.tech/smart-home-generator',
+  },
+  openGraph: {
+    title: 'Smart Home Generator | homigo',
+    description:
+      'Räume wählen, Geräte hinzufügen, Überblick erhalten – und anschließend ein Erstgespräch buchen.',
+    url: 'https://www.homigo.tech/smart-home-generator',
+    siteName: 'homigo',
+    locale: 'de_DE',
+    type: 'website',
+  },
 };
 
-type Step = {
-  id: string;
-  title: string;
-  description: string;
-  options?: StepOption[];
-};
-
-type SelectedOptions = Record<string, string[]>;
-
-const steps: Step[] = [
-  {
-    id: 'goals',
-    title: 'Ziele auswählen',
-    description: 'Wähle deine Hauptziele für das Smart Home Setup.',
-    options: [
-      { id: 'comfort', label: 'Komfort', icon: '🛋️' },
-      { id: 'security', label: 'Sicherheit', icon: '🔒' },
-      { id: 'energy', label: 'Energie sparen', icon: '⚡' },
-    ],
-  },
-  {
-    id: 'rooms',
-    title: 'Räume definieren',
-    description: 'Wie viele Räume möchtest du smart machen?',
-    options: Array.from({ length: 10 }, (_, i) => ({
-      id: `${i + 1}`,
-      label: `${i + 1} Raum${i + 1 > 1 ? 'e' : ''}`,
-    })),
-  },
-  {
-    id: 'devices',
-    title: 'Geräte auswählen',
-    description: 'Wähle die Geräte, die du verwenden möchtest.',
-    options: [
-      { id: 'philips-hue', label: 'Philips Hue' },
-      { id: 'shelly', label: 'Shelly' },
-      { id: 'ecoflow', label: 'EcoFlow' },
-      { id: 'home-assistant', label: 'Home Assistant' },
-    ],
-  },
-  {
-    id: 'review',
-    title: 'Überprüfung',
-    description: 'Überprüfe deine Auswahl und erhalte Empfehlungen.',
-  },
-];
-
-export default function ModernSmartHomeConfigurator() {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({});
-
-  const currentStep = steps[currentStepIndex];
-
-  const toggleOption = (optionId: string) => {
-    setSelectedOptions((prev: SelectedOptions) => {
-      const currentSelected = prev[currentStep.id] || [];
-      if (currentSelected.includes(optionId)) {
-        return {
-          ...prev,
-          [currentStep.id]: currentSelected.filter((id) => id !== optionId),
-        };
-      } else {
-        return {
-          ...prev,
-          [currentStep.id]: [...currentSelected, optionId],
-        };
-      }
-    });
-  };
-
-  const nextStep = () => {
-    if (currentStepIndex < steps.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex(currentStepIndex - 1);
-    }
-  };
-
+export default function SmartHomeGeneratorPage() {
   return (
-    <div>
-      <h3 className="text-lg font-semibold">{currentStep.title}</h3>
-      <p className="mb-4 text-sm text-gray-600">{currentStep.description}</p>
-
-      {currentStep.options && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {currentStep.options.map((option) => {
-            const isSelected = (selectedOptions[currentStep.id] || []).includes(option.id);
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => toggleOption(option.id)}
-                className={`rounded-lg border px-4 py-2 text-left focus:outline-none ${
-                  isSelected ? 'border-emerald-500 bg-emerald-100' : 'border-gray-300 bg-white'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  {option.icon && <span>{option.icon}</span>}
-                  <span>{option.label}</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="mt-6 flex justify-between">
-        <button
-          type="button"
-          onClick={prevStep}
-          disabled={currentStepIndex === 0}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm disabled:opacity-50"
-        >
-          Zurück
-        </button>
-        {currentStepIndex < steps.length - 1 ? (
-          <button
-            type="button"
-            onClick={nextStep}
-            className="rounded-md bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600"
-          >
-            Weiter
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => alert('Konfiguration abgeschlossen!')}
-            className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
-          >
-            Fertig
-          </button>
-        )}
+    <section aria-label="Smart Home Generator" className="pt-2">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <header className="py-8 sm:py-10">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Smart Home Generator
+          </h1>
+          <p className="mt-3 max-w-2xl text-slate-600">
+            Wähle Räume aus, füge passende Geräte hinzu und erhalte eine kompakte Übersicht. Danach kannst du dein
+            kostenloses Erstgespräch buchen – wir prüfen Kompatibilität und übernehmen auf Wunsch den kompletten Setup.
+          </p>
+        </header>
       </div>
-    </div>
+
+      <SmartHomeGenerator />
+    </section>
   );
 }
