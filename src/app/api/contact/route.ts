@@ -1,141 +1,133 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
 
-export const runtime = 'nodejs'
+function makeReqId() {
+  return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
 
-function isEmail(email: string) {
+function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
 function escapeHtml(input: string) {
   return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;')
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  const reqId = makeReqId()
+
   try {
-    const supabaseAdmin = getSupabaseAdmin()
-
-    const body = await request.json().catch(() => null)
-    if (!body) {
-      return NextResponse.json({ success: false, error: 'Ungültige Anfrage.' }, { status: 400 })
+    let body: any
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ ok: false, error: 'INVALID_JSON', reqId }, { status: 400 })
     }
 
-    const nameRaw = String(body.name ?? '').trim()
-    const emailRaw = String(body.email ?? '').trim()
-    const phoneRaw = String(body.phone ?? '').trim() || null
-    const subjectRaw = String(body.subject ?? '').trim() || 'Kontaktanfrage'
-    const messageRaw = String(body.message ?? '').trim()
+    // Required fields
+    const name = typeof body.name === 'string' ? body.name.trim() : ''
+    const email = typeof body.email === 'string' ? body.email.trim() : ''
+    const message = typeof body.message === 'string' ? body.message.trim() : ''
 
-    const name = nameRaw
-    const email = emailRaw
-    const phone = phoneRaw
-    const subject = subjectRaw
-    const message = messageRaw
+    // Optional fields
+    const phone = typeof body.phone === 'string' ? body.phone.trim() : null
+    const subject = typeof body.subject === 'string' ? body.subject.trim() : null
+    const privacy = Boolean(body.privacy ?? false)
+    const source = typeof body.source === 'string' ? body.source.trim() : 'contact_form'
 
-    const nameHtml = escapeHtml(name)
-    const emailHtml = escapeHtml(email)
-    const subjectHtml = escapeHtml(subject)
-    const messageHtml = escapeHtml(message).replace(/\n/g, '<br/>')
-    const phoneHtml = phone ? escapeHtml(phone) : null
-
-    // Optional honeypot (falls du es im Formular ergänzt)
-    const hp = String(body.company ?? '').trim()
-    if (hp) {
-      return NextResponse.json({ success: true })
+    // Honeypot: treat ONLY non-empty values as spam (NOT merely because the field exists)
+    const company = typeof body.company === 'string' ? body.company.trim() : ''
+    const honeypot = typeof body.honeypot === 'string' ? body.honeypot.trim() : ''
+    if (company || honeypot) {
+      // Silent success to not signal bots
+      return NextResponse.json({ ok: true, spam: true, reqId })
     }
 
-    if (name.length < 2) {
-      return NextResponse.json({ success: false, error: 'Bitte gib deinen Namen an.' }, { status: 400 })
-    }
-
-    if (!isEmail(email)) {
-      return NextResponse.json({ success: false, error: 'Bitte gib eine gültige E-Mail an.' }, { status: 400 })
-    }
-
-    if (message.length < 10) {
+    // Validation
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { success: false, error: 'Bitte beschreibe dein Anliegen etwas genauer.' },
+        { ok: false, error: 'VALIDATION_ERROR', reason: 'missing_required_fields', reqId },
+        { status: 400 }
+      )
+    }
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { ok: false, error: 'VALIDATION_ERROR', reason: 'invalid_email', reqId },
+        { status: 400 }
+      )
+    }
+    if (!privacy) {
+      return NextResponse.json(
+        { ok: false, error: 'VALIDATION_ERROR', reason: 'privacy_not_accepted', reqId },
         { status: 400 }
       )
     }
 
-    const pageUrl = (typeof body.page_url === 'string' ? body.page_url.trim() : '') || request.headers.get('referer') || null
-    const userAgent = (typeof body.user_agent === 'string' ? body.user_agent.trim() : '') || request.headers.get('user-agent') || null
+    // Accept both snake_case and camelCase + fall back to headers
+    const pageUrlFromBody =
+      (typeof body.page_url === 'string' ? body.page_url : typeof body.pageUrl === 'string' ? body.pageUrl : '') || ''
+    const userAgentFromBody =
+      (typeof body.user_agent === 'string'
+        ? body.user_agent
+        : typeof body.userAgent === 'string'
+          ? body.userAgent
+          : '') || ''
 
-    // 1) Lead in Supabase speichern
-    const { error: dbError } = await supabaseAdmin
-      .from('contact_requests')
-      .insert({
-        name,
-        email,
-        message,
-        source: 'kontaktformular',
-        page_url: pageUrl,
-        user_agent: userAgent,
-        status: 'new',
-        phone: phone ?? null,
-      })
+    const pageUrl = (pageUrlFromBody.trim() || '') || request.headers.get('referer') || null
+    const userAgent = (userAgentFromBody.trim() || '') || request.headers.get('user-agent') || null
 
-    if (dbError) {
-      console.error('Supabase Fehler:', dbError)
-      return NextResponse.json(
-        { success: false, error: 'Speichern fehlgeschlagen.' },
-        { status: 500 }
-      )
-    }
-
-    const key = process.env.RESEND_API_KEY
-    if (!key) {
-      console.warn('RESEND_API_KEY fehlt – E-Mails werden nicht versendet (Lead wurde gespeichert).')
-      return NextResponse.json({ success: true })
-    }
-    const resend = new Resend(key)
-
-    // 2) Interne Benachrichtigungs-Mail
-    await resend.emails.send({
-      from: 'website@homigo.tech',
-      to: 'hallo@homigo.tech',
-      subject: `Neue Anfrage: ${subjectHtml}`,
-      html: `
-        <h2>Neue Kontaktanfrage von homigo.tech</h2>
-        <p><strong>Name:</strong> ${nameHtml}</p>
-        <p><strong>E-Mail:</strong> ${emailHtml}</p>
-        ${phoneHtml ? `<p><strong>Telefon:</strong> ${phoneHtml}</p>` : ''}
-        <p><strong>Betreff:</strong> ${subjectHtml}</p>
-        <div style="margin-top: 20px;">
-          <h3>Nachricht:</h3>
-          <p>${messageHtml}</p>
-        </div>
-      `,
+    // DB insert
+    const supabase = getSupabaseAdmin()
+    const { error: insertError } = await supabase.from('contact_requests').insert({
+      name,
+      email,
+      phone,
+      message: subject ? `[Betreff: ${subject}]\n\n${message}` : message,
+      source,
+      page_url: pageUrl,
+      user_agent: userAgent,
+      status: 'new',
     })
 
-    // 3) Bestätigungs-Mail an Absender
-    await resend.emails.send({
-      from: 'noreply@homigo.tech',
-      to: email,
-      subject: 'Deine Anfrage bei homigo – Bestätigung',
-      html: `
-        <h2>Vielen Dank für deine Anfrage!</h2>
-        <p>Hi ${nameHtml},</p>
-        <p>
-          danke für deine Nachricht. Ich habe sie erhalten und melde mich in der Regel innerhalb von 24 Stunden bei dir.
-        </p>
-        <p>Viele Grüße<br/>Damon von homigo</p>
-      `,
-    })
+    if (insertError) {
+      console.error('[contact][db]', { reqId, error: insertError })
+      return NextResponse.json({ ok: false, error: 'DB_ERROR', reqId }, { status: 500 })
+    }
 
-    return NextResponse.json({ success: true })
+    // Email notification (optional)
+    const resendKey = process.env.RESEND_API_KEY
+    if (resendKey) {
+      const resend = new Resend(resendKey)
+      try {
+        await resend.emails.send({
+          from: 'homigo <noreply@homigo.tech>',
+          to: 'hallo@homigo.tech',
+          subject: subject ? `Kontakt: ${subject}` : 'Neue Kontaktanfrage',
+          html: `
+            <h2>Neue Kontaktanfrage</h2>
+            <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+            <p><strong>E-Mail:</strong> ${escapeHtml(email)}</p>
+            <p><strong>Telefon:</strong> ${escapeHtml(phone ?? '')}</p>
+            <p><strong>Seite:</strong> ${escapeHtml(pageUrl ?? '')}</p>
+            <p><strong>Nachricht:</strong></p>
+            <pre style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">${escapeHtml(message)}</pre>
+          `,
+        })
+      } catch (emailError) {
+        console.error('[contact][email]', { reqId, error: emailError })
+        return NextResponse.json({ ok: false, error: 'EMAIL_ERROR', reqId }, { status: 500 })
+      }
+    }
+
+    return NextResponse.json({ ok: true, reqId })
   } catch (error) {
-    console.error('Kontaktformular Fehler:', error)
-    return NextResponse.json(
-      { success: false, error: 'Fehler bei der Verarbeitung.' },
-      { status: 500 }
-    )
+    console.error('[contact]', { reqId, error })
+    return NextResponse.json({ ok: false, error: 'SERVER_ERROR', reqId }, { status: 500 })
   }
 }
