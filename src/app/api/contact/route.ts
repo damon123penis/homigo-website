@@ -1,29 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import { supabaseAdmin } from '@/lib/supabaseAdmin'
+import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
 
-function getResendClient() {
-  const key = process.env.RESEND_API_KEY
-  if (!key) return null
-  return new Resend(key)
-}
+export const runtime = 'nodejs'
 
 function isEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+function escapeHtml(input: string) {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
+
     const body = await request.json().catch(() => null)
     if (!body) {
       return NextResponse.json({ success: false, error: 'Ungültige Anfrage.' }, { status: 400 })
     }
 
-    const name = String(body.name ?? '').trim()
-    const email = String(body.email ?? '').trim()
-    const phone = String(body.phone ?? '').trim() || null
-    const subject = String(body.subject ?? '').trim() || 'Kontaktanfrage'
-    const message = String(body.message ?? '').trim()
+    const nameRaw = String(body.name ?? '').trim()
+    const emailRaw = String(body.email ?? '').trim()
+    const phoneRaw = String(body.phone ?? '').trim() || null
+    const subjectRaw = String(body.subject ?? '').trim() || 'Kontaktanfrage'
+    const messageRaw = String(body.message ?? '').trim()
+
+    const name = nameRaw
+    const email = emailRaw
+    const phone = phoneRaw
+    const subject = subjectRaw
+    const message = messageRaw
+
+    const nameHtml = escapeHtml(name)
+    const emailHtml = escapeHtml(email)
+    const subjectHtml = escapeHtml(subject)
+    const messageHtml = escapeHtml(message).replace(/\n/g, '<br/>')
+    const phoneHtml = phone ? escapeHtml(phone) : null
 
     // Optional honeypot (falls du es im Formular ergänzt)
     const hp = String(body.company ?? '').trim()
@@ -70,27 +89,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const resend = getResendClient()
-
-    if (!resend) {
+    const key = process.env.RESEND_API_KEY
+    if (!key) {
       console.warn('RESEND_API_KEY fehlt – E-Mails werden nicht versendet (Lead wurde gespeichert).')
       return NextResponse.json({ success: true })
     }
+    const resend = new Resend(key)
 
     // 2) Interne Benachrichtigungs-Mail
     await resend.emails.send({
       from: 'website@homigo.tech',
       to: 'hallo@homigo.tech',
-      subject: `Neue Anfrage: ${subject}`,
+      subject: `Neue Anfrage: ${subjectHtml}`,
       html: `
         <h2>Neue Kontaktanfrage von homigo.tech</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>E-Mail:</strong> ${email}</p>
-        ${phone ? `<p><strong>Telefon:</strong> ${phone}</p>` : ''}
-        <p><strong>Betreff:</strong> ${subject}</p>
+        <p><strong>Name:</strong> ${nameHtml}</p>
+        <p><strong>E-Mail:</strong> ${emailHtml}</p>
+        ${phoneHtml ? `<p><strong>Telefon:</strong> ${phoneHtml}</p>` : ''}
+        <p><strong>Betreff:</strong> ${subjectHtml}</p>
         <div style="margin-top: 20px;">
           <h3>Nachricht:</h3>
-          <p>${message}</p>
+          <p>${messageHtml}</p>
         </div>
       `,
     })
@@ -102,7 +121,7 @@ export async function POST(request: NextRequest) {
       subject: 'Ihre Anfrage bei homigo – Bestätigung',
       html: `
         <h2>Vielen Dank für Ihre Anfrage!</h2>
-        <p>Hallo ${name},</p>
+        <p>Hallo ${nameHtml},</p>
         <p>
           vielen Dank für Ihre Anfrage bezüglich unserer Smart-Home-Beratung.
           Ich habe Ihre Nachricht erhalten und melde mich in der Regel innerhalb von 24 Stunden bei Ihnen.

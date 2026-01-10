@@ -11,39 +11,47 @@ export default function ContactForm() {
     subject: 'beratung',
     message: '',
     privacy: false,
+    company: '', // Honeypot (muss leer bleiben)
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.privacy) {
-      alert('Bitte stimmen Sie der Datenschutzerklärung zu.');
+      alert('Bitte stimme der Datenschutzerklärung zu.');
       return;
     }
 
     setIsSubmitting(true);
     setSubmitStatus(null);
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          source: 'kontaktformular',
+          page_url: typeof window !== 'undefined' ? window.location.href : undefined,
+          user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+        }),
       });
 
       if (response.ok) {
@@ -55,6 +63,7 @@ export default function ContactForm() {
           subject: 'beratung',
           message: '',
           privacy: false,
+          company: '',
         });
       } else {
         setSubmitStatus('error');
@@ -85,16 +94,29 @@ export default function ContactForm() {
       {submitStatus === 'error' && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center space-x-3">
           <AlertCircle className="w-5 h-5 text-red-600" />
-          <p className="text-red-800">Fehler beim Senden. Bitte versuche es erneut.</p>
+          <p className="text-red-800">Beim Senden ist etwas schiefgelaufen. Bitte versuche es erneut.</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Honeypot (gegen Spam) – muss leer bleiben */}
+        <div className="hidden" aria-hidden="true">
+          <label>
+            Firma
+            <input
+              type="text"
+              name="company"
+              value={(formData as any).company}
+              onChange={handleInputChange}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </label>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Name *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
             <div className="relative">
               <User className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
               <input
@@ -110,9 +132,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              E-Mail *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">E-Mail *</label>
             <div className="relative">
               <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
               <input
@@ -130,9 +150,7 @@ export default function ContactForm() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Telefon (optional)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Telefon (optional)</label>
             <div className="relative">
               <Phone className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
               <input
@@ -147,9 +165,7 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Betreff
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Betreff</label>
             <select
               name="subject"
               value={formData.subject}
@@ -163,9 +179,7 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Deine Nachricht *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Deine Nachricht *</label>
           <div className="relative">
             <MessageSquare className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
             <textarea
@@ -190,8 +204,11 @@ export default function ContactForm() {
               className="mt-1 h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
             />
             <label className="text-sm text-gray-700">
-              Ich habe die <a href="/datenschutz" className="text-emerald-600 hover:underline">Datenschutzerklärung</a> gelesen 
-              und stimme der Verarbeitung meiner Daten zur Beantwortung meiner Anfrage zu! *
+              Ich habe die{' '}
+              <a href="/datenschutz" className="text-emerald-600 hover:underline">
+                Datenschutzerklärung
+              </a>{' '}
+              gelesen und stimme der Verarbeitung meiner Daten zur Beantwortung meiner Anfrage zu. *
             </label>
           </div>
         </div>
