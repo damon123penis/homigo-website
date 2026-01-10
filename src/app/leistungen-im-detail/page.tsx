@@ -50,7 +50,7 @@ const PRICING = {
     badge: 'Vor Ort',
     main: {
       name: 'Smart Home Starterpaket',
-      price: '119 €',
+      price: '129€',
       highlight: 'Einrichtung bei dir zu Hause – inkl. Tests, Feinschliff und Übergabe.',
       bullets: [
         'Beratung & Setup vor Ort (Rhein-Main-Region).',
@@ -422,7 +422,7 @@ export default function LeistungenImDetailPage() {
         {
           '@type': 'Offer',
           name: 'Smart Home Starterpaket (Vor Ort)',
-          price: 119,
+          price: 129,
           priceCurrency: 'EUR',
           url: 'https://www.homigo.tech/leistungen-im-detail',
           category: 'https://schema.org/Service',

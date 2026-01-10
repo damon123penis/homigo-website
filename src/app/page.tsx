@@ -46,7 +46,7 @@ export default function HomePage() {
     {
       icon: <Wrench className="w-12 h-12 text-emerald-500" />,
       title: 'Erweiterte Systeme',
-      price: 'ab 59€',
+      price: 'ab 69€',
       description: 'Integration komplexer Smart Home Systeme wie Home Assistant oder ioBroker.',
       features: ['Home Assistant Setup', 'System Integration', 'Komplexe Automatisierung'],
     },
