@@ -19,6 +19,14 @@ function escapeHtml(input: string) {
     .replaceAll("'", '&#039;')
 }
 
+function subjectLabel(subject: string | null) {
+  if (!subject) return 'Allgemeine Anfrage'
+  const s = subject.toLowerCase()
+  if (s === 'beratung') return 'Allgemeine Anfrage'
+  if (s === 'planung') return 'Termin/Planung'
+  return subject
+}
+
 export async function POST(request: Request) {
   const reqId = makeReqId()
 
@@ -39,9 +47,9 @@ export async function POST(request: Request) {
     const phone = typeof body.phone === 'string' ? body.phone.trim() : null
     const subject = typeof body.subject === 'string' ? body.subject.trim() : null
     const privacy = Boolean(body.privacy ?? false)
-    const source = typeof body.source === 'string' ? body.source.trim() : 'contact_form'
+    const source = typeof body.source === 'string' ? body.source.trim() : 'kontaktformular'
 
-    // Honeypot: treat ONLY non-empty values as spam (NOT merely because the field exists)
+    // Honeypot: treat ONLY non-empty values as spam
     const company = typeof body.company === 'string' ? body.company.trim() : ''
     const honeypot = typeof body.honeypot === 'string' ? body.honeypot.trim() : ''
     if (company || honeypot) {
@@ -82,50 +90,95 @@ export async function POST(request: Request) {
     const pageUrl = (pageUrlFromBody.trim() || '') || request.headers.get('referer') || null
     const userAgent = (userAgentFromBody.trim() || '') || request.headers.get('user-agent') || null
 
-    // DB insert
+    // DB insert (return id for easier follow-up/status handling)
     const supabase = getSupabaseAdmin()
-    const { error: insertError } = await supabase.from('contact_requests').insert({
-      name,
-      email,
-      phone,
-      message: subject ? `[Betreff: ${subject}]\n\n${message}` : message,
-      source,
-      page_url: pageUrl,
-      user_agent: userAgent,
-      status: 'new',
-    })
+
+    const storedMessage = subject ? `[Betreff: ${subjectLabel(subject)}]\n\n${message}` : message
+
+    const { data: inserted, error: insertError } = await supabase
+      .from('contact_requests')
+      .insert({
+        name,
+        email,
+        phone,
+        message: storedMessage,
+        source,
+        page_url: pageUrl,
+        user_agent: userAgent,
+        status: 'new',
+        // handled_at exists after your schema update; if not yet present, Supabase will ignore unknown columns.
+        handled_at: null,
+      })
+      .select('id')
+      .single()
 
     if (insertError) {
       console.error('[contact][db]', { reqId, error: insertError })
       return NextResponse.json({ ok: false, error: 'DB_ERROR', reqId }, { status: 500 })
     }
 
-    // Email notification (optional)
+    const recordId = inserted?.id ?? null
+
+    // Email (Resend) – optional but recommended.
+    // We treat email failures as NON-fatal so the contact request is never lost.
     const resendKey = process.env.RESEND_API_KEY
     if (resendKey) {
       const resend = new Resend(resendKey)
+
+      const from = 'homigo <noreply@homigo.tech>'
+      const replyTo = 'hallo@homigo.tech'
+      const notifyTo = 'hallo@homigo.tech'
+
+      // 2a) Internal notification
       try {
         await resend.emails.send({
-          from: 'homigo <noreply@homigo.tech>',
-          to: 'hallo@homigo.tech',
-          subject: subject ? `Kontakt: ${subject}` : 'Neue Kontaktanfrage',
+          from,
+          to: notifyTo,
+          replyTo,
+          subject: `Neue Kontaktanfrage: ${subjectLabel(subject)}${recordId ? ` (#${recordId})` : ''}`,
           html: `
             <h2>Neue Kontaktanfrage</h2>
             <p><strong>Name:</strong> ${escapeHtml(name)}</p>
             <p><strong>E-Mail:</strong> ${escapeHtml(email)}</p>
             <p><strong>Telefon:</strong> ${escapeHtml(phone ?? '')}</p>
+            <p><strong>Betreff:</strong> ${escapeHtml(subjectLabel(subject))}</p>
             <p><strong>Seite:</strong> ${escapeHtml(pageUrl ?? '')}</p>
+            <p><strong>User-Agent:</strong> ${escapeHtml(userAgent ?? '')}</p>
+            <p><strong>Request-ID:</strong> ${escapeHtml(reqId)}</p>
+            ${recordId ? `<p><strong>Datensatz-ID:</strong> ${escapeHtml(recordId)}</p>` : ''}
             <p><strong>Nachricht:</strong></p>
             <pre style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">${escapeHtml(message)}</pre>
           `,
         })
       } catch (emailError) {
-        console.error('[contact][email]', { reqId, error: emailError })
-        return NextResponse.json({ ok: false, error: 'EMAIL_ERROR', reqId }, { status: 500 })
+        console.error('[contact][email][internal]', { reqId, recordId, error: emailError })
+      }
+
+      // 2b) User confirmation (no tracking)
+      try {
+        await resend.emails.send({
+          from,
+          to: email,
+          replyTo,
+          subject: 'Wir haben deine Nachricht erhalten – homigo',
+          html: `
+            <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #0f172a;">
+              <h2 style="margin: 0 0 12px 0;">Danke, ${escapeHtml(name)}!</h2>
+              <p style="margin: 0 0 12px 0;">Wir haben deine Nachricht erhalten und melden uns in der Regel innerhalb von <strong>24 Stunden</strong>.</p>
+              <p style="margin: 0 0 12px 0;"><strong>Betreff:</strong> ${escapeHtml(subjectLabel(subject))}</p>
+              <p style="margin: 0 0 12px 0;"><strong>Deine Nachricht:</strong></p>
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 14px; border-radius: 10px; white-space: pre-wrap;">${escapeHtml(message)}</div>
+              <p style="margin: 16px 0 0 0; font-size: 12px; color: #475569;">Referenz: ${escapeHtml(reqId)}${recordId ? ` • Datensatz: ${escapeHtml(recordId)}` : ''}</p>
+              <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;">Wenn du diese Nachricht nicht selbst gesendet hast, kannst du sie ignorieren.</p>
+            </div>
+          `,
+        })
+      } catch (emailError) {
+        console.error('[contact][email][user]', { reqId, recordId, error: emailError })
       }
     }
 
-    return NextResponse.json({ ok: true, reqId })
+    return NextResponse.json({ ok: true, reqId, id: recordId })
   } catch (error) {
     console.error('[contact]', { reqId, error })
     return NextResponse.json({ ok: false, error: 'SERVER_ERROR', reqId }, { status: 500 })
