@@ -61,23 +61,27 @@ export default function HomePage() {
 
   const faqItems = [
     {
-      question: 'Muss ich mein Zuhause umbauen?',
-      answer:
-        'Nein! Wir arbeiten mit Produkten aus dem Einzelhandel für private Endkunden, die keine festen Einbauten benötigen. Dies spart teure Handwerksarbeiten.',
-    },
-    {
       question: 'Was ist alles möglich mit Smart Home?',
       answer:
         'Bei Smart Home Lösungen sind kaum Grenzen gesetzt. Neben klassischen Anwendungsgebieten mit smarter Licht- und Heizungssteuerung gibt es auch umfassendere Anwendungsgebiete wie ganzheitliche Haussteuerung inklusive Einbindung von Solarenergie und Speichertechnik, z.B. durch ein Balkonkraftwerk.',
     },
     {
-      question: 'Welche Marken nutzt du?',
+      question: 'Muss ich mein Zuhause umbauen?',
+      answer:
+        'Nein! Wir arbeiten mit Produkten aus dem Einzelhandel für private Endkunden, die keine festen Einbauten benötigen. Dies spart teure Handwerksarbeiten.',
+    },
+    {
+      question: 'Welche Marken und Systeme nutzt du?',
       answer:
         'Ich arbeite ausschließlich mit Consumer Produkten bekannter Marken, bevorzugt mit Shelly, Aqara, Tado, Philips Hue, Sonoff und anderen bewährten Smart-Home-Herstellern sowie Open Source Lösungen wie Home Assistant oder ioBroker.',
     },
     {
       question: 'Funktioniert das auch in Mietwohnungen?',
       answer: 'Absolut! Die meisten Lösungen lassen sich rückstandsfrei wieder entfernen – perfekt für Mieter.',
+    },
+    {
+      question: 'Kann ich Hardware direkt über dich beziehen?',
+      answer: 'Dies ist in Arbeit. Bald wird homigo auch zu deinem bevorzugten Smart Home Shop! Bleib gespannt.',
     },
   ];
 
@@ -158,6 +162,16 @@ const structuredData = {
         </div>
       </section>
 
+      {/* Intro Claim Section */}
+      <section className="bg-white pb-8 md:pb-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-lg md:text-xl text-slate-600 leading-relaxed">
+            <strong className="font-semibold text-slate-800">homigo – dein Amigo fürs Smart Home.</strong><br />
+            Persönliche Beratung, einfache Systeme und Lösungen, die wirklich zu dir passen.
+          </p>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -170,23 +184,27 @@ const structuredData = {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => (
-              <div
+              <Link
                 key={index}
-                className="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition-all transform hover:-translate-y-1 text-center"
+                href="/leistungen-im-detail"
+                className="group"
+                aria-label={`Mehr Informationen zu ${service.title}`}
               >
-                <div className="mb-6">{service.icon}</div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">{service.title}</h3>
-                <div className="text-2xl font-bold text-emerald-600 mb-4">{service.price}</div>
-                <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                <ul className="text-sm text-gray-500 space-y-2">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center justify-center">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <div className="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition-all transform hover:-translate-y-1 text-center cursor-pointer group-hover:ring-2 group-hover:ring-emerald-500/40">
+                  <div className="mb-6">{service.icon}</div>
+                  <h3 className="text-xl font-semibold text-slate-800 mb-2">{service.title}</h3>
+                  <div className="text-2xl font-bold text-emerald-600 mb-4">{service.price}</div>
+                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
+                  <ul className="text-sm text-gray-500 space-y-2">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center justify-center">
+                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

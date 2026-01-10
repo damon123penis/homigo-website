@@ -44,63 +44,48 @@ const PRICING = {
         'Einfache Schritt-für-Schritt-Anleitung für die Einrichtung.',
       ],
     },
-    addons: [
-      {
-        name: 'Remote-Setup-Hilfe',
-        price: '39 €',
-        desc: 'Persönliche Begleitung bei der Einrichtung per Videocall',
-      },
-      {
-        name: 'Erweitertes System',
-        price: '69 €',
-        desc: 'Integration komplexer Systeme (z. B. Home Assistant)',
-      },
-      {
-        name: 'Hardware-Lieferung',
-        price: 'individuell',
-        desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen',
-      },
-      {
-        name: 'Wartungsservice',
-        price: 'individuell',
-        desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase',
-      },
-    ],
   },
   onsite: {
-    title: 'Vor-Ort-Service (Rhein-Main-Region)',
+    title: 'Vor-Ort-Service (Rhein-Main)',
     badge: 'Vor Ort',
     main: {
       name: 'Smart Home Starterpaket',
       price: '119 €',
-      highlight: 'Für alle, die direkt ein funktionierendes Setup wollen – wir richten alles ein und testen es.',
+      highlight: 'Einrichtung bei dir zu Hause – inkl. Tests, Feinschliff und Übergabe.',
       bullets: [
-        'Beratung und Planung bei dir vor Ort.',
-        'Einkaufsliste mit passenden Produkten.',
-        'Einrichtung, App-Integration und Funktionstest.',
-        'Anfahrt bis 40 km inklusive.',
+        'Beratung & Setup vor Ort (Rhein-Main-Region).',
+        'Einrichtung, Tests und kurze Einweisung.',
+        'Anfahrt bis 40 km inklusive (danach nach Absprache).',
       ],
     },
-    addons: [
-      {
-        name: 'Erweitertes System',
-        price: '69 €',
-        desc: 'Integration komplexer Systeme (z. B. Home Assistant)',
-      },
-      {
-        name: 'Hardware-Lieferung',
-        price: 'individuell',
-        desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen',
-      },
-      {
-        name: 'Wartungsservice',
-        price: 'individuell',
-        desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase',
-      },
-    ],
   },
 }
-
+const SHARED_ADDONS: { name: string; price: string; desc: string; appliesTo?: 'online' | 'onsite' | 'both' }[] = [
+  {
+    name: 'Remote-Setup-Hilfe',
+    price: '39 €',
+    desc: 'Persönliche Begleitung bei der Einrichtung per Videocall',
+    appliesTo: 'online',
+  },
+  {
+    name: 'Erweitertes System',
+    price: '69 €',
+    desc: 'Integration komplexer Systeme (z. B. Home Assistant)',
+    appliesTo: 'both',
+  },
+  {
+    name: 'Hardware-Lieferung',
+    price: 'individuell',
+    desc: 'Beschaffung & Lieferung der Komponenten zu attraktiven Preisen',
+    appliesTo: 'both',
+  },
+  {
+    name: 'Wartungsservice',
+    price: 'individuell',
+    desc: 'Optional: Betreuung & Wartung nach der Einrichtungsphase',
+    appliesTo: 'both',
+  },
+]
 const SUPPORTED_BRANDS = [
   {
     title: 'Beleuchtung & Ambiente',
@@ -192,6 +177,12 @@ function PricingCard({
             </li>
           ))}
         </ul>
+        <p className="mt-4 text-sm text-slate-600">
+          Optional:{' '}
+          <a href="#addons" className="font-semibold text-emerald-700 hover:text-emerald-600">
+            Zusatzservices ansehen
+          </a>
+        </p>
 
         <a
           href={ctaHref}
@@ -208,26 +199,73 @@ function PricingCard({
   )
 }
 
-function AddonList({ items }: { items: { name: string; price: string; desc: string }[] }) {
+function AddonList({
+  items,
+  id,
+}: {
+  items: { name: string; price: string; desc: string; appliesTo?: 'online' | 'onsite' | 'both' }[]
+  id?: string
+}) {
+  const groups: {
+    key: 'online' | 'both' | 'onsite'
+    title: string
+    items: { name: string; price: string; desc: string; appliesTo?: 'online' | 'onsite' | 'both' }[]
+  }[] = [
+    {
+      key: 'online',
+      title: 'Für Online',
+      items: items.filter((x) => x.appliesTo === 'online'),
+    },
+    {
+      key: 'both',
+      title: 'Für Online & Vor Ort',
+      items: items.filter((x) => !x.appliesTo || x.appliesTo === 'both'),
+    },
+    {
+      key: 'onsite',
+      title: 'Für Vor Ort',
+      items: items.filter((x) => x.appliesTo === 'onsite'),
+    },
+  ]
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div id={id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <h3 className="text-base font-bold text-slate-900">Zusätzliche Services</h3>
       <p className="mt-1 text-sm text-slate-600">Du buchst nur, was du wirklich brauchst.</p>
 
-      <div className="mt-5 space-y-3">
-        {items.map((it) => (
-          <div key={it.name} className="rounded-2xl bg-slate-50 p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="font-semibold text-slate-900">{it.name}</div>
-                <div className="mt-1 text-sm text-slate-600">{it.desc}</div>
+      <div className="mt-5 space-y-6">
+        {groups
+          .filter((g) => g.items.length > 0)
+          .map((g) => (
+            <div key={g.key}>
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {g.title}
               </div>
-              <div className="whitespace-nowrap rounded-full bg-white px-3 py-1 text-sm font-semibold text-slate-700 shadow-sm">
-                {it.price}
+
+              <div className="space-y-3">
+                {g.items.map((it) => (
+                  <div key={it.name} className="rounded-2xl bg-slate-50 p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 font-semibold text-slate-900">
+                          <span>{it.name}</span>
+                          {it.appliesTo && it.appliesTo !== 'both' ? (
+                            <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 shadow-sm">
+                              {it.appliesTo === 'online' ? 'Online' : 'Vor Ort'}
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="mt-1 text-sm text-slate-600">{it.desc}</div>
+                      </div>
+
+                      <div className="whitespace-nowrap rounded-full bg-white px-3 py-1 text-sm font-semibold text-slate-700 shadow-sm">
+                        {it.price}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
@@ -285,7 +323,7 @@ function DifferentiationTable() {
       </div>
 
       {/* Mobile: compact comparison cards */}
-      <div className="mt-5 space-y-3 md:hidden">
+      <div className="mt-5 space-y-3 lg:hidden">
         {rows.map((r) => (
           <div key={r.k} className="rounded-2xl bg-slate-50 p-4">
             <div className="text-sm font-semibold text-slate-900">{r.k}</div>
@@ -304,14 +342,9 @@ function DifferentiationTable() {
       </div>
 
       {/* Desktop: table */}
-      <div className="mt-5 hidden md:block">
-        <div className="w-full overflow-x-auto rounded-2xl border border-slate-200">
-          <table className="min-w-[720px] w-full table-fixed text-left text-sm">
-            <colgroup>
-              <col className="w-[24%]" />
-              <col className="w-[38%]" />
-              <col className="w-[38%]" />
-            </colgroup>
+      <div className="mt-5 hidden lg:block">
+        <div className="w-full rounded-2xl border border-slate-200">
+          <table className="w-full table-auto text-left text-sm">
             <thead className="bg-slate-50 text-slate-700">
               <tr>
                 <th className="px-4 py-3 font-semibold">Kriterium</th>
@@ -372,43 +405,6 @@ function Brands() {
   )
 }
 
-function FAQ() {
-  const faqs = [
-    {
-      q: 'Ist das Erstgespräch wirklich kostenlos?',
-      a: 'Ja. Wir klären Ziele, Ausgangslage und ob Online oder Vor-Ort besser passt. Das Konzept (Starterpaket) kostet dann den Paketpreis.',
-    },
-    {
-      q: 'Welche Systeme unterstützt du?',
-      a: 'Vor allem Plug-&-Play (z. B. Philips Hue, Shelly). Wenn nötig auch fortgeschrittene Setups (z. B. Home Assistant).',
-    },
-    {
-      q: 'Kann ich Hardware direkt über dich beziehen?',
-      a: 'Optional ja. Später können auch fertige Bundles pro Raum über ein Shop-Modul möglich sein.',
-    },
-    {
-      q: 'Wie läuft Vor-Ort ab?',
-      a: 'Wir stimmen vorher ab, was schon da ist. Vor Ort richten wir alles ein, integrieren es in die Apps und testen es. Anfahrt bis 40 km ist im Starterpaket enthalten.',
-    },
-  ]
-
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-base font-bold text-slate-900">FAQ</h2>
-      <div className="mt-4 divide-y divide-slate-200">
-        {faqs.map((f) => (
-          <details key={f.q} className="group py-4">
-            <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900">
-              {f.q}
-              <span className="float-right text-slate-400 group-open:rotate-180">⌄</span>
-            </summary>
-            <p className="mt-2 text-sm text-slate-600">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 export default function LeistungenImDetailPage() {
   const jsonLd = {
@@ -468,7 +464,7 @@ export default function LeistungenImDetailPage() {
               <div className="rounded-2xl bg-slate-50 p-5">
                 <div className="text-sm font-semibold text-slate-900">1) Kostenloses Kennenlernen</div>
                 <p className="mt-2 text-sm text-slate-600">
-                  Kurzer Call: Ziele, Budget, Geräte/Ökosystem (iOS/Android), WLAN/Router, gewünschte Räume.
+                  Kurzes Gespräch: Ziele, Budget, Geräte/Ökosystem (iOS/Android), WLAN/Router, gewünschte Räume.
                 </p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-5">
@@ -501,7 +497,7 @@ export default function LeistungenImDetailPage() {
             </div>
 
             <p className="mt-4 text-center text-xs text-slate-500">
-              Tipp: Wenn du schon Geräte hast, sag es im Call – wir prüfen Kompatibilität und vermeiden doppelte Käufe.
+              Tipp: Wenn du schon Geräte hast, sag es im Gespräch – wir prüfen Kompatibilität und vermeiden doppelte Käufe.
             </p>
           </div>
         </div>
@@ -520,9 +516,7 @@ export default function LeistungenImDetailPage() {
               ctaLabel="Online Erstgespräch buchen"
               ctaHref="https://calendly.com/homigo-de/30min"
             />
-            <AddonList items={PRICING.online.addons} />
           </div>
-
           <div className="space-y-6">
             <PricingCard
               badge={PRICING.onsite.badge}
@@ -534,8 +528,10 @@ export default function LeistungenImDetailPage() {
               ctaLabel="Vor-Ort Erstgespräch buchen"
               ctaHref="https://calendly.com/homigo-de/30min"
             />
-            <AddonList items={PRICING.onsite.addons} />
           </div>
+        </div>
+        <div className="mt-8">
+          <AddonList id="addons" items={SHARED_ADDONS} />
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -543,14 +539,11 @@ export default function LeistungenImDetailPage() {
           <DifferentiationTable />
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <FAQ />
-
+        <div className="mt-8">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-base font-bold text-slate-900">Nächster Schritt</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Wenn du möchtest, können wir dein Setup nach dem Konzept so vorbereiten, dass es später über ein Shop-Modul
-              als vorkonfiguriertes Bundle pro Raum bestellbar ist.
+              Worauf wartest du noch? Vereinbare einen Termin für ein Erstgespräch über Calendly und lass uns über dein zukünftiges Smart Home sprechen!
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <a
