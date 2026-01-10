@@ -166,7 +166,7 @@ const structuredData = {
       <section className="bg-white pb-8 md:pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-lg md:text-xl text-slate-600 leading-relaxed">
-            <strong className="font-semibold text-slate-800">homigo – dein Amigo fürs Smart Home.</strong><br />
+            <strong className="font-semibold text-slate-800">Dein Amigo fürs Smart Home.</strong><br />
             Persönliche Beratung, einfache Systeme und Lösungen, die wirklich zu dir passen.
           </p>
         </div>
