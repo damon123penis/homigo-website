@@ -134,7 +134,7 @@ export async function POST(request: Request) {
         await resend.emails.send({
           from,
           to: notifyTo,
-          replyTo,
+          reply_to: replyTo,
           subject: `Neue Kontaktanfrage: ${subjectLabel(subject)}${recordId ? ` (#${recordId})` : ''}`,
           html: `
             <h2>Neue Kontaktanfrage</h2>
@@ -159,7 +159,7 @@ export async function POST(request: Request) {
         await resend.emails.send({
           from,
           to: email,
-          replyTo,
+          reply_to: replyTo,
           subject: 'Wir haben deine Nachricht erhalten – homigo',
           html: `
             <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #0f172a;">
