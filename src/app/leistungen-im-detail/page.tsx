@@ -134,8 +134,6 @@ function PricingCard({
   price,
   highlight,
   bullets,
-  ctaLabel,
-  ctaHref,
 }: {
   badge: string
   title: string
@@ -143,11 +141,9 @@ function PricingCard({
   price: string
   highlight: string
   bullets: string[]
-  ctaLabel: string
-  ctaHref: string
 }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
@@ -183,16 +179,8 @@ function PricingCard({
             Zusatzservices ansehen
           </a>
         </p>
-
-        <a
-          href={ctaHref}
-          className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
-        >
-          {ctaLabel}
-        </a>
-
-        <p className="mt-2 text-center text-xs text-slate-500">
-          Erst kurz kostenlos sprechen – danach klarer Paketpreis.
+        <p className="mt-5 text-xs text-slate-500">
+          Das Erstgespräch ist immer kostenlos. Buche es über den Button oben.
         </p>
       </div>
     </div>
@@ -505,7 +493,7 @@ export default function LeistungenImDetailPage() {
 
       <section className="mx-auto max-w-6xl px-4 pb-14 pt-10">
         <div className="grid items-stretch gap-6 lg:grid-cols-2">
-          <div className="space-y-6">
+          <div className="h-full">
             <PricingCard
               badge={PRICING.online.badge}
               title={PRICING.online.title}
@@ -513,11 +501,9 @@ export default function LeistungenImDetailPage() {
               price={PRICING.online.main.price}
               highlight={PRICING.online.main.highlight}
               bullets={PRICING.online.main.bullets}
-              ctaLabel="Online Erstgespräch buchen"
-              ctaHref="https://calendly.com/homigo-de/30min"
             />
           </div>
-          <div className="space-y-6">
+          <div className="h-full">
             <PricingCard
               badge={PRICING.onsite.badge}
               title={PRICING.onsite.title}
@@ -525,8 +511,6 @@ export default function LeistungenImDetailPage() {
               price={PRICING.onsite.main.price}
               highlight={PRICING.onsite.main.highlight}
               bullets={PRICING.onsite.main.bullets}
-              ctaLabel="Vor-Ort Erstgespräch buchen"
-              ctaHref="https://calendly.com/homigo-de/30min"
             />
           </div>
         </div>
