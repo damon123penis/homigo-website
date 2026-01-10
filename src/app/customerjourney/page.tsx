@@ -79,25 +79,6 @@ const steps: Step[] = [
   },
 ]
 
-const faqs = [
-  {
-    q: 'Warum ist die Konzepterstellung kostenpflichtig?',
-    a: 'Weil hier die eigentliche Planungsarbeit und Erfahrung steckt. So erhältst du ein durchdachtes Ergebnis statt “Trial & Error”. Die Konzeptkosten können bei Umsetzung angerechnet werden.',
-  },
-  {
-    q: 'Muss ich danach auch die Umsetzung buchen?',
-    a: 'Nein. Du kannst das Konzept selbst umsetzen oder später wieder auf mich zukommen. Du behältst die volle Kontrolle.',
-  },
-  {
-    q: 'Geht das auch in einer Mietwohnung?',
-    a: 'Ja. Ich setze bevorzugt auf rückstandsfrei installierbare Plug‑&‑Play‑Lösungen, die ohne Umbau funktionieren.',
-  },
-  {
-    q: 'Welche Systeme unterstützt du?',
-    a: 'Von einfachen Plug‑&‑Play‑Setups (z. B. Hue/Shelly) bis zu erweiterten Setups (z. B. Home Assistant) – immer passend zu deinem Technik‑Level und Budget.',
-  },
-]
-
 function CTAButtons() {
   return (
     <div className="flex flex-col sm:flex-row gap-3">
@@ -316,42 +297,6 @@ export default function CustomerJourneyPage() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="flex items-end justify-between gap-6 flex-wrap">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">FAQ</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-700 sm:text-base">
-              Die häufigsten Fragen – kurz, klar und ohne Umwege.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-4">
-          {faqs.map((f) => (
-            <details
-              key={f.q}
-              className="group rounded-2xl border border-slate-200 bg-white p-5"
-            >
-              <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900">
-                <span className="mr-2 text-emerald-600">+</span>
-                {f.q}
-              </summary>
-              <p className="mt-3 text-sm leading-6 text-slate-700">{f.a}</p>
-            </details>
-          ))}
-        </div>
-
-        <div className="mt-10">
-          <p className="text-sm text-slate-700">
-            Du bist dir unsicher, welcher Schritt für dich passt? Dann starte mit dem kostenlosen Kennenlernen.
-          </p>
-          <div className="mt-4">
-            <CTAButtons />
           </div>
         </div>
       </section>
