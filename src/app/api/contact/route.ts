@@ -44,6 +44,23 @@ function subjectLabel(subject: string | null) {
   return subject
 }
 
+function normalizeNotionDatabaseId(raw: string) {
+  // Accept plain IDs, IDs with hyphens, or full Notion URLs that include the DB id.
+  // Notion expects a UUID (with or without hyphens) – not the `?v=` view parameter.
+  const cleaned = (raw || '').trim()
+  if (!cleaned) return ''
+
+  // If someone pasted a full URL, extract the first 32-hex chunk.
+  const match = cleaned.match(/[0-9a-fA-F]{32}/)
+  if (match) return match[0]
+
+  // Otherwise, strip non-hex (keeps UUIDs with hyphens valid)
+  const hexOnly = cleaned.replace(/[^0-9a-fA-F]/g, '')
+  if (hexOnly.length === 32) return hexOnly
+
+  return cleaned
+}
+
 const NOTION_VERSION = '2022-06-28'
 
 type NotionLeadInput = {
@@ -62,10 +79,15 @@ type NotionLeadInput = {
 
 async function createNotionLead(input: NotionLeadInput) {
   const notionKey = process.env.NOTION_API_KEY
-  const dbId = process.env.NOTION_DB_LEADS_ID
+  const dbId = normalizeNotionDatabaseId(process.env.NOTION_DB_LEADS_ID || '')
 
   // Notion sync is optional and must never block the contact flow.
-  if (!notionKey || !dbId) return
+  if (!notionKey || !dbId) {
+    if (process.env.NOTION_DB_LEADS_ID && !dbId) {
+      console.error('[contact][notion]', { note: 'Invalid NOTION_DB_LEADS_ID format' })
+    }
+    return
+  }
 
   const safe = (v: string | null | undefined) => (typeof v === 'string' ? v : '')
 
