@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: 'Datenschutzerklärung | homigo – Smart Home ohne Kabelsalat',
   description:
-    'Datenschutzerklärung von homigo. Informationen zur Verarbeitung personenbezogener Daten, Cookies, Google Analytics, Meta Pixel und Terminbuchung via Calendly.',
+    'Datenschutzerklärung von homigo. Informationen zur Verarbeitung personenbezogener Daten, Kontaktformular (Supabase/Resend), Cookies, Google Analytics, Meta Pixel und Terminbuchung via Calendly.',
   alternates: { canonical: 'https://www.homigo.tech/datenschutz' },
   robots: { index: true, follow: true },
 }
@@ -88,7 +88,7 @@ export default function DatenschutzPage() {
               4) Cookies & Einwilligungsmanagement (Klaro)
             </a>
             <a className="hover:underline" href="#kontakt">
-              5) Kontakt & Terminbuchung (E-Mail / Calendly)
+              5) Kontakt & Terminbuchung (Formular / E-Mail / Calendly)
             </a>
             <a className="hover:underline" href="#analytics">
               6) Webanalyse (Google Analytics 4)
@@ -262,9 +262,20 @@ export default function DatenschutzPage() {
                   zum Zweck der Bearbeitung und Beantwortung deines Anliegens und nur im dafür erforderlichen Umfang.
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung) oder – sofern
-                  deine Anfrage auf den Abschluss eines Vertrages gerichtet ist – Art. 6 Abs. 1 lit. b DSGVO
-                  (vorvertragliche Maßnahmen).
+                  Wenn du das Kontaktformular nutzt, speichern wir deine Angaben (Name, E-Mail, Nachricht sowie technische
+                  Metadaten wie Zeitpunkt und die aufgerufene Seite) in einer Datenbank bei Supabase (Supabase Inc./Supabase
+                  Ireland). Das hilft uns, Anfragen zuverlässig zu bearbeiten und bei Rückfragen den Verlauf nachzuvollziehen.
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Für den Versand und Empfang von E-Mails (z. B. Benachrichtigung an uns und Bestätigung an dich) nutzen wir
+                  den Dienst Resend (Resend, Inc.). Dabei werden deine E-Mail-Adresse sowie der Inhalt der Nachricht
+                  verarbeitet, um die Kommunikation bereitzustellen.
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen), soweit deine Anfrage auf den
+                  Abschluss eines Vertrages gerichtet ist, und ansonsten Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+                  an der Beantwortung und Dokumentation von Anfragen). Die Verarbeitung durch Supabase/Resend erfolgt als
+                  Auftragsverarbeitung (Art. 28 DSGVO).
                 </p>
 
                 <h3 className="mt-6 text-lg font-semibold text-slate-900">5.2 Terminbuchung über Calendly</h3>
@@ -375,8 +386,13 @@ export default function DatenschutzPage() {
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
               Die Speicherdauer richtet sich nach dem Zweck der jeweiligen Verarbeitung und – soweit einschlägig – nach
               gesetzlichen Aufbewahrungsfristen. Daten, die auf Grundlage einer Einwilligung verarbeitet werden, speichern
-              wir bis zum Widerruf der Einwilligung. Daten aus Anfragen speichern wir so lange, wie dies zur Bearbeitung
-              erforderlich ist und keine gesetzlichen Pflichten entgegenstehen.
+              wir bis zum Widerruf der Einwilligung.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-700">
+              Daten aus Kontaktanfragen (E-Mail/Formular) speichern wir grundsätzlich so lange, wie dies zur Bearbeitung und
+              Nachverfolgung erforderlich ist. In der Regel prüfen wir spätestens nach 24 Monaten, ob eine weitere
+              Speicherung erforderlich ist, und löschen oder anonymisieren die Anfrage, sofern keine gesetzlichen Pflichten
+              oder berechtigten Gründe (z. B. laufende Kommunikation) entgegenstehen.
             </p>
           </div>
 
