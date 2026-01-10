@@ -109,10 +109,10 @@ async function createNotionLead(input: NotionLeadInput) {
           email: input.email,
         },
         Telefon: {
-          rich_text: [{ text: { content: safe(input.phone) } }],
+          phone_number: safe(input.phone) || null,
         },
         Status: {
-          select: { name: 'Neu' },
+          status: { name: 'Neu' },
         },
         'Anfrage-Typ': {
           select: { name: notionAnfrageTyp(input.subjectLabel) },
