@@ -162,7 +162,7 @@ function PricingCard({
         </div>
       </div>
 
-      <div className="mt-5 rounded-2xl bg-slate-50 p-5">
+      <div className="mt-5 flex flex-1 flex-col rounded-2xl bg-slate-50 p-5">
         <div className="flex items-baseline justify-between gap-4">
           <h3 className="text-base font-bold text-slate-900">{name}</h3>
           <span className="text-sm font-semibold text-emerald-700">{price}</span>
@@ -191,7 +191,7 @@ function PricingCard({
           {ctaLabel}
         </a>
 
-        <p className="mt-3 text-center text-xs text-slate-500">
+        <p className="mt-2 text-center text-xs text-slate-500">
           Erst kurz kostenlos sprechen – danach klarer Paketpreis.
         </p>
       </div>
@@ -458,23 +458,23 @@ export default function LeistungenImDetailPage() {
           subtitle="Online bundesweit oder Vor-Ort in der Rhein-Main-Region. Plug & Play statt Kabelsalat – persönlich, einfach, digital."
         />
 
-        <div className="mx-auto mt-8 max-w-5xl">
+        <div className="mx-auto mt-8 max-w-6xl">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="grid gap-6 md:grid-cols-3">
               <div className="rounded-2xl bg-slate-50 p-5">
-                <div className="text-sm font-semibold text-slate-900">1) Kostenloses Kennenlernen</div>
+                <div className="text-sm font-semibold text-slate-900">1. Kostenloses Kennenlernen</div>
                 <p className="mt-2 text-sm text-slate-600">
                   Kurzes Gespräch: Ziele, Budget, Geräte/Ökosystem (iOS/Android), WLAN/Router, gewünschte Räume.
                 </p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-5">
-                <div className="text-sm font-semibold text-slate-900">2) Paket auswählen</div>
+                <div className="text-sm font-semibold text-slate-900">2. Paket auswählen</div>
                 <p className="mt-2 text-sm text-slate-600">
                   Du bekommst eine klare Empfehlung. Danach starten wir mit Konzept & Setup – transparent als Paketpreis.
                 </p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-5">
-                <div className="text-sm font-semibold text-slate-900">3) Setup & Feinschliff</div>
+                <div className="text-sm font-semibold text-slate-900">3. Setup & Feinschliff</div>
                 <p className="mt-2 text-sm text-slate-600">
                   Einrichtung, Automationen, Tests. Optional: Hardware-Lieferung und Wartungspaket.
                 </p>
@@ -504,7 +504,7 @@ export default function LeistungenImDetailPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-14 pt-10">
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid items-stretch gap-6 lg:grid-cols-2">
           <div className="space-y-6">
             <PricingCard
               badge={PRICING.online.badge}
@@ -540,7 +540,7 @@ export default function LeistungenImDetailPage() {
         </div>
 
         <div className="mt-8">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-base font-bold text-slate-900">Nächster Schritt</h2>
             <p className="mt-2 text-sm text-slate-600">
               Worauf wartest du noch? Vereinbare einen Termin für ein Erstgespräch über Calendly und lass uns über dein zukünftiges Smart Home sprechen!
