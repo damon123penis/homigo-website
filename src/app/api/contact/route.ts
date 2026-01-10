@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const pageUrl = request.headers.get('referer') || null
-    const userAgent = request.headers.get('user-agent') || null
+    const pageUrl = (typeof body.page_url === 'string' ? body.page_url.trim() : '') || request.headers.get('referer') || null
+    const userAgent = (typeof body.user_agent === 'string' ? body.user_agent.trim() : '') || request.headers.get('user-agent') || null
 
     // 1) Lead in Supabase speichern
     const { error: dbError } = await supabaseAdmin
@@ -119,13 +119,12 @@ export async function POST(request: NextRequest) {
     await resend.emails.send({
       from: 'noreply@homigo.tech',
       to: email,
-      subject: 'Ihre Anfrage bei homigo – Bestätigung',
+      subject: 'Deine Anfrage bei homigo – Bestätigung',
       html: `
-        <h2>Vielen Dank für Ihre Anfrage!</h2>
-        <p>Hallo ${nameHtml},</p>
+        <h2>Vielen Dank für deine Anfrage!</h2>
+        <p>Hi ${nameHtml},</p>
         <p>
-          vielen Dank für Ihre Anfrage bezüglich unserer Smart-Home-Beratung.
-          Ich habe Ihre Nachricht erhalten und melde mich in der Regel innerhalb von 24 Stunden bei Ihnen.
+          danke für deine Nachricht. Ich habe sie erhalten und melde mich in der Regel innerhalb von 24 Stunden bei dir.
         </p>
         <p>Viele Grüße<br/>Damon von homigo</p>
       `,
