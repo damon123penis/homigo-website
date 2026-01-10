@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
         page_url: pageUrl,
         user_agent: userAgent,
         status: 'new',
+        phone: phone ?? null,
       })
 
     if (dbError) {

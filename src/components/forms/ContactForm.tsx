@@ -106,7 +106,7 @@ export default function ContactForm() {
             <input
               type="text"
               name="company"
-              value={(formData as any).company}
+              value={formData.company}
               onChange={handleInputChange}
               tabIndex={-1}
               autoComplete="off"
