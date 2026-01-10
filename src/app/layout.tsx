@@ -405,14 +405,13 @@ export default function RootLayout({
                 de: {
                   privacyPolicyUrl: '/datenschutz',
                   consentNotice: {
-                    description: 'Wir nutzen Cookies für Statistik, Marketing und externe Inhalte (z. B. Terminbuchung).',
+                    description: 'Wir nutzen Cookies für Statistik und externe Inhalte (z. B. Terminbuchung).',
                     learnMore: 'Einstellungen',
                     acceptAll: 'Alle akzeptieren',
                     decline: 'Ablehnen'
                   },
                   purposes: {
                     analytics: 'Statistik',
-                    marketing: 'Marketing',
                     functional: 'Funktional'
                   }
                 }
@@ -485,13 +484,6 @@ export default function RootLayout({
                       // ignore
                     }
                   }
-                },
-                {
-                  name: 'meta-pixel',
-                  title: 'Meta Pixel',
-                  purposes: ['marketing'],
-                  cookies: ['_fbp', 'fr'],
-                  onlyOnce: true
                 },
                 {
                   name: 'calendly',

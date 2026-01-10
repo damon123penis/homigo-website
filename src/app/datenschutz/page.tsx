@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: 'Datenschutzerklärung | homigo – Smart Home ohne Kabelsalat',
   description:
-    'Datenschutzerklärung von homigo. Informationen zur Verarbeitung personenbezogener Daten, Kontaktformular (Supabase/Resend), Cookies, Google Analytics, Meta Pixel und Terminbuchung via Calendly.',
+    'Datenschutzerklärung von homigo. Informationen zur Verarbeitung personenbezogener Daten, Kontaktformular (Supabase/Notion/Resend), Cookies, Google Analytics, Meta Pixel und Terminbuchung via Calendly.',
   alternates: { canonical: 'https://www.homigo.tech/datenschutz' },
   robots: { index: true, follow: true },
 }
@@ -93,14 +93,11 @@ export default function DatenschutzPage() {
             <a className="hover:underline" href="#analytics">
               6) Webanalyse (Google Analytics 4)
             </a>
-            <a className="hover:underline" href="#marketing">
-              7) Marketing / Retargeting (Meta Pixel)
-            </a>
             <a className="hover:underline" href="#rechte">
-              8) Betroffenenrechte
+              7) Betroffenenrechte
             </a>
             <a className="hover:underline" href="#speicherdauer">
-              9) Speicherdauer
+              8) Speicherdauer
             </a>
           </div>
         </section>
@@ -258,25 +255,53 @@ export default function DatenschutzPage() {
 
                 <h3 className="mt-5 text-lg font-semibold text-slate-900">5.1 Kontakt (E-Mail / Formular)</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Wenn du uns kontaktierst (z. B. per E-Mail oder Formular), verarbeiten wir deine Angaben ausschließlich
-                  zum Zweck der Bearbeitung und Beantwortung deines Anliegens und nur im dafür erforderlichen Umfang.
+                  Wenn du das Kontaktformular nutzt, verarbeiten wir die von dir eingegebenen Daten (Name, E-Mail, Telefon (optional), Betreff
+                  und Nachricht). Zusätzlich speichern wir technische Metadaten, die uns helfen, deine Anfrage zuverlässig zu bearbeiten (z. B.
+                  Zeitpunkt, die aufgerufene Seite (URL) und den User-Agent deines Browsers).
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Wenn du das Kontaktformular nutzt, speichern wir deine Angaben (Name, E-Mail, Nachricht sowie technische
-                  Metadaten wie Zeitpunkt und die aufgerufene Seite) in einer Datenbank bei Supabase (Supabase Inc./Supabase
-                  Ireland). Das hilft uns, Anfragen zuverlässig zu bearbeiten und bei Rückfragen den Verlauf nachzuvollziehen.
+                  Wir speichern Kontaktanfragen in einer Datenbank bei Supabase (Hosting-Region: Irland / EU). Außerdem können wir
+                  deine Anfrage in Notion (Notion Labs, Inc.) übernehmen, damit wir sie intern organisieren, bearbeiten und dokumentieren können
+                  (z. B. als Ticket/CRM-Eintrag).
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Für den Versand und Empfang von E-Mails (z. B. Benachrichtigung an uns und Bestätigung an dich) nutzen wir
-                  den Dienst Resend (Resend, Inc.). Dabei werden deine E-Mail-Adresse sowie der Inhalt der Nachricht
-                  verarbeitet, um die Kommunikation bereitzustellen.
+                  Für den Versand und Empfang von E-Mails (z. B. Benachrichtigung an uns und Bestätigung an dich) nutzen wir den Dienst Resend
+                  (Resend, Inc.). Dabei werden deine E-Mail-Adresse sowie der Inhalt der Nachricht verarbeitet, um die Kommunikation
+                  bereitzustellen.
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen), soweit deine Anfrage auf den
-                  Abschluss eines Vertrages gerichtet ist, und ansonsten Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
-                  an der Beantwortung und Dokumentation von Anfragen). Die Verarbeitung durch Supabase/Resend erfolgt als
+                  Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen), soweit deine Anfrage auf den Abschluss eines
+                  Vertrages gerichtet ist, und ansonsten Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung und
+                  Dokumentation von Anfragen). Sofern Dienstleister in unserem Auftrag tätig sind, erfolgt dies im Rahmen einer
                   Auftragsverarbeitung (Art. 28 DSGVO).
                 </p>
+                <h3 className="mt-6 text-lg font-semibold text-slate-900">5.3 Notion (Anfrageverwaltung)</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Zur internen Verwaltung von Kontaktanfragen nutzen wir Notion (Notion Labs, Inc.). Dort können wir Anfragen sortieren,
+                  priorisieren, bearbeiten und dokumentieren.
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Dabei können dieselben Daten verarbeitet werden, die du im Kontaktformular angibst (z. B. Name, E-Mail, Telefon (optional),
+                  Betreff, Nachricht) sowie interne Bearbeitungsinformationen (z. B. Status).
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Notion kann Daten auch außerhalb der EU/des EWR verarbeiten (z. B. in den USA). Sofern eine Übermittlung in Drittländer
+                  stattfindet, erfolgt sie auf Grundlage geeigneter Garantien (z. B. EU-Standardvertragsklauseln), soweit anwendbar.
+                </p>
+          {/* 3.3 Supabase */}
+          <div>
+            <h3 className="mt-6 text-lg font-semibold text-slate-900">3.3 Supabase (Datenbank/Backend – sofern genutzt)</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              Für bestimmte Funktionen (z. B. das Kontaktformular) nutzen wir Supabase als Datenbank- und Backend-Dienst.
+              Supabase wird von uns in der Region Irland (EU) betrieben; die Speicherung und Verarbeitung erfolgt innerhalb
+              der Europäischen Union bzw. des Europäischen Wirtschaftsraums (EWR).
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              Supabase verarbeitet die Daten in unserem Auftrag. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche
+              Maßnahmen) bzw. Art. 6 Abs. 1 lit. f DSGVO (Interesse an einer effizienten Bearbeitung). Sofern erforderlich, bestehen
+              geeignete Verträge zur Auftragsverarbeitung (Art. 28 DSGVO).
+            </p>
+          </div>
 
                 <h3 className="mt-6 text-lg font-semibold text-slate-900">5.2 Terminbuchung über Calendly</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
@@ -329,39 +354,10 @@ export default function DatenschutzPage() {
             </div>
           </div>
 
+
           {/* 7 */}
-          <div id="marketing" className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-            <div className="flex items-start gap-3">
-              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100">
-                <Megaphone className="h-5 w-5 text-emerald-700" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">7) Marketing / Retargeting</h2>
-
-                <h3 className="mt-5 text-lg font-semibold text-slate-900">7.1 Meta Pixel</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Innerhalb unseres Online-Angebots kann der Dienst „Meta Pixel" des Anbieters Meta Platforms Ireland
-                  Limited, 4 Grand Canal Square, Dublin 2, Irland („Meta") eingesetzt werden. Damit kann Meta u. a.
-                  nachvollziehen, ob Nutzer nach dem Klick auf eine Anzeige auf unsere Website gelangt sind und welche
-                  Aktionen sie dort ausführen (Conversion-Tracking).
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Die erhobenen Daten sind für uns grundsätzlich anonym. Meta kann die Daten jedoch mit deinem
-                  Nutzerkonto verknüpfen und für eigene Zwecke verwenden. Eine Übermittlung in die USA (Meta Platforms,
-                  Inc.) ist möglich.
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  Wir verwenden Meta Pixel nur nach deiner ausdrücklichen Einwilligung über das Cookie-Consent-Tool
-                  (Art. 6 Abs. 1 lit. a DSGVO). Du kannst deine Einwilligung jederzeit in den Cookie-Einstellungen
-                  widerrufen.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 8 */}
           <div id="rechte" className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-900">8) Rechte der betroffenen Personen</h2>
+            <h2 className="text-2xl font-bold text-slate-900">7) Rechte der betroffenen Personen</h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
               Dir stehen nach der DSGVO insbesondere folgende Rechte zu: Auskunft (Art. 15), Berichtigung (Art. 16),
               Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie Widerruf
@@ -380,9 +376,9 @@ export default function DatenschutzPage() {
             </div>
           </div>
 
-          {/* 9 */}
+          {/* 8 */}
           <div id="speicherdauer" className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-900">9) Dauer der Speicherung</h2>
+            <h2 className="text-2xl font-bold text-slate-900">8) Dauer der Speicherung</h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
               Die Speicherdauer richtet sich nach dem Zweck der jeweiligen Verarbeitung und – soweit einschlägig – nach
               gesetzlichen Aufbewahrungsfristen. Daten, die auf Grundlage einer Einwilligung verarbeitet werden, speichern
@@ -393,6 +389,10 @@ export default function DatenschutzPage() {
               Nachverfolgung erforderlich ist. In der Regel prüfen wir spätestens nach 24 Monaten, ob eine weitere
               Speicherung erforderlich ist, und löschen oder anonymisieren die Anfrage, sofern keine gesetzlichen Pflichten
               oder berechtigten Gründe (z. B. laufende Kommunikation) entgegenstehen.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-700">
+              Soweit wir Anfragen sowohl in Supabase als auch in Notion speichern, gilt diese Speicherdauer entsprechend für beide
+              Systeme. Wenn wir löschen, löschen wir die Daten – soweit praktikabel – in allen verbundenen Systemen.
             </p>
           </div>
 
