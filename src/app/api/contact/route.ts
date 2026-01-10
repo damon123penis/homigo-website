@@ -19,6 +19,22 @@ function escapeHtml(input: string) {
     .replaceAll("'", '&#039;')
 }
 
+function notionQuelle(source: string) {
+  // Must match Select options in Notion DB
+  const s = (source || '').toLowerCase()
+  if (['kontaktformular', 'website', 'web', 'homigo.tech', 'homigo'].includes(s)) return 'Website'
+  if (['recommendation', 'empfehlung', 'referral'].includes(s)) return 'Empfehlung'
+  return 'Sonstiges'
+}
+
+function notionAnfrageTyp(label: string) {
+  // Must match Select options in Notion DB
+  const l = (label || '').toLowerCase()
+  if (l.includes('allgemein')) return 'Allgemeine Anfrage'
+  if (l.includes('termin') || l.includes('planung')) return 'Termin/Planung'
+  if (l.includes('hardware')) return 'Hardware'
+  return 'Unklar'
+}
 
 function subjectLabel(subject: string | null) {
   if (!subject) return 'Allgemeine Anfrage'
@@ -77,10 +93,10 @@ async function createNotionLead(input: NotionLeadInput) {
           select: { name: 'Neu' },
         },
         'Anfrage-Typ': {
-          select: { name: input.subjectLabel },
+          select: { name: notionAnfrageTyp(input.subjectLabel) },
         },
         Quelle: {
-          select: { name: input.source },
+          select: { name: notionQuelle(input.source) },
         },
         Eingang: {
           date: { start: input.receivedAtISO },
@@ -142,7 +158,9 @@ async function createNotionLead(input: NotionLeadInput) {
 
   if (!res.ok) {
     const txt = await res.text().catch(() => '')
-    throw new Error(`Notion API error (${res.status}): ${txt}`)
+    throw new Error(
+      `Notion API error (${res.status}). Check Select options + DB sharing. Response: ${txt}`
+    )
   }
 }
 
