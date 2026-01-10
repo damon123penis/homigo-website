@@ -71,7 +71,7 @@ export default function HomePage() {
         'Nein! Wir arbeiten mit Produkten aus dem Einzelhandel für private Endkunden, die keine festen Einbauten benötigen. Dies spart teure Handwerksarbeiten.',
     },
     {
-      question: 'Welche Marken und Systeme nutzt du?',
+      question: 'Welche Marken und Systeme nutzt ihr?',
       answer:
         'Ich arbeite ausschließlich mit Consumer Produkten bekannter Marken, bevorzugt mit Shelly, Aqara, Tado, Philips Hue, Sonoff und anderen bewährten Smart-Home-Herstellern sowie Open Source Lösungen wie Home Assistant oder ioBroker.',
     },
@@ -80,7 +80,7 @@ export default function HomePage() {
       answer: 'Absolut! Die meisten Lösungen lassen sich rückstandsfrei wieder entfernen – perfekt für Mieter.',
     },
     {
-      question: 'Kann ich Hardware direkt über dich beziehen?',
+      question: 'Kann ich Hardware direkt über homigo beziehen?',
       answer: 'Dies ist in Arbeit. Bald wird homigo auch zu deinem bevorzugten Smart Home Shop! Bleib gespannt.',
     },
   ];
