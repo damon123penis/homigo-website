@@ -19,12 +19,131 @@ function escapeHtml(input: string) {
     .replaceAll("'", '&#039;')
 }
 
+
 function subjectLabel(subject: string | null) {
   if (!subject) return 'Allgemeine Anfrage'
   const s = subject.toLowerCase()
   if (s === 'beratung') return 'Allgemeine Anfrage'
   if (s === 'planung') return 'Termin/Planung'
   return subject
+}
+
+const NOTION_VERSION = '2022-06-28'
+
+type NotionLeadInput = {
+  name: string
+  email: string
+  phone: string | null
+  subjectLabel: string
+  message: string
+  source: string
+  receivedAtISO: string
+  supabaseId: string | null
+  pageUrl: string | null
+  userAgent: string | null
+  reqId: string
+}
+
+async function createNotionLead(input: NotionLeadInput) {
+  const notionKey = process.env.NOTION_API_KEY
+  const dbId = process.env.NOTION_DB_LEADS_ID
+
+  // Notion sync is optional and must never block the contact flow.
+  if (!notionKey || !dbId) return
+
+  const safe = (v: string | null | undefined) => (typeof v === 'string' ? v : '')
+
+  const res = await fetch('https://api.notion.com/v1/pages', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${notionKey}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': NOTION_VERSION,
+    },
+    body: JSON.stringify({
+      parent: { database_id: dbId },
+      properties: {
+        // Property names must match your Notion DB exactly
+        Name: {
+          title: [{ text: { content: input.name } }],
+        },
+        'E-Mail': {
+          email: input.email,
+        },
+        Telefon: {
+          rich_text: [{ text: { content: safe(input.phone) } }],
+        },
+        Status: {
+          select: { name: 'Neu' },
+        },
+        'Anfrage-Typ': {
+          select: { name: input.subjectLabel },
+        },
+        Quelle: {
+          select: { name: input.source },
+        },
+        Eingang: {
+          date: { start: input.receivedAtISO },
+        },
+        'Supabase-ID': {
+          rich_text: [{ text: { content: safe(input.supabaseId) } }],
+        },
+      },
+      children: [
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [{ type: 'text', text: { content: 'Nachricht' } }],
+          },
+        },
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [{ type: 'text', text: { content: safe(input.message) } }],
+          },
+        },
+        {
+          object: 'block',
+          type: 'divider',
+          divider: {},
+        },
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [
+              { type: 'text', text: { content: `Seite: ${safe(input.pageUrl)}` } },
+            ],
+          },
+        },
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [
+              { type: 'text', text: { content: `User-Agent: ${safe(input.userAgent)}` } },
+            ],
+          },
+        },
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [
+              { type: 'text', text: { content: `Request-ID: ${safe(input.reqId)}` } },
+            ],
+          },
+        },
+      ],
+    }),
+  })
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '')
+    throw new Error(`Notion API error (${res.status}): ${txt}`)
+  }
 }
 
 export async function POST(request: Request) {
@@ -118,6 +237,25 @@ export async function POST(request: Request) {
     }
 
     const recordId = inserted?.id ?? null
+
+    // Notion sync (server-side). Non-fatal by design.
+    try {
+      await createNotionLead({
+        name,
+        email,
+        phone,
+        subjectLabel: subjectLabel(subject),
+        message,
+        source,
+        receivedAtISO: new Date().toISOString(),
+        supabaseId: recordId,
+        pageUrl,
+        userAgent,
+        reqId,
+      })
+    } catch (notionError) {
+      console.error('[contact][notion]', { reqId, recordId, error: notionError })
+    }
 
     // Email (Resend) – optional but recommended.
     // We treat email failures as NON-fatal so the contact request is never lost.
