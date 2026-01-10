@@ -195,7 +195,7 @@ export default function DatenschutzPage() {
                   EU-US Data Privacy Framework und/oder Standardvertragsklauseln), soweit anwendbar.
                 </p>
 
-                <h3 className="mt-6 text-lg font-semibold text-slate-900">3.2 Cloudflare (DNS/CDN/Proxy – sofern aktiviert)</h3>
+                <h3 className="mt-6 text-lg font-semibold text-slate-900">3.2 Cloudflare</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   Für die Auslieferung und Absicherung unserer Website kann Cloudflare, Inc., 101 Townsend St, San
                   Francisco, CA 94107, USA eingesetzt werden (z. B. als DNS-/Proxy- und/oder CDN-Dienst). Cloudflare kann
