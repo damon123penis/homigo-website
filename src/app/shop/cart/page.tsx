@@ -66,7 +66,9 @@ function getCookieHeader() {
   // Forward all cookies to the API route so the cookie-based cartId works.
   return cookies()
     .getAll()
-    .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
+    // Cookie values are already in a valid cookie format; do not URL-encode here,
+    // otherwise Shopify IDs (gid://...) get corrupted.
+    .map((c) => `${c.name}=${c.value}`)
     .join('; ');
 }
 
@@ -74,13 +76,14 @@ function persistCartIdFromSetCookie(setCookie: string | null) {
   if (!setCookie) return;
   const match = setCookie.match(/(?:^|,\s*)homigo_cart_id=([^;]+)/i);
   if (match) {
-    const cartId = match[1];
+    const cartId = decodeURIComponent(match[1]);
     cookies().set({
       name: 'homigo_cart_id',
-      value: homigo_cart_id,
+      value: cartId,
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
   }

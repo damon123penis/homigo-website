@@ -235,7 +235,7 @@ export async function POST(req: NextRequest) {
   if (!action) return jsonResponse({ error: "Missing action" }, { status: 400 });
 
   let cart = await ensureCart(cartIdCookie);
-  let newCartId = cart?.id as string | undefined;
+  let newCartId: string | undefined = cart?.id;
 
   try {
     switch (action) {
@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
             return jsonResponse({ error: errs[0].message }, { status: 400 });
 
           cart = created.cartCreate.cart;
-          newCartId = cart.id;
+          newCartId = cart?.id;
         } else {
           const added = await shopifyFetch<{
             cartLinesAdd: { cart: any; userErrors: { message: string }[] };
@@ -276,6 +276,7 @@ export async function POST(req: NextRequest) {
             return jsonResponse({ error: errs[0].message }, { status: 400 });
 
           cart = added.cartLinesAdd.cart;
+          newCartId = cart?.id;
         }
         break;
       }
@@ -300,6 +301,7 @@ export async function POST(req: NextRequest) {
             return jsonResponse({ error: errs[0].message }, { status: 400 });
 
           cart = removed.cartLinesRemove.cart;
+          newCartId = cart?.id;
         } else {
           const updated = await shopifyFetch<{
             cartLinesUpdate: { cart: any; userErrors: { message: string }[] };
@@ -313,6 +315,7 @@ export async function POST(req: NextRequest) {
             return jsonResponse({ error: errs[0].message }, { status: 400 });
 
           cart = updated.cartLinesUpdate.cart;
+          newCartId = cart?.id;
         }
         break;
       }
@@ -332,6 +335,7 @@ export async function POST(req: NextRequest) {
           return jsonResponse({ error: errs[0].message }, { status: 400 });
 
         cart = removed.cartLinesRemove.cart;
+        newCartId = cart?.id;
         break;
       }
 
@@ -352,6 +356,7 @@ export async function POST(req: NextRequest) {
           return jsonResponse({ error: errs[0].message }, { status: 400 });
 
         cart = cleared.cartLinesRemove.cart;
+        newCartId = cart?.id;
         break;
       }
 
@@ -372,7 +377,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Set cookie only if we have a cart id (created or existing)
-    if (newCartId) {
+    if (typeof newCartId === "string" && newCartId.length > 0) {
       resp.cookies.set({
         name: CART_COOKIE,
         value: newCartId,
@@ -383,6 +388,14 @@ export async function POST(req: NextRequest) {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       });
     }
+
+    console.info("[cart][out]", {
+      reqId,
+      action,
+      cartIdReturned: typeof newCartId === "string" ? `len:${newCartId.length}` : null,
+      totalQuantity: cart?.totalQuantity ?? null,
+      lineCount: cart ? extractCartLines(cart).length : 0,
+    });
 
     return resp;
   } catch (e: any) {
