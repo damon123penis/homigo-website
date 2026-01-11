@@ -434,6 +434,148 @@ const mf = Object.fromEntries(
       : undefined,
   };
 
+  // Details & Kompatibilität reusable box
+  function DetailsCompatibilityBox() {
+    const hasAny =
+      product.vendor ||
+      primaryVariant?.sku ||
+      mf.garantie ||
+      mf.gtin ||
+      mf.mpn ||
+      mf.funkstandard ||
+      mf.frequenz ||
+      mf.hub_erforderlich ||
+      mf.hub_kompatibilitaet ||
+      mf.hub_kompatibilitat ||
+      mf.oecosysteme ||
+      mf.thread ||
+      mf.matter;
+    if (!hasAny) return null;
+    return (
+      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="text-sm font-semibold text-slate-900">Details &amp; Kompatibilität</div>
+        <p className="mt-2 text-sm text-slate-600">
+          Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst, ob es zu deinem Setup passt.
+        </p>
+
+        <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {product.vendor ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Hersteller</dt>
+              <dd className="mt-1 text-sm text-slate-800">{product.vendor}</dd>
+            </div>
+          ) : null}
+
+          {primaryVariant?.sku ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">SKU</dt>
+              <dd className="mt-1 text-sm text-slate-800">{primaryVariant.sku}</dd>
+            </div>
+          ) : null}
+
+          {mf.gtin ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">GTIN</dt>
+              <dd className="mt-1 text-sm text-slate-800">{mf.gtin}</dd>
+            </div>
+          ) : null}
+
+          {mf.mpn ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">MPN</dt>
+              <dd className="mt-1 text-sm text-slate-800">{mf.mpn}</dd>
+            </div>
+          ) : null}
+
+          {mf.garantie ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Garantie</dt>
+              <dd className="mt-1 text-sm text-slate-800">
+                {Number.isFinite(Number(mf.garantie)) ? `${mf.garantie} Monate` : mf.garantie}
+              </dd>
+            </div>
+          ) : null}
+
+          {mf.funkstandard ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Funkstandard</dt>
+              <dd className="mt-1 text-sm text-slate-800">{mf.funkstandard}</dd>
+            </div>
+          ) : null}
+
+          {mf.frequenz ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Frequenz</dt>
+              <dd className="mt-1 text-sm text-slate-800">{mf.frequenz}</dd>
+            </div>
+          ) : null}
+
+          {typeof mf.hub_erforderlich === "string" && mf.hub_erforderlich.length > 0 ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Hub erforderlich</dt>
+              <dd className="mt-1 text-sm text-slate-800">
+                {mf.hub_erforderlich.toLowerCase() === "true"
+                  ? "Ja"
+                  : mf.hub_erforderlich.toLowerCase() === "false"
+                  ? "Nein"
+                  : mf.hub_erforderlich}
+              </dd>
+            </div>
+          ) : null}
+
+          {typeof mf.thread === "string" && mf.thread.length > 0 ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Thread</dt>
+              <dd className="mt-1 text-sm text-slate-800">
+                {mf.thread.toLowerCase() === "true"
+                  ? "Ja"
+                  : mf.thread.toLowerCase() === "false"
+                  ? "Nein"
+                  : mf.thread}
+              </dd>
+            </div>
+          ) : null}
+
+          {typeof mf.matter === "string" && mf.matter.length > 0 ? (
+            <div>
+              <dt className="text-xs font-medium text-slate-500">Matter</dt>
+              <dd className="mt-1 text-sm text-slate-800">
+                {mf.matter.toLowerCase() === "true"
+                  ? "Ja"
+                  : mf.matter.toLowerCase() === "false"
+                  ? "Nein"
+                  : mf.matter}
+              </dd>
+            </div>
+          ) : null}
+
+          {(mf.hub_kompatibilitaet || mf.hub_kompatibilitat) ? (
+            <div className="sm:col-span-2">
+              <dt className="text-xs font-medium text-slate-500">Hub-Kompatibilität</dt>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
+                {mf.hub_kompatibilitaet || mf.hub_kompatibilitat}
+              </dd>
+            </div>
+          ) : null}
+
+          {mf.oecosysteme ? (
+            <div className="sm:col-span-2">
+              <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
+            </div>
+          ) : null}
+        </dl>
+
+        {(mf.funkstandard || mf.hub_erforderlich || mf.hub_kompatibilitaet || mf.hub_kompatibilitat || mf.oecosysteme || mf.thread || mf.matter) ? (
+          <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
+            Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub (z. B. Zigbee-Gateway) oder deinem System (Home Assistant,
+            Apple Home, Alexa, Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <>
       <script
@@ -458,6 +600,9 @@ const mf = Object.fromEntries(
                 </div>
               )}
             </div>
+            <div className="mt-6 hidden md:block">
+              <DetailsCompatibilityBox />
+            </div>
           </div>
 
           <div>
@@ -479,155 +624,6 @@ const mf = Object.fromEntries(
                 </span>
               )}
             </div>
-            {product.descriptionHtml ? (
-              <div
-                className="mt-3 text-slate-600 leading-relaxed prose prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            ) : (
-              <p className="mt-3 text-slate-600">Keine Beschreibung vorhanden.</p>
-            )}
-
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
-              <div className="text-sm font-semibold text-slate-900">Produktdetails</div>
-              <dl className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {product.vendor ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Hersteller</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{product.vendor}</dd>
-                  </div>
-                ) : null}
-                {primaryVariant?.sku ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">SKU</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{primaryVariant.sku}</dd>
-                  </div>
-                ) : null}
-                {mf.garantie ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Garantie</dt>
-                    <dd className="mt-1 text-sm text-slate-800">
-                      {Number.isFinite(Number(mf.garantie)) ? `${mf.garantie} Monate` : mf.garantie}
-                    </dd>
-                  </div>
-                ) : null}
-                {mf.gtin ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">GTIN</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{mf.gtin}</dd>
-                  </div>
-                ) : null}
-
-                {mf.mpn ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">MPN</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{mf.mpn}</dd>
-                  </div>
-                ) : null}
-
-                {mf.funkstandard ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Funkstandard</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{mf.funkstandard}</dd>
-                  </div>
-                ) : null}
-
-                {mf.frequenz ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Frequenz</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{mf.frequenz}</dd>
-                  </div>
-                ) : null}
-
-                {mf.hub_erforderlich ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Hub erforderlich</dt>
-                    <dd className="mt-1 text-sm text-slate-800">
-                      {String(mf.hub_erforderlich).toLowerCase() === "true" ? "Ja" : "Nein"}
-                    </dd>
-                  </div>
-                ) : null}
-
-                {mf.oecosysteme ? (
-                  <div>
-                    <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-                    <dd className="mt-1 text-sm text-slate-800">{mf.oecosysteme}</dd>
-                  </div>
-                ) : null}
-              </dl>
-            </div>
-
-            {(mf.funkstandard || mf.frequenz || mf.hub_erforderlich || mf.hub_kompatibilitaet || mf.hub_kompatibilitat || mf.oecosysteme || mf.thread || mf.matter) ? (
-              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
-                <div className="text-sm font-semibold text-slate-900">Kompatibilität</div>
-                <p className="mt-2 text-sm text-slate-600">
-                  Nutze diese Angaben, um zu prüfen, ob die Komponente zu deinem Setup passt.
-                </p>
-
-                <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {mf.funkstandard ? (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500">Funkstandard</dt>
-                      <dd className="mt-1 text-sm text-slate-800">{mf.funkstandard}</dd>
-                    </div>
-                  ) : null}
-
-                  {mf.frequenz ? (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500">Frequenz</dt>
-                      <dd className="mt-1 text-sm text-slate-800">{mf.frequenz}</dd>
-                    </div>
-                  ) : null}
-
-                  {typeof mf.hub_erforderlich === "string" && mf.hub_erforderlich.length > 0 ? (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500">Hub erforderlich</dt>
-                      <dd className="mt-1 text-sm text-slate-800">
-                        {mf.hub_erforderlich.toLowerCase() === "true" ? "Ja" : mf.hub_erforderlich.toLowerCase() === "false" ? "Nein" : mf.hub_erforderlich}
-                      </dd>
-                    </div>
-                  ) : null}
-                  {(mf.hub_kompatibilitaet || mf.hub_kompatibilitat) ? (
-                    <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium text-slate-500">Hub-Kompatibilität</dt>
-                      <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
-                        {mf.hub_kompatibilitaet || mf.hub_kompatibilitat}
-                      </dd>
-                    </div>
-                  ) : null}
-
-                  {typeof mf.thread === "string" && mf.thread.length > 0 ? (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500">Thread</dt>
-                      <dd className="mt-1 text-sm text-slate-800">
-                        {mf.thread.toLowerCase() === "true" ? "Ja" : mf.thread.toLowerCase() === "false" ? "Nein" : mf.thread}
-                      </dd>
-                    </div>
-                  ) : null}
-
-                  {typeof mf.matter === "string" && mf.matter.length > 0 ? (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500">Matter</dt>
-                      <dd className="mt-1 text-sm text-slate-800">
-                        {mf.matter.toLowerCase() === "true" ? "Ja" : mf.matter.toLowerCase() === "false" ? "Nein" : mf.matter}
-                      </dd>
-                    </div>
-                  ) : null}
-                  {mf.oecosysteme ? (
-                    <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-                      <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
-                    </div>
-                  ) : null}
-                </dl>
-
-                <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
-                  Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub (z. B. Zigbee-Gateway) oder deinem System
-                  (Home Assistant, Apple Home, Alexa, Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
-                </div>
-              </div>
-            ) : null}
-
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
               {isSoldOut ? (
   <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
@@ -691,6 +687,17 @@ const mf = Object.fromEntries(
                 </p>
               </form>
             </div>
+            <div className="mt-6 md:hidden">
+              <DetailsCompatibilityBox />
+            </div>
+            {product.descriptionHtml ? (
+              <div
+                className="mt-3 text-slate-600 leading-relaxed prose prose-slate max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
+            ) : (
+              <p className="mt-3 text-slate-600">Keine Beschreibung vorhanden.</p>
+            )}
             {showTaxNotice && (
               <p className="mt-4 text-sm text-slate-600">
                 Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
