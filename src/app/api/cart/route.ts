@@ -60,7 +60,7 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, any>) {
 }
 
 const CART_FRAGMENT = /* GraphQL */ `
-  fragment CartFragment on Cart {
+  fragment CartFields on Cart {
     id
     checkoutUrl
     totalQuantity
