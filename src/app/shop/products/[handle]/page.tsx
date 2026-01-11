@@ -35,7 +35,7 @@ function siteUrl(): string {
 async function fetchProductByHandle(handle: string): Promise<Product | null> {
   const query = /* GraphQL */ `
     query ProductByHandle($handle: String!) {
-      product(handle: $handle) {
+      productByHandle(handle: $handle) {
         id
         handle
         title
@@ -75,26 +75,28 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     }
   `;
 
-  type Resp = {
-    product: {
-      id: string;
-      handle: string;
-      title: string;
-      description: string;
-      featuredImage?: { url: string; altText?: string | null } | null;
-      metafields?: Array<{ key: string; namespace: string; type: string; value: string | null }> | null;
-      variants?: {
-        edges: Array<{
-          node: {
-            id: string;
-            title: string;
-            availableForSale: boolean;
-            price: { amount: string; currencyCode: string };
-          };
-        }>;
-      } | null;
+type Resp = {
+  productByHandle: {
+    id: string;
+    handle: string;
+    title: string;
+    description: string;
+    featuredImage?: { url: string; altText?: string | null } | null;
+    metafields?: Array<{ key: string; namespace: string; type: string; value: string | null }> | null;
+    variants?: {
+      edges: Array<{
+        node: {
+          id: string;
+          title: string;
+          availableForSale: boolean;
+          price: { amount: string; currencyCode: string };
+        };
+      }>;
     } | null;
-  };
+  } | null;
+};
+
+const p = data?.productByHandle;
 
   let data: Resp;
   try {
