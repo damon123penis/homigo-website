@@ -131,7 +131,7 @@ export default async function ProductsPage({
 
   const data = await shopifyFetch<ProductsResp>(
     GET_PRODUCTS,
-    { first: 50, query: shopifyQuery || undefined, filters: filters.length ? filters : undefined },
+    { first: 50, query: shopifyQuery || undefined, productFilters: filters.length ? filters : undefined },
     { cache: "no-store" }
   );
 
