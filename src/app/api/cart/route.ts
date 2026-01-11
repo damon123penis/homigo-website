@@ -60,24 +60,34 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, any>) {
 }
 
 const CART_FRAGMENT = /* GraphQL */ `
-  fragment CartFields on Cart {
+  fragment CartFragment on Cart {
     id
     checkoutUrl
-    createdAt
-    updatedAt
     totalQuantity
     cost {
-      subtotalAmount { amount currencyCode }
-      totalAmount { amount currencyCode }
-      totalTaxAmount { amount currencyCode }
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+      totalTaxAmount {
+        amount
+        currencyCode
+      }
     }
-    lines(first: 50) {
+    lines(first: 100) {
       edges {
         node {
           id
           quantity
           cost {
-            totalAmount { amount currencyCode }
+            totalAmount {
+              amount
+              currencyCode
+            }
           }
           merchandise {
             ... on ProductVariant {
@@ -85,6 +95,7 @@ const CART_FRAGMENT = /* GraphQL */ `
               title
               availableForSale
               price { amount currencyCode }
+              quantityAvailable
               product {
                 handle
                 title

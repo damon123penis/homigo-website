@@ -246,9 +246,10 @@ export default async function CartPage({
                 const handle = l.merchandise?.product?.handle;
 
                 const quantityAvailable = l.merchandise?.quantityAvailable;
-                const hasStockLimit = typeof quantityAvailable === 'number' && Number.isFinite(quantityAvailable);
-                const isOverStock = hasStockLimit && l.quantity > (quantityAvailable as number);
-                const atStockLimit = hasStockLimit && l.quantity >= (quantityAvailable as number);
+                const qtyAvailNum = typeof quantityAvailable === 'number' ? quantityAvailable : undefined;
+                const hasStockLimit = typeof qtyAvailNum === 'number' && Number.isFinite(qtyAvailNum);
+                const isOverStock = hasStockLimit && l.quantity > (qtyAvailNum as number);
+                const atStockLimit = hasStockLimit && l.quantity >= (qtyAvailNum as number);
 
                 return (
                   <div key={l.id} className="flex gap-4 border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
@@ -282,7 +283,7 @@ export default async function CartPage({
                       <div className="mt-3 flex items-center justify-between gap-3">
                         <form action={updateLineAction} className="flex items-center gap-2">
                           <input type="hidden" name="lineId" value={l.id} />
-                          <input type="hidden" name="maxQty" value={hasStockLimit ? String(quantityAvailable) : ''} />
+                          <input type="hidden" name="maxQty" value={hasStockLimit ? String(qtyAvailNum) : ''} />
 
                           <button
                             type="submit"
@@ -299,7 +300,7 @@ export default async function CartPage({
                             type="number"
                             name="quantity"
                             min={1}
-                            max={hasStockLimit ? (quantityAvailable as number) : undefined}
+                            max={hasStockLimit ? (qtyAvailNum as number) : undefined}
                             defaultValue={l.quantity}
                             className="h-10 w-14 rounded-xl border border-slate-300 bg-white px-2 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                             aria-label="Menge"
@@ -336,7 +337,7 @@ export default async function CartPage({
                       </div>
                       {hasStockLimit ? (
                         <div className="mt-2 text-xs text-slate-600">
-                          Verfügbar: <span className="font-semibold text-slate-900">{quantityAvailable}</span>
+                          Verfügbar: <span className="font-semibold text-slate-900">{qtyAvailNum}</span>
                           {isOverStock ? (
                             <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-rose-800">
                               Menge überschreitet den verfügbaren Bestand.
