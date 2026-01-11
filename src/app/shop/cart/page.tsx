@@ -70,6 +70,22 @@ function getCookieHeader() {
     .join('; ');
 }
 
+function persistCartIdFromSetCookie(setCookie: string | null) {
+  if (!setCookie) return;
+  const match = setCookie.match(/(?:^|,\s*)homigo_cart_id=([^;]+)/i);
+  if (match) {
+    const cartId = match[1];
+    cookies().set({
+      name: 'homigo_cart_id',
+      value: cartId,
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+  }
+}
+
 async function fetchCart(): Promise<Cart | null> {
   const baseUrl = getBaseUrl();
   const cookieHeader = getCookieHeader();
@@ -79,6 +95,8 @@ async function fetchCart(): Promise<Cart | null> {
     headers: cookieHeader ? { cookie: cookieHeader } : undefined,
     cache: 'no-store',
   });
+
+  persistCartIdFromSetCookie(res.headers.get('set-cookie'));
 
   if (!res.ok) return null;
   const json = await res.json();
@@ -98,6 +116,8 @@ async function postCartAction(payload: any): Promise<{ ok: boolean; error?: stri
     body: JSON.stringify(payload),
     cache: 'no-store',
   });
+
+  persistCartIdFromSetCookie(res.headers.get('set-cookie'));
 
   const json = await res.json().catch(() => ({}));
 
