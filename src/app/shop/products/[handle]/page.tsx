@@ -10,6 +10,7 @@ type Variant = {
   title: string;
   availableForSale: boolean;
   price: Money;
+  sku?: string | null;
 };
 type Metafield = { key: string; value: string | null };
 type Product = {
@@ -20,6 +21,7 @@ type Product = {
   featuredImage?: { url: string; altText?: string | null };
   variants: Variant[];
   metafields?: Metafield[];
+  vendor?: string;
 };
 
 function siteUrl(): string {
@@ -39,6 +41,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
         id
         handle
         title
+        vendor
         descriptionHtml
         featuredImage {
           url
@@ -51,6 +54,10 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
             { namespace: "custom", key: "zustand" }
             { namespace: "custom", key: "gtin" }
             { namespace: "custom", key: "mpn" }
+            { namespace: "custom", key: "funkstandard" }
+            { namespace: "custom", key: "frequenz" }
+            { namespace: "custom", key: "hub_erforderlich" }
+            { namespace: "custom", key: "oecosysteme" }
           ]
         ) {
           key
@@ -68,6 +75,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
                 amount
                 currencyCode
               }
+              sku
             }
           }
         }
@@ -80,6 +88,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
       id: string;
       handle: string;
       title: string;
+      vendor: string;
       descriptionHtml: string;
       featuredImage?: { url: string; altText?: string | null } | null;
       metafields?: Array<
@@ -98,6 +107,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
             title: string;
             availableForSale: boolean;
             price: { amount: string; currencyCode: string };
+            sku: string | null;
           };
         }>;
       } | null;
@@ -130,6 +140,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     featuredImage: p.featuredImage || undefined,
     variants,
     metafields,
+    vendor: p.vendor,
   };
 }
 
@@ -214,6 +225,10 @@ export default async function ProductPage({ params }: { params: { handle: string
     zustand?: string;
     gtin?: string;
     mpn?: string;
+    funkstandard?: string;
+    frequenz?: string;
+    hub_erforderlich?: string;
+    oecosysteme?: string;
   };
 
   const isDifferenz = mf.steuerregime === "differenz";
@@ -403,20 +418,22 @@ export default async function ProductPage({ params }: { params: { handle: string
       />
 
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            {product.featuredImage?.url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={product.featuredImage.url}
-                alt={product.featuredImage.altText || product.title}
-                className="h-auto w-full rounded-xl object-cover"
-              />
-            ) : (
-              <div className="flex aspect-square items-center justify-center rounded-xl bg-slate-50 text-slate-400">
-                Kein Bild
-              </div>
-            )}
+        <div className="grid gap-10 md:grid-cols-2 items-start">
+          <div className="self-start">
+            <div className="inline-block rounded-2xl border border-slate-200 bg-white p-4">
+              {product.featuredImage?.url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={product.featuredImage.url}
+                  alt={product.featuredImage.altText || product.title}
+                  className="h-auto w-auto max-w-full max-h-[520px] rounded-xl object-contain"
+                />
+              ) : (
+                <div className="flex h-[320px] w-[320px] items-center justify-center rounded-xl bg-slate-50 text-slate-400">
+                  Kein Bild
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
@@ -442,9 +459,118 @@ export default async function ProductPage({ params }: { params: { handle: string
               <p className="mt-3 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
 
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+              <div className="text-sm font-semibold text-slate-900">Produktdetails</div>
+              <dl className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {product.vendor ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Hersteller</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{product.vendor}</dd>
+                  </div>
+                ) : null}
+
+                {primaryVariant?.sku ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">SKU</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{primaryVariant.sku}</dd>
+                  </div>
+                ) : null}
+
+                {mf.gtin ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">GTIN</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{mf.gtin}</dd>
+                  </div>
+                ) : null}
+
+                {mf.mpn ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">MPN</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{mf.mpn}</dd>
+                  </div>
+                ) : null}
+
+                {mf.funkstandard ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Funkstandard</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{mf.funkstandard}</dd>
+                  </div>
+                ) : null}
+
+                {mf.frequenz ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Frequenz</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{mf.frequenz}</dd>
+                  </div>
+                ) : null}
+
+                {mf.hub_erforderlich ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Hub erforderlich</dt>
+                    <dd className="mt-1 text-sm text-slate-800">
+                      {String(mf.hub_erforderlich).toLowerCase() === "true" ? "Ja" : "Nein"}
+                    </dd>
+                  </div>
+                ) : null}
+
+                {mf.oecosysteme ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
+                    <dd className="mt-1 text-sm text-slate-800">{mf.oecosysteme}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            </div>
+
+            {(mf.funkstandard || mf.frequenz || mf.hub_erforderlich || mf.oecosysteme) ? (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+                <div className="text-sm font-semibold text-slate-900">Kompatibilität</div>
+                <p className="mt-2 text-sm text-slate-600">
+                  Nutze diese Angaben, um zu prüfen, ob die Komponente zu deinem Setup passt.
+                </p>
+
+                <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {mf.funkstandard ? (
+                    <div>
+                      <dt className="text-xs font-medium text-slate-500">Funkstandard</dt>
+                      <dd className="mt-1 text-sm text-slate-800">{mf.funkstandard}</dd>
+                    </div>
+                  ) : null}
+
+                  {mf.frequenz ? (
+                    <div>
+                      <dt className="text-xs font-medium text-slate-500">Frequenz</dt>
+                      <dd className="mt-1 text-sm text-slate-800">{mf.frequenz}</dd>
+                    </div>
+                  ) : null}
+
+                  {typeof mf.hub_erforderlich === "string" && mf.hub_erforderlich.length > 0 ? (
+                    <div>
+                      <dt className="text-xs font-medium text-slate-500">Hub erforderlich</dt>
+                      <dd className="mt-1 text-sm text-slate-800">
+                        {mf.hub_erforderlich.toLowerCase() === "true" ? "Ja" : mf.hub_erforderlich.toLowerCase() === "false" ? "Nein" : mf.hub_erforderlich}
+                      </dd>
+                    </div>
+                  ) : null}
+
+                  {mf.oecosysteme ? (
+                    <div className="sm:col-span-2">
+                      <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
+                      <dd className="mt-1 text-sm text-slate-800">{mf.oecosysteme}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+
+                <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
+                  Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub (z. B. Zigbee-Gateway) oder deinem System
+                  (Home Assistant, Apple Home, Alexa, Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
+                </div>
+              </div>
+            ) : null}
+
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
               <div className="flex items-baseline justify-between gap-4">
-                <div className="text-sm font-medium text-slate-700">Variante</div>
+                <div className="text-sm font-medium text-slate-700">{hasMultipleVariants ? "Variante" : "Preis"}</div>
                 {primaryVariant ? (
                   <div className="text-lg font-semibold text-slate-900">
                     {Number(primaryVariant.price.amount).toFixed(2)} {primaryVariant.price.currencyCode}
