@@ -125,11 +125,11 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-6xl px-6 pt-10 pb-0">{children}</main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-slate-600">
-          <p className="mt-3 text-xs text-slate-500">
+        <div className="mx-auto max-w-6xl px-6 py-8 text-center text-sm text-slate-600">
+          <p className="text-xs text-slate-500">
             Checkout und Zahlung erfolgen über Shopify.
           </p>
         </div>
