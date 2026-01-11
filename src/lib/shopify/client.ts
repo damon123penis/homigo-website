@@ -12,6 +12,11 @@ export async function shopifyFetch<T>(
   variables?: Record<string, any>,
   opts?: RequestInit & { cache?: RequestCache }
 ) {
+  console.log("[shopifyFetch]", {
+    domain: SHOPIFY_STORE_DOMAIN,
+    tokenLength: SHOPIFY_STOREFRONT_ACCESS_TOKEN?.length,
+    apiVersion: SHOPIFY_API_VERSION,
+  });
   // Merge headers safely (also fixes TS typing issues when env vars are optional types)
   const headers = new Headers(opts?.headers);
   headers.set("Content-Type", "application/json");
