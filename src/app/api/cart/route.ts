@@ -18,6 +18,7 @@ function shopifyHeaders() {
   };
 }
 
+
 async function shopifyFetch<T>(query: string, variables?: Record<string, any>) {
   const res = await fetch(shopifyEndpoint(), {
     method: "POST",
