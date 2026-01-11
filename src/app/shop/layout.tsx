@@ -55,7 +55,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link href="/shop" className="text-lg font-bold text-slate-900">
-                Shop
+                homigo Shop
               </Link>
 
               <nav className="hidden md:flex items-center gap-3 text-sm">
