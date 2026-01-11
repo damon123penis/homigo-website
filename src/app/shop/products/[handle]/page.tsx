@@ -105,9 +105,6 @@ const p = data?.productByHandle;
     return null;
   }
 
-  const p = data?.product;
-  if (!p) return null;
-
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
   const metafields: Metafield[] = (p.metafields || []).map((m) => ({ key: m.key, value: m.value }));
 
