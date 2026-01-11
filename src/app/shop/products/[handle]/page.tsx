@@ -126,12 +126,6 @@ function truncate(text: string, max = 160): string {
   return t.length <= max ? t : `${t.slice(0, max - 1)}…`;
 }
 
-function truncate(text: string, max = 160): string {
-  const t = (text || "").trim().replace(/\s+/g, " ");
-  if (!t) return "";
-  return t.length <= max ? t : `${t.slice(0, max - 1)}…`;
-}
-
 export async function generateMetadata(
   { params }: { params: { handle: string } }
 ): Promise<Metadata> {
