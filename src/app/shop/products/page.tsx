@@ -43,8 +43,8 @@ export const metadata: Metadata = {
 };
 
 type ProductsResp = {
-  products: {
-    filters?: Array<{
+  search: {
+    productFilters?: Array<{
       id: string;
       label: string;
       type: string;
@@ -56,16 +56,18 @@ type ProductsResp = {
       }>;
     }>;
     edges: Array<{
-      node: {
-        id: string;
-        handle: string;
-        title: string;
-        vendor?: string | null;
-        featuredImage?: { url: string; altText?: string | null } | null;
-        priceRange?: {
-          minVariantPrice?: { amount: string; currencyCode: string } | null;
-        } | null;
-      };
+      node:
+        | {
+            id: string;
+            handle: string;
+            title: string;
+            vendor?: string | null;
+            featuredImage?: { url: string; altText?: string | null } | null;
+            priceRange?: {
+              minVariantPrice?: { amount: string; currencyCode: string } | null;
+            } | null;
+          }
+        | null;
     }>;
   };
 };
@@ -99,12 +101,11 @@ export default async function ProductsPage({
   const decodedFilters = selectedF
     .map((v) => {
       try {
-        // searchParams sind in Next.js i.d.R. bereits decoded -> direkt JSON.parse
-        return JSON.parse(v);
+        const json = decodeURIComponent(v);
+        return JSON.parse(json);
       } catch {
-        // fallback falls doch encoded ankommt
         try {
-          return JSON.parse(decodeURIComponent(v));
+          return JSON.parse(v);
         } catch {
           return null;
         }
@@ -130,14 +131,14 @@ export default async function ProductsPage({
 
   const data = await shopifyFetch<ProductsResp>(
     GET_PRODUCTS,
-    { first: 50, query: shopifyQuery, filters: filters.length ? filters : undefined },
+    { first: 50, query: shopifyQuery || undefined, filters: filters.length ? filters : undefined },
     { cache: "no-store" }
   );
 
-  const products = data.products.edges.map((e) => e.node);
+  const products = (data.search.edges || []).map((e) => e.node).filter((n): n is NonNullable<typeof n> => Boolean(n));
 
   const selectedSet = new Set(selectedF);
-  const filterDefs = data.products.filters || [];
+  const filterDefs = data.search.productFilters || [];
 
   return (
     <div className="space-y-8">
@@ -219,7 +220,8 @@ export default async function ProductsPage({
   const inputStr = typeof v?.input === "string" ? v.input : "";
   if (!inputStr) return null;
 
-  const checked = selectedSet.has(inputStr);
+  const encoded = encodeURIComponent(inputStr);
+  const checked = selectedSet.has(encoded);
   const count = typeof v?.count === "number" ? v.count : undefined;
 
   return (
@@ -231,7 +233,7 @@ export default async function ProductsPage({
         <input
           type="checkbox"
           name="f"
-          value={inputStr}
+          value={encoded}
           defaultChecked={checked}
           className="h-4 w-4 rounded border-slate-300"
         />
