@@ -94,7 +94,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Server-seitige Suche: einfach query param `q` */}
+              {/* Server-seitige Suche: query param `q` */}
               <form action="/shop" method="GET" className="hidden md:flex">
                 <input type="hidden" name="view" value="products" />
                 <div className="relative">
@@ -306,7 +306,6 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         return;
       }
 
-      // Build results
       if (products.length > 0) {
         resultsContainer.appendChild(createHeader('Produkte'));
         products.forEach(p => {
@@ -357,7 +356,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
     }
   });
 })();
-              `,
+                `,
               }}
             />
           ) : null}

@@ -187,3 +187,21 @@ export const CART_LINES_UPDATE = /* GraphQL */ `
     }
   }
 `;
+export const GET_PRODUCTS = /* GraphQL */ `
+  query Products($first: Int!, $query: String) {
+    products(first: $first, query: $query, sortKey: UPDATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          handle
+          title
+          vendor
+          featuredImage { url altText }
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+        }
+      }
+    }
+  }
+`;
