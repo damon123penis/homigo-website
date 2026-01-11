@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import React from "react";
 import { cookies, headers } from "next/headers";
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 type Money = { amount: string; currencyCode: string };
 type Variant = {
@@ -128,13 +128,7 @@ function truncate(text: string, max = 160): string {
 export async function generateMetadata(
   { params }: { params: { handle: string } }
 ): Promise<Metadata> {
-  const handle = params?.handle ? decodeURIComponent(params.handle) : undefined;
-  if (!handle) {
-    return {
-      title: "homigo Shop",
-      robots: { index: true, follow: true },
-    };
-  }
+  const handle = decodeURIComponent(params.handle);
 
   const product = await fetchProductByHandle(handle);
 
@@ -175,8 +169,7 @@ export async function generateMetadata(
 }
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
-  const handle = params?.handle ? decodeURIComponent(params.handle) : undefined;
-  if (!handle) notFound();
+  const handle = decodeURIComponent(params.handle);
 
   const product = await fetchProductByHandle(handle);
   if (!product) {
