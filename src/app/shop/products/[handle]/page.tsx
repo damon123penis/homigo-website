@@ -82,12 +82,15 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
       title: string;
       description: string;
       featuredImage?: { url: string; altText?: string | null } | null;
-      metafields?: Array<{
-        key: string;
-        namespace: string;
-        type: string;
-        value: string | null;
-      }> | null;
+      metafields?: Array<
+        | {
+            key: string;
+            namespace: string;
+            type: string;
+            value: string | null;
+          }
+        | null
+      > | null;
       variants?: {
         edges: Array<{
           node: {
@@ -112,10 +115,12 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   if (!p) return null;
 
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
-  const metafields: Metafield[] = (p.metafields || []).map((m) => ({
-    key: m.key,
-    value: m.value,
-  }));
+  const metafields: Metafield[] = (p.metafields || [])
+    .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
+    .map((m) => ({
+      key: m.key,
+      value: m.value,
+    }));
 
   return {
     id: p.id,
@@ -191,7 +196,9 @@ export default async function ProductPage({ params }: { params: { handle: string
   }
 
   const mf = Object.fromEntries(
-    (product.metafields || []).map((m) => [m.key, m.value])
+    (product.metafields || [])
+      .filter((m): m is Metafield => Boolean(m && typeof m.key === "string"))
+      .map((m) => [m.key, m.value])
   ) as {
     steuerregime?: string;
     steuerhinweis_anzeige?: string;
