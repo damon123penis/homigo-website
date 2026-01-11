@@ -10,6 +10,7 @@ type Variant = {
   availableForSale: boolean;
   price: Money;
 };
+type Metafield = { key: string; value: string | null };
 type Product = {
   id: string;
   handle: string;
@@ -17,6 +18,7 @@ type Product = {
   description: string;
   featuredImage?: { url: string; altText?: string | null };
   variants: Variant[];
+  metafields?: Metafield[];
 };
 
 function siteUrl(): string {
@@ -56,6 +58,20 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
           url
           altText
         }
+        metafields(
+          identifiers: [
+            { namespace: "custom", key: "steuerregime" }
+            { namespace: "custom", key: "steuerhinweis_anzeige" }
+            { namespace: "custom", key: "zustand" }
+            { namespace: "custom", key: "gtin" }
+            { namespace: "custom", key: "mpn" }
+          ]
+        ) {
+          key
+          namespace
+          type
+          value
+        }
         variants(first: 50) {
           edges {
             node {
@@ -90,6 +106,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   if (!p) return null;
 
   const variants: Variant[] = (p.variants?.edges || []).map((e: any) => e.node);
+  const metafields: Metafield[] = p.metafields || [];
 
   return {
     id: p.id,
@@ -98,6 +115,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     description: p.description,
     featuredImage: p.featuredImage || undefined,
     variants,
+    metafields,
   };
 }
 
@@ -170,6 +188,50 @@ export default async function ProductPage({ params }: { params: { handle: string
     );
   }
 
+  const mf = Object.fromEntries(
+    (product.metafields || []).map((m) => [m.key, m.value])
+  ) as {
+    steuerregime?: string;
+    steuerhinweis_anzeige?: string;
+    zustand?: string;
+    gtin?: string;
+    mpn?: string;
+  };
+
+  const isDifferenz = mf.steuerregime === "differenz";
+  const showTaxNotice = isDifferenz && mf.steuerhinweis_anzeige === "true";
+
+  // Server-side config helpers
+  function envString(name: string): string | undefined {
+    const val = process.env[name];
+    if (typeof val === "string") {
+      const trimmed = val.trim();
+      return trimmed.length > 0 ? trimmed : undefined;
+    }
+    return undefined;
+  }
+  // Read env vars
+  const SHOP_RETURN_POLICY_URL = envString("SHOP_RETURN_POLICY_URL");
+  const SHOP_RETURN_DAYS_RAW = envString("SHOP_RETURN_DAYS");
+  const SHOP_RETURN_DAYS = SHOP_RETURN_DAYS_RAW && !isNaN(Number(SHOP_RETURN_DAYS_RAW)) ? parseInt(SHOP_RETURN_DAYS_RAW, 10) : undefined;
+  const SHOP_SHIPPING_COUNTRY = envString("SHOP_SHIPPING_COUNTRY") || undefined;
+  const SHOP_SHIPPING_COST = envString("SHOP_SHIPPING_COST");
+  const SHOP_SHIPPING_CURRENCY = envString("SHOP_SHIPPING_CURRENCY") || primaryVariant?.price.currencyCode;
+  const NEXT_PUBLIC_BRAND_NAME = envString("NEXT_PUBLIC_BRAND_NAME") || "homigo";
+
+  const itemConditionUrl = (() => {
+    const z = (mf.zustand || "").toLowerCase();
+    if (!z) return undefined;
+
+    // Basic mapping to Schema.org itemCondition URLs
+    if (z.includes("neu")) return "https://schema.org/NewCondition";
+    if (z.includes("refurb") || z.includes("generalüberholt") || z.includes("generalueberholt")) {
+      return "https://schema.org/RefurbishedCondition";
+    }
+    // Treat "neuwertig" (like-new) and any other non-empty condition as used.
+    return "https://schema.org/UsedCondition";
+  })();
+
   const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
   const seoDescription =
     truncate(product.description, 160) ||
@@ -236,20 +298,70 @@ export default async function ProductPage({ params }: { params: { handle: string
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
+    url: canonicalUrl,
     name: product.title,
     description: product.description || seoDescription,
     image: product.featuredImage?.url ? [product.featuredImage.url] : [seoImage],
     sku: product.handle,
-    brand: { "@type": "Brand", name: "homigo" },
+    brand: { "@type": "Brand", name: NEXT_PUBLIC_BRAND_NAME },
+    ...(itemConditionUrl ? { itemCondition: itemConditionUrl } : null),
+    ...(mf.gtin
+      ? (mf.gtin.length === 13
+          ? { gtin13: mf.gtin }
+          : mf.gtin.length === 14
+          ? { gtin14: mf.gtin }
+          : { gtin: mf.gtin })
+      : {}),
+    ...(mf.mpn ? { mpn: mf.mpn } : {}),
     offers: primaryVariant
       ? {
           "@type": "Offer",
           priceCurrency: primaryVariant.price.currencyCode,
           price: primaryVariant.price.amount,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            priceCurrency: primaryVariant.price.currencyCode,
+            price: primaryVariant.price.amount,
+            // For differenzbesteuerte Ware wird die USt. nicht separat ausgewiesen.
+            // In strukturierten Daten modellieren wir das als "VAT not included".
+            valueAddedTaxIncluded: !isDifferenz,
+          },
           availability: primaryVariant.availableForSale
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
           url: canonicalUrl,
+          ...(isDifferenz
+            ? {
+                description:
+                  "Differenzbesteuerung nach § 25a UStG. Umsatzsteuer wird nicht separat ausgewiesen.",
+              }
+            : null),
+          ...(SHOP_SHIPPING_COST && SHOP_SHIPPING_COUNTRY
+            ? {
+                shippingDetails: {
+                  "@type": "OfferShippingDetails",
+                  shippingDestination: {
+                    "@type": "DefinedRegion",
+                    addressCountry: SHOP_SHIPPING_COUNTRY,
+                  },
+                  shippingRate: {
+                    "@type": "MonetaryAmount",
+                    value: SHOP_SHIPPING_COST,
+                    currency: SHOP_SHIPPING_CURRENCY,
+                  },
+                },
+              }
+            : {}),
+          ...((SHOP_RETURN_POLICY_URL || typeof SHOP_RETURN_DAYS === "number")
+            ? {
+                hasMerchantReturnPolicy: {
+                  "@type": "MerchantReturnPolicy",
+                  ...(SHOP_RETURN_POLICY_URL ? { url: SHOP_RETURN_POLICY_URL } : {}),
+                  ...(typeof SHOP_RETURN_DAYS === "number" ? { merchantReturnDays: SHOP_RETURN_DAYS } : {}),
+                  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                },
+              }
+            : {}),
         }
       : undefined,
   };
@@ -280,6 +392,18 @@ export default async function ProductPage({ params }: { params: { handle: string
 
           <div>
             <h1 className="text-3xl font-bold text-slate-900">{product.title}</h1>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {mf.zustand && (
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                  Zustand: {mf.zustand.replace("_", " ")}
+                </span>
+              )}
+              {isDifferenz && (
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
+                  Differenzbesteuert (§25a UStG)
+                </span>
+              )}
+            </div>
             {product.description ? (
               <p className="mt-3 text-slate-600 leading-relaxed">{product.description}</p>
             ) : (
@@ -338,6 +462,11 @@ export default async function ProductPage({ params }: { params: { handle: string
                 </p>
               </form>
             </div>
+            {showTaxNotice && (
+              <p className="mt-4 text-sm text-slate-600">
+                Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
+              </p>
+            )}
           </div>
         </div>
       </div>
