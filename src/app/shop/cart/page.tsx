@@ -58,7 +58,8 @@ function formatMoney(m?: Money) {
 function isDefaultVariantTitle(title?: string) {
   if (!title) return false;
   const t = title.trim().toLowerCase();
-  return t === 'default title' || t === 'default';
+  // Shopify frequently uses "Default Title" for single-variant products.
+  return t === 'default title' || t === 'default' || t === 'standard' || t === 'standardtitel';
 }
 
 function isDifferenzLine(l: CartLine) {
@@ -152,6 +153,7 @@ export default async function CartPage({
   const lines = cart?.lines ?? [];
 
   const subtotal = cart?.cost?.subtotalAmount;
+  const tax = cart?.cost?.totalTaxAmount;
   const total = cart?.cost?.totalAmount;
 
   const errorFromRedirect = typeof searchParams?.error === 'string' ? searchParams.error : null;
@@ -173,6 +175,15 @@ export default async function CartPage({
         : '1';
 
     const quantity = Math.max(1, Number.parseInt(raw, 10) || 1);
+
+    const maxQtyRaw = String(formData.get('maxQty') || '');
+    const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
+
+    if (typeof maxQty === 'number' && Number.isFinite(maxQty) && quantity > maxQty) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { redirect } = require('next/navigation');
+      redirect(`/shop/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
+    }
 
     if (!lineId) return;
 
@@ -274,6 +285,7 @@ export default async function CartPage({
                       <div className="mt-3 flex items-center justify-between gap-3">
                         <form action={updateLineAction} className="flex items-center gap-2">
                           <input type="hidden" name="lineId" value={l.id} />
+                          <input type="hidden" name="maxQty" value={hasStockLimit ? String(quantityAvailable) : ''} />
 
                           <button
                             type="submit"
@@ -292,7 +304,7 @@ export default async function CartPage({
                             min={1}
                             max={hasStockLimit ? (quantityAvailable as number) : undefined}
                             defaultValue={l.quantity}
-                            className="h-10 w-16 rounded-xl border border-slate-300 bg-white px-3 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                            className="h-10 w-14 rounded-xl border border-slate-300 bg-white px-2 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                             aria-label="Menge"
                           />
 
@@ -348,10 +360,10 @@ export default async function CartPage({
               <span className="font-semibold text-slate-900">{formatMoney(subtotal)}</span>
             </div>
 
-            {cart?.cost?.totalTaxAmount ? (
+            {tax ? (
               <div className="mt-2 flex items-center justify-between text-slate-700">
                 <span>Steuer</span>
-                <span className="font-semibold text-slate-900">{formatMoney(cart.cost.totalTaxAmount)}</span>
+                <span className="font-semibold text-slate-900">{formatMoney(tax)}</span>
               </div>
             ) : null}
 
