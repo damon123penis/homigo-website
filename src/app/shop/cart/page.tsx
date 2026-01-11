@@ -14,7 +14,8 @@ type CartLine = {
     title: string;
     availableForSale: boolean;
     price?: Money;
-    product?: { handle: string; title: string };
+    quantityAvailable?: number | null;
+    product?: { handle: string; title: string; metafield?: { value?: string | null } | null };
     image?: { url: string; altText?: string | null };
   };
 };
@@ -52,6 +53,17 @@ function formatMoney(m?: Money) {
   } catch {
     return `${amount.toFixed(2)} ${m.currencyCode}`;
   }
+}
+
+function isDefaultVariantTitle(title?: string) {
+  if (!title) return false;
+  const t = title.trim().toLowerCase();
+  return t === 'default title' || t === 'default';
+}
+
+function isDifferenzLine(l: CartLine) {
+  const v = l.merchandise?.product?.metafield?.value;
+  return typeof v === 'string' && v.toLowerCase() === 'differenz';
 }
 
 function getBaseUrl() {
@@ -221,8 +233,14 @@ export default async function CartPage({
             <div className="space-y-5">
               {lines.map((l) => {
                 const title = l.merchandise?.product?.title || 'Produkt';
-                const variantTitle = l.merchandise?.title || '';
+                const variantTitleRaw = l.merchandise?.title || '';
+                const variantTitle = isDefaultVariantTitle(variantTitleRaw) ? '' : variantTitleRaw;
                 const handle = l.merchandise?.product?.handle;
+
+                const quantityAvailable = l.merchandise?.quantityAvailable;
+                const hasStockLimit = typeof quantityAvailable === 'number' && Number.isFinite(quantityAvailable);
+                const isOverStock = hasStockLimit && l.quantity > (quantityAvailable as number);
+                const atStockLimit = hasStockLimit && l.quantity >= (quantityAvailable as number);
 
                 return (
                   <div key={l.id} className="flex gap-4 border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
@@ -272,8 +290,9 @@ export default async function CartPage({
                             type="number"
                             name="quantity"
                             min={1}
+                            max={hasStockLimit ? (quantityAvailable as number) : undefined}
                             defaultValue={l.quantity}
-                            className="h-10 w-20 rounded-xl border border-slate-300 bg-white px-3 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                            className="h-10 w-16 rounded-xl border border-slate-300 bg-white px-3 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                             aria-label="Menge"
                           />
 
@@ -283,6 +302,7 @@ export default async function CartPage({
                             value={l.quantity + 1}
                             className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
                             aria-label="Menge erhöhen"
+                            disabled={atStockLimit}
                           >
                             +
                           </button>
@@ -305,6 +325,16 @@ export default async function CartPage({
                           </button>
                         </form>
                       </div>
+                      {hasStockLimit ? (
+                        <div className="mt-2 text-xs text-slate-600">
+                          Verfügbar: <span className="font-semibold text-slate-900">{quantityAvailable}</span>
+                          {isOverStock ? (
+                            <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-rose-800">
+                              Menge überschreitet den verfügbaren Bestand.
+                            </span>
+                          ) : null}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 );
@@ -317,6 +347,13 @@ export default async function CartPage({
               <span>Zwischensumme</span>
               <span className="font-semibold text-slate-900">{formatMoney(subtotal)}</span>
             </div>
+
+            {cart?.cost?.totalTaxAmount ? (
+              <div className="mt-2 flex items-center justify-between text-slate-700">
+                <span>Steuer</span>
+                <span className="font-semibold text-slate-900">{formatMoney(cart.cost.totalTaxAmount)}</span>
+              </div>
+            ) : null}
 
             <div className="mt-2 flex items-center justify-between text-slate-700">
               <span>Gesamt</span>
@@ -331,7 +368,13 @@ export default async function CartPage({
               Zur Kasse
             </a>
 
-            <p className="mt-3 text-xs text-slate-500">Du wirst für die Zahlung sicher zu Shopify weitergeleitet.</p>
+            {lines.some(isDifferenzLine) ? (
+              <p className="mt-3 text-xs text-slate-600">
+                Hinweis: Mindestens ein Artikel unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird hierfür nicht separat ausgewiesen.
+              </p>
+            ) : (
+              <p className="mt-3 text-xs text-slate-500">Du wirst für die Zahlung sicher zu Shopify weitergeleitet.</p>
+            )}
           </div>
         </div>
       )}
