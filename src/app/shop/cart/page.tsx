@@ -125,7 +125,19 @@ export default async function CartPage({
     'use server';
 
     const lineId = String(formData.get('lineId') || '');
-    const quantity = Math.max(1, Number(formData.get('quantity') || 1));
+
+    // When clicking +/- we submit `setQuantity`. When clicking “Aktualisieren” we use the input `quantity`.
+    const setQuantityRaw = formData.get('setQuantity');
+    const inputQuantityRaw = formData.get('quantity');
+
+    const raw =
+      typeof setQuantityRaw === 'string' && setQuantityRaw.length > 0
+        ? setQuantityRaw
+        : typeof inputQuantityRaw === 'string' && inputQuantityRaw.length > 0
+        ? inputQuantityRaw
+        : '1';
+
+    const quantity = Math.max(1, Number.parseInt(raw, 10) || 1);
 
     if (!lineId) return;
 
@@ -224,7 +236,7 @@ export default async function CartPage({
 
                           <button
                             type="submit"
-                            name="quantity"
+                            name="setQuantity"
                             value={Math.max(1, l.quantity - 1)}
                             className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
                             aria-label="Menge reduzieren"
@@ -244,7 +256,7 @@ export default async function CartPage({
 
                           <button
                             type="submit"
-                            name="quantity"
+                            name="setQuantity"
                             value={l.quantity + 1}
                             className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
                             aria-label="Menge erhöhen"
