@@ -32,6 +32,18 @@ export const GET_COLLECTION_BY_HANDLE = /* GraphQL */ `
             priceRange {
               minVariantPrice { amount currencyCode }
             }
+            metafields(
+              identifiers: [
+                { namespace: "custom", key: "steuerregime" }
+                { namespace: "custom", key: "steuerhinweis_anzeige" }
+                { namespace: "custom", key: "zustand" }
+              ]
+            ) {
+              key
+              namespace
+              type
+              value
+            }
           }
         }
       }
@@ -48,6 +60,18 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
       descriptionHtml
       vendor
       featuredImage { url altText }
+      metafields(
+        identifiers: [
+          { namespace: "custom", key: "steuerregime" }
+          { namespace: "custom", key: "steuerhinweis_anzeige" }
+          { namespace: "custom", key: "zustand" }
+        ]
+      ) {
+        key
+        namespace
+        type
+        value
+      }
       images(first: 10) { edges { node { url altText } } }
       variants(first: 50) {
         edges {

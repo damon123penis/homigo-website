@@ -200,6 +200,7 @@ export default async function ProductPage({ params }: { params: { handle: string
 
   const isDifferenz = mf.steuerregime === "differenz";
   const showTaxNotice = isDifferenz && mf.steuerhinweis_anzeige === "true";
+  const primaryVariant = product.variants?.[0] ?? null;
 
   // Server-side config helpers
   function envString(name: string): string | undefined {
@@ -237,8 +238,6 @@ export default async function ProductPage({ params }: { params: { handle: string
     truncate(product.description, 160) ||
     "Smart-Home-Komponenten und Bundles – kuratiert von homigo. Einfach auswählen und sicher checkouten.";
   const seoImage = product.featuredImage?.url || `${siteUrl()}/images/Logo.png`;
-
-  const primaryVariant = product.variants?.[0] ?? null;
 
   // Server Action: adds to cart via existing /api/cart route, preserving cookie-based cartId.
   async function addToCartAction(formData: FormData) {
