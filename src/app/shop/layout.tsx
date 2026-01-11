@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies, headers } from "next/headers";
-import { shopifyFetch } from "@/lib/shopify/client";
+import { BackButton } from "./_components/BackButton";
 
 export const metadata: Metadata = {
   title: {
@@ -69,32 +69,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         <div className="mx-auto max-w-6xl px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                onClick={(e) => {
-                  if (typeof window !== "undefined" && window.history.length > 1) {
-                    e.preventDefault();
-                    window.history.back();
-                  }
-                }}
-                aria-label="Zurück"
-                title="Zurück"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </Link>
+              <BackButton />
               <Link href="/shop" className="text-lg font-bold text-slate-900">
                 homigo Shop
               </Link>
