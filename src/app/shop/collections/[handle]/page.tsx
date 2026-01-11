@@ -5,7 +5,9 @@ import { GET_COLLECTION_BY_HANDLE } from "@/lib/shopify/queries";
 import { formatEUR } from "@/lib/shopify/money";
 import type { Metadata } from "next";
 
-export const revalidate = 60 * 30;
+// Always render fresh in the shop while products/collections are changing frequently.
+// This prevents stale listings when new products are added in Shopify.
+export const dynamic = "force-dynamic";
 
 type Resp = {
   collection: null | {
@@ -40,7 +42,11 @@ export async function generateMetadata({ params }: { params: { handle: string } 
 
 export default async function CollectionPage({ params }: { params: { handle: string } }) {
   const handle = decodeURIComponent(params.handle);
-  const data = await shopifyFetch<Resp>(GET_COLLECTION_BY_HANDLE, { handle, first: 50 });
+  const data = await shopifyFetch<Resp>(
+    GET_COLLECTION_BY_HANDLE,
+    { handle, first: 50 },
+    { cache: "no-store" }
+  );
 
   if (!data.collection) {
     return <div className="text-slate-700">Kategorie nicht gefunden.</div>;
