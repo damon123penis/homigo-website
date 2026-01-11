@@ -629,6 +629,12 @@ const mf = Object.fromEntries(
             ) : null}
 
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
+              {isSoldOut ? (
+  <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
+    <span className="font-semibold">Ausverkauft.</span> Dieses Produkt ist aktuell nicht verfügbar.
+    Wenn du willst, schreib uns kurz – wir informieren dich bei Verfügbarkeit.
+  </div>
+) : null}
               <div className="flex items-baseline justify-between gap-4">
                 <div className="text-sm font-medium text-slate-700">{hasMultipleVariants ? "Variante" : "Preis"}</div>
                 {primaryVariant ? (
@@ -664,6 +670,7 @@ const mf = Object.fromEntries(
                       type="number"
                       min={1}
                       defaultValue={1}
+                      disabled={isSoldOut}
                       className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                     />
                   </div>
@@ -671,10 +678,10 @@ const mf = Object.fromEntries(
                   <div className="flex items-end">
                     <button
                       type="submit"
-                      disabled={!primaryVariant || !primaryVariant.availableForSale}
+                      disabled={isSoldOut}
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
-                      In den Warenkorb
+                      {isSoldOut ? "Ausverkauft" : "In den Warenkorb"}
                     </button>
                   </div>
                 </div>
