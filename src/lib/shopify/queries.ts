@@ -188,13 +188,9 @@ export const CART_LINES_UPDATE = /* GraphQL */ `
   }
 `;
 export const GET_PRODUCTS = /* GraphQL */ `
-  query Products(
-    $first: Int!
-    $query: String
-    $filters: [ProductFilter!]
-  ) {
-    products(first: $first, query: $query, filters: $filters) {
-      filters {
+  query Products($first: Int!, $query: String, $productFilters: [ProductFilter!]) {
+    search(query: $query, first: $first, types: [PRODUCT], productFilters: $productFilters) {
+      productFilters {
         id
         label
         type
@@ -207,13 +203,15 @@ export const GET_PRODUCTS = /* GraphQL */ `
       }
       edges {
         node {
-          id
-          handle
-          title
-          vendor
-          featuredImage { url altText }
-          priceRange {
-            minVariantPrice { amount currencyCode }
+          ... on Product {
+            id
+            handle
+            title
+            vendor
+            featuredImage { url altText }
+            priceRange {
+              minVariantPrice { amount currencyCode }
+            }
           }
         }
       }
