@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { shopifyFetch } from "@/lib/shopify/client";
 
 type Money = { amount: string; currencyCode: string };
 type Variant = {
@@ -31,25 +32,10 @@ function siteUrl(): string {
 
   return "https://www.homigo.tech";
 }
-
-function shopifyEndpoint() {
-  const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || process.env.SHOPIFY_STORE_DOMAIN;
-  if (!domain) throw new Error("Missing SHOPIFY_STORE_DOMAIN (or NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN)");
-  return `https://${domain}/api/2024-07/graphql.json`;
-}
-
-function shopifyToken() {
-  const token =
-    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN ||
-    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-  if (!token) throw new Error("Missing SHOPIFY_STOREFRONT_ACCESS_TOKEN (or NEXT_PUBLIC_...)");
-  return token;
-}
-
 async function fetchProductByHandle(handle: string): Promise<Product | null> {
   const query = /* GraphQL */ `
     query ProductByHandle($handle: String!) {
-      productByHandle(handle: $handle) {
+      product(handle: $handle) {
         id
         handle
         title
@@ -89,6 +75,51 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     }
   `;
 
+  type Resp = {
+    product: {
+      id: string;
+      handle: string;
+      title: string;
+      description: string;
+      featuredImage?: { url: string; altText?: string | null } | null;
+      metafields?: Array<{ key: string; namespace: string; type: string; value: string | null }> | null;
+      variants?: {
+        edges: Array<{
+          node: {
+            id: string;
+            title: string;
+            availableForSale: boolean;
+            price: { amount: string; currencyCode: string };
+          };
+        }>;
+      } | null;
+    } | null;
+  };
+
+  let data: Resp;
+  try {
+    data = await shopifyFetch<Resp>(query, { handle }, { cache: "no-store" });
+  } catch {
+    return null;
+  }
+
+  const p = data?.product;
+  if (!p) return null;
+
+  const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
+  const metafields: Metafield[] = (p.metafields || []).map((m) => ({ key: m.key, value: m.value }));
+
+  return {
+    id: p.id,
+    handle: p.handle,
+    title: p.title,
+    description: p.description,
+    featuredImage: p.featuredImage || undefined,
+    variants,
+    metafields,
+  };
+}
+
   const res = await fetch(shopifyEndpoint(), {
     method: "POST",
     headers: {
@@ -102,7 +133,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   const json = await res.json();
   if (!res.ok || json.errors) return null;
 
-  const p = json.data?.productByHandle;
+  const p = json.data?.product;
   if (!p) return null;
 
   const variants: Variant[] = (p.variants?.edges || []).map((e: any) => e.node);
@@ -117,7 +148,6 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     variants,
     metafields,
   };
-}
 
 function truncate(text: string, max = 160): string {
   const t = (text || "").trim().replace(/\s+/g, " ");
