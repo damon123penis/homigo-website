@@ -16,7 +16,7 @@ type Product = {
   id: string;
   handle: string;
   title: string;
-  description: string;
+  descriptionHtml: string;
   featuredImage?: { url: string; altText?: string | null };
   variants: Variant[];
   metafields?: Metafield[];
@@ -39,7 +39,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
         id
         handle
         title
-        description
+        descriptionHtml
         featuredImage {
           url
           altText
@@ -80,7 +80,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
       id: string;
       handle: string;
       title: string;
-      description: string;
+      descriptionHtml: string;
       featuredImage?: { url: string; altText?: string | null } | null;
       metafields?: Array<
         | {
@@ -126,11 +126,20 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     id: p.id,
     handle: p.handle,
     title: p.title,
-    description: p.description,
+    descriptionHtml: p.descriptionHtml,
     featuredImage: p.featuredImage || undefined,
     variants,
     metafields,
   };
+}
+
+function stripHtml(html: string): string {
+  return (html || "")
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function truncate(text: string, max = 160): string {
@@ -157,7 +166,7 @@ export async function generateMetadata(
   const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
   const title = `${product.title} | homigo Shop`;
   const description =
-    truncate(product.description, 160) ||
+    truncate(stripHtml(product.descriptionHtml), 160) ||
     "Smart-Home-Komponenten und Bundles – kuratiert von homigo. Einfach auswählen und sicher checkouten.";
 
   const image = product.featuredImage?.url || `${siteUrl()}/images/Logo.png`;
@@ -210,6 +219,7 @@ export default async function ProductPage({ params }: { params: { handle: string
   const isDifferenz = mf.steuerregime === "differenz";
   const showTaxNotice = isDifferenz && mf.steuerhinweis_anzeige === "true";
   const primaryVariant = product.variants?.[0] ?? null;
+  const hasMultipleVariants = (product.variants?.length || 0) > 1;
 
   // Server-side config helpers
   function envString(name: string): string | undefined {
@@ -229,6 +239,17 @@ export default async function ProductPage({ params }: { params: { handle: string
   const SHOP_SHIPPING_CURRENCY = envString("SHOP_SHIPPING_CURRENCY") || primaryVariant?.price.currencyCode;
   const NEXT_PUBLIC_BRAND_NAME = envString("NEXT_PUBLIC_BRAND_NAME") || "homigo";
 
+  function conditionLabel(raw?: string): string | undefined {
+    if (!raw) return undefined;
+    const z = raw.toLowerCase();
+    if (z === "like_new" || z === "likenew" || z.includes("neuwertig")) return "Neuwertig";
+    if (z === "new" || z.includes("neu")) return "Neu";
+    if (z === "refurbished" || z.includes("generalüberholt") || z.includes("generalueberholt")) return "Generalüberholt";
+    if (z === "used" || z.includes("gebraucht")) return "Gebraucht";
+    // Fallback: prettify snake_case
+    return raw.replace(/_/g, " ");
+  }
+
   const itemConditionUrl = (() => {
     const z = (mf.zustand || "").toLowerCase();
     if (!z) return undefined;
@@ -244,7 +265,7 @@ export default async function ProductPage({ params }: { params: { handle: string
 
   const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
   const seoDescription =
-    truncate(product.description, 160) ||
+    truncate(stripHtml(product.descriptionHtml), 160) ||
     "Smart-Home-Komponenten und Bundles – kuratiert von homigo. Einfach auswählen und sicher checkouten.";
   const seoImage = product.featuredImage?.url || `${siteUrl()}/images/Logo.png`;
 
@@ -308,7 +329,7 @@ export default async function ProductPage({ params }: { params: { handle: string
     "@type": "Product",
     url: canonicalUrl,
     name: product.title,
-    description: product.description || seoDescription,
+    description: stripHtml(product.descriptionHtml) || seoDescription,
     image: product.featuredImage?.url ? [product.featuredImage.url] : [seoImage],
     sku: product.handle,
     brand: { "@type": "Brand", name: NEXT_PUBLIC_BRAND_NAME },
@@ -403,7 +424,7 @@ export default async function ProductPage({ params }: { params: { handle: string
             <div className="mt-2 flex flex-wrap gap-2">
               {mf.zustand && (
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                  Zustand: {mf.zustand.replace("_", " ")}
+                  Zustand: {conditionLabel(mf.zustand)}
                 </span>
               )}
               {isDifferenz && (
@@ -412,8 +433,11 @@ export default async function ProductPage({ params }: { params: { handle: string
                 </span>
               )}
             </div>
-            {product.description ? (
-              <p className="mt-3 text-slate-600 leading-relaxed">{product.description}</p>
+            {product.descriptionHtml ? (
+              <div
+                className="mt-3 text-slate-600 leading-relaxed prose prose-slate max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
             ) : (
               <p className="mt-3 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
@@ -429,18 +453,22 @@ export default async function ProductPage({ params }: { params: { handle: string
               </div>
 
               <form action={addToCartAction} className="mt-2">
-                <select
-                  name="merchandiseId"
-                  defaultValue={primaryVariant?.id || ""}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-                >
-                  {product.variants.map((v) => (
-                    <option key={v.id} value={v.id} disabled={!v.availableForSale}>
-                      {v.title}
-                      {!v.availableForSale ? " (nicht verfügbar)" : ""}
-                    </option>
-                  ))}
-                </select>
+                {hasMultipleVariants ? (
+                  <select
+                    name="merchandiseId"
+                    defaultValue={primaryVariant?.id || ""}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                  >
+                    {product.variants.map((v) => (
+                      <option key={v.id} value={v.id} disabled={!v.availableForSale}>
+                        {v.title}
+                        {!v.availableForSale ? " (nicht verfügbar)" : ""}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input type="hidden" name="merchandiseId" value={primaryVariant?.id || ""} />
+                )}
 
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div>
@@ -457,7 +485,7 @@ export default async function ProductPage({ params }: { params: { handle: string
                   <div className="flex items-end">
                     <button
                       type="submit"
-                      disabled={!primaryVariant?.availableForSale}
+                      disabled={!primaryVariant || !primaryVariant.availableForSale}
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
                       In den Warenkorb
