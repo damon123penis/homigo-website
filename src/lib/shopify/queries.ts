@@ -188,8 +188,23 @@ export const CART_LINES_UPDATE = /* GraphQL */ `
   }
 `;
 export const GET_PRODUCTS = /* GraphQL */ `
-  query Products($first: Int!, $query: String) {
-    products(first: $first, query: $query, sortKey: UPDATED_AT, reverse: true) {
+  query Products(
+    $first: Int!
+    $query: String
+    $filters: [ProductFilter!]
+  ) {
+    products(first: $first, query: $query, filters: $filters) {
+      filters {
+        id
+        label
+        type
+        values {
+          id
+          label
+          count
+          input
+        }
+      }
       edges {
         node {
           id

@@ -79,13 +79,13 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
                   Übersicht
                 </Link>
                 <Link
-                  href="/shop?view=collections"
+                  href="/shop/collections"
                   className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100"
                 >
                   Kategorien
                 </Link>
                 <Link
-                  href="/shop?view=products"
+                  href="/shop/products"
                   className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100"
                 >
                   Produkte
@@ -95,8 +95,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
             <div className="flex items-center gap-3">
               {/* Server-seitige Suche: query param `q` */}
-              <form action="/shop" method="GET" className="hidden md:flex">
-                <input type="hidden" name="view" value="products" />
+              <form action="/shop/products" method="GET" className="hidden md:flex">
                 <div className="relative">
                   <input
                     id="shop-search-input-desktop"
@@ -149,15 +148,20 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
               Übersicht
             </Link>
             <Link
-              href="/shop?view=collections"
+              href="/shop/collections"
               className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-900"
             >
-              Collections
+              Kategorien
+            </Link>
+            <Link
+              href="/shop/products"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-900"
+            >
+              Produkte
             </Link>
           </div>
 
-          <form action="/shop" method="GET" className="mt-3 md:hidden">
-            <input type="hidden" name="view" value="products" />
+          <form action="/shop/products" method="GET" className="mt-3 md:hidden">
             <div className="relative">
               <input
                 id="shop-search-input-mobile"
