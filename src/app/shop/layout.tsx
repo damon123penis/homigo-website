@@ -46,44 +46,8 @@ async function getCartCount(): Promise<number> {
   }
 }
 
-async function getProductSuggestions(): Promise<Array<{ title: string; handle: string }>> {
-  // Lightweight, server-rendered suggestions (native browser autocomplete via <datalist>).
-  // Keeps UX simple without turning the whole layout into a client component.
-  const query = /* GraphQL */ `
-    query ProductSuggestions($first: Int!) {
-      products(first: $first, sortKey: TITLE) {
-        edges {
-          node {
-            title
-            handle
-          }
-        }
-      }
-    }
-  `;
-
-  type Resp = {
-    products?: {
-      edges?: Array<{ node: { title: string; handle: string } }>;
-    };
-  };
-
-  try {
-    const data = await shopifyFetch<Resp>(query, { first: 50 }, { cache: "force-cache" });
-    const edges = data?.products?.edges ?? [];
-    return edges
-      .map((e) => e.node)
-      .filter((p) => Boolean(p?.title) && Boolean(p?.handle));
-  } catch {
-    return [];
-  }
-}
-
 export default async function ShopLayout({ children }: { children: React.ReactNode }) {
-  const [cartCount, suggestions] = await Promise.all([
-    getCartCount(),
-    getProductSuggestions(),
-  ]);
+  const [cartCount] = await Promise.all([getCartCount()]);
 
   const SHOP_DOMAIN =
     process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ||
@@ -105,6 +69,32 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         <div className="mx-auto max-w-6xl px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
+              <Link
+                href="/"
+                onClick={(e) => {
+                  if (typeof window !== "undefined" && window.history.length > 1) {
+                    e.preventDefault();
+                    window.history.back();
+                  }
+                }}
+                aria-label="Zurück"
+                title="Zurück"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </Link>
               <Link href="/shop" className="text-lg font-bold text-slate-900">
                 homigo Shop
               </Link>
@@ -136,7 +126,6 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
                   <input
                     id="shop-search-input-desktop"
                     name="q"
-                    list="product-suggestions"
                     placeholder="Produkte suchen…"
                     className="w-72 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                   />
@@ -149,12 +138,29 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
               <Link
                 href="/shop/cart"
-                className="relative inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white hover:bg-emerald-700"
                 aria-label="Zum Warenkorb"
+                title="Warenkorb"
               >
-                Warenkorb
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6h15l-1.5 9h-13z" />
+                  <path d="M6 6l-2-3H1" />
+                  <path d="M8 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                  <path d="M18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                </svg>
+
                 {cartCount > 0 ? (
-                  <span className="inline-flex min-w-[22px] items-center justify-center rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">
+                  <span className="absolute -right-2 -top-2 inline-flex min-w-[20px] items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-[11px] font-bold text-emerald-700 shadow">
                     {cartCount}
                   </span>
                 ) : null}
@@ -181,7 +187,6 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
               <input
                 id="shop-search-input-mobile"
                 name="q"
-                list="product-suggestions"
                 placeholder="Produkte suchen…"
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
               />
@@ -191,12 +196,6 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
               ></div>
             </div>
           </form>
-
-          <datalist id="product-suggestions">
-            {suggestions.map((p) => (
-              <option key={p.handle} value={p.title} />
-            ))}
-          </datalist>
 
           {CAN_CLIENT_PREDICTIVE ? (
             <script
@@ -283,12 +282,12 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
     container.classList.add('hidden');
   }
 
-  function hideAllResults() {
+  function hideAllResults(exceptEl) {
     resultsIds.forEach(id => {
       const el = document.getElementById(id);
-      if(el){
-        clearResults(el);
-      }
+      if (!el) return;
+      if (exceptEl && el === exceptEl) return;
+      el.classList.add('hidden');
     });
   }
 
@@ -297,7 +296,13 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
     const resultsContainer = document.getElementById(resultsId);
     if (!input || !resultsContainer) return;
 
+    resultsContainer.classList.add('z-50');
+
     let lastQuery = '';
+
+    input.addEventListener('focus', () => {
+      hideAllResults(resultsContainer);
+    });
 
     const onInput = debounce(async () => {
       const q = input.value.trim();
@@ -310,8 +315,11 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
       resultsContainer.classList.add('hidden');
       resultsContainer.innerHTML = '';
+      resultsContainer.innerHTML = '<div class="px-4 py-3 text-sm text-slate-500">Suche…</div>';
+      resultsContainer.classList.remove('hidden');
 
       const data = await fetchPredictiveSearch(q);
+      resultsContainer.innerHTML = '';
       if (!data) {
         clearResults(resultsContainer);
         return;
@@ -353,17 +361,25 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         input.blur();
       }
     });
-
-    // Hide results on outside click
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
-        clearResults(resultsContainer);
-      }
-    });
   }
 
   queryInputIds.forEach((inputId, i) => {
     setupInput(inputId, resultsIds[i]);
+  });
+
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const clickedInside = queryInputIds.some((id, idx) => {
+      const input = document.getElementById(id);
+      const box = document.getElementById(resultsIds[idx]);
+      return (input && input.contains(t)) || (box && box.contains(t));
+    });
+    if (!clickedInside) {
+      resultsIds.forEach((id) => {
+        const box = document.getElementById(id);
+        if (box) clearResults(box);
+      });
+    }
   });
 })();
               `,
@@ -373,11 +389,11 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 pt-10 pb-10">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 pt-10 pb-0">
         {children}
 
         {/* Shop-Hinweis: soll direkt vor dem globalen Website-Footer enden (kein doppelter Footer). */}
-        <div className="mt-12 border-t border-slate-200 bg-white/0 pt-8">
+        <div className="mt-8 border-t border-slate-200 bg-white/0 py-6">
           <p className="text-center text-xs text-slate-500">
             Checkout und Zahlung erfolgen über Shopify.
           </p>

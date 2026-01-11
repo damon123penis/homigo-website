@@ -58,13 +58,13 @@ export default async function CollectionPage({ params }: { params: { handle: str
     <div className="space-y-8">
       {c.image?.url ? (
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div className="relative h-[180px] w-full bg-slate-50 sm:h-[220px] md:h-[260px] lg:h-[300px]">
+          <div className="relative aspect-[16/9] w-full bg-slate-50">
             <Image
               src={c.image.url}
               alt={c.image.altText || c.title}
               fill
               sizes="(min-width: 1024px) 960px, 100vw"
-              className="object-contain"
+              className="object-cover"
               priority
             />
           </div>
