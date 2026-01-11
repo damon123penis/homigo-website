@@ -54,10 +54,18 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
             { namespace: "custom", key: "zustand" }
             { namespace: "custom", key: "gtin" }
             { namespace: "custom", key: "mpn" }
+
+            { namespace: "custom", key: "garantie" }
+
             { namespace: "custom", key: "funkstandard" }
             { namespace: "custom", key: "frequenz" }
+
             { namespace: "custom", key: "hub_erforderlich" }
+            { namespace: "custom", key: "hub_kompatibilitaet" }
+
             { namespace: "custom", key: "oecosysteme" }
+            { namespace: "custom", key: "thread" }
+            { namespace: "custom", key: "matter" }
           ]
         ) {
           key
@@ -215,26 +223,36 @@ export default async function ProductPage({ params }: { params: { handle: string
     );
   }
 
-  const mf = Object.fromEntries(
-    (product.metafields || [])
-      .filter((m): m is Metafield => Boolean(m && typeof m.key === "string"))
-      .map((m) => [m.key, m.value])
-  ) as {
-    steuerregime?: string;
-    steuerhinweis_anzeige?: string;
-    zustand?: string;
-    gtin?: string;
-    mpn?: string;
-    funkstandard?: string;
-    frequenz?: string;
-    hub_erforderlich?: string;
-    oecosysteme?: string;
-  };
+const mf = Object.fromEntries(
+  (product.metafields || [])
+    .filter((m): m is Metafield => Boolean(m && typeof m.key === "string"))
+    .map((m) => [m.key, m.value])
+) as {
+  steuerregime?: string;
+  steuerhinweis_anzeige?: string;
+  zustand?: string;
+  gtin?: string;
+  mpn?: string;
+
+  garantie?: string;
+
+  funkstandard?: string;
+  frequenz?: string;
+
+  hub_erforderlich?: string;
+  hub_kompatibilitaet?: string;
+  hub_kompatibilitat?: string;
+
+  oecosysteme?: string;
+  thread?: string;
+  matter?: string;
+};
 
   const isDifferenz = mf.steuerregime === "differenz";
   const showTaxNotice = isDifferenz && mf.steuerhinweis_anzeige === "true";
-  const primaryVariant = product.variants?.[0] ?? null;
+  const primaryVariant = (product.variants && product.variants.length > 0) ? product.variants[0] : null;
   const hasMultipleVariants = (product.variants?.length || 0) > 1;
+  const isSoldOut = !primaryVariant || !primaryVariant.availableForSale;
 
   // Server-side config helpers
   function envString(name: string): string | undefined {
@@ -257,7 +275,13 @@ export default async function ProductPage({ params }: { params: { handle: string
   function conditionLabel(raw?: string): string | undefined {
     if (!raw) return undefined;
     const z = raw.toLowerCase();
-    if (z === "like_new" || z === "likenew" || z.includes("neuwertig")) return "Neuwertig";
+    if (
+  z === "like_new" ||
+  z === "likenew" ||
+  z.includes("neuwertig") ||
+  z === "wie neu" ||
+  z === "wieneu"
+) return "Neuwertig";
     if (z === "new" || z.includes("neu")) return "Neu";
     if (z === "refurbished" || z.includes("generalüberholt") || z.includes("generalueberholt")) return "Generalüberholt";
     if (z === "used" || z.includes("gebraucht")) return "Gebraucht";
@@ -449,6 +473,11 @@ export default async function ProductPage({ params }: { params: { handle: string
                   Differenzbesteuert (§25a UStG)
                 </span>
               )}
+              {isSoldOut && (
+                <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-800">
+                  Ausverkauft
+                </span>
+              )}
             </div>
             {product.descriptionHtml ? (
               <div
@@ -468,14 +497,20 @@ export default async function ProductPage({ params }: { params: { handle: string
                     <dd className="mt-1 text-sm text-slate-800">{product.vendor}</dd>
                   </div>
                 ) : null}
-
                 {primaryVariant?.sku ? (
                   <div>
                     <dt className="text-xs font-medium text-slate-500">SKU</dt>
                     <dd className="mt-1 text-sm text-slate-800">{primaryVariant.sku}</dd>
                   </div>
                 ) : null}
-
+                {mf.garantie ? (
+                  <div>
+                    <dt className="text-xs font-medium text-slate-500">Garantie</dt>
+                    <dd className="mt-1 text-sm text-slate-800">
+                      {Number.isFinite(Number(mf.garantie)) ? `${mf.garantie} Monate` : mf.garantie}
+                    </dd>
+                  </div>
+                ) : null}
                 {mf.gtin ? (
                   <div>
                     <dt className="text-xs font-medium text-slate-500">GTIN</dt>
@@ -522,7 +557,7 @@ export default async function ProductPage({ params }: { params: { handle: string
               </dl>
             </div>
 
-            {(mf.funkstandard || mf.frequenz || mf.hub_erforderlich || mf.oecosysteme) ? (
+            {(mf.funkstandard || mf.frequenz || mf.hub_erforderlich || mf.hub_kompatibilitaet || mf.hub_kompatibilitat || mf.oecosysteme || mf.thread || mf.matter) ? (
               <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
                 <div className="text-sm font-semibold text-slate-900">Kompatibilität</div>
                 <p className="mt-2 text-sm text-slate-600">
@@ -552,11 +587,36 @@ export default async function ProductPage({ params }: { params: { handle: string
                       </dd>
                     </div>
                   ) : null}
+                  {(mf.hub_kompatibilitaet || mf.hub_kompatibilitat) ? (
+                    <div className="sm:col-span-2">
+                      <dt className="text-xs font-medium text-slate-500">Hub-Kompatibilität</dt>
+                      <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
+                        {mf.hub_kompatibilitaet || mf.hub_kompatibilitat}
+                      </dd>
+                    </div>
+                  ) : null}
 
+                  {typeof mf.thread === "string" && mf.thread.length > 0 ? (
+                    <div>
+                      <dt className="text-xs font-medium text-slate-500">Thread</dt>
+                      <dd className="mt-1 text-sm text-slate-800">
+                        {mf.thread.toLowerCase() === "true" ? "Ja" : mf.thread.toLowerCase() === "false" ? "Nein" : mf.thread}
+                      </dd>
+                    </div>
+                  ) : null}
+
+                  {typeof mf.matter === "string" && mf.matter.length > 0 ? (
+                    <div>
+                      <dt className="text-xs font-medium text-slate-500">Matter</dt>
+                      <dd className="mt-1 text-sm text-slate-800">
+                        {mf.matter.toLowerCase() === "true" ? "Ja" : mf.matter.toLowerCase() === "false" ? "Nein" : mf.matter}
+                      </dd>
+                    </div>
+                  ) : null}
                   {mf.oecosysteme ? (
                     <div className="sm:col-span-2">
                       <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-                      <dd className="mt-1 text-sm text-slate-800">{mf.oecosysteme}</dd>
+                      <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
                     </div>
                   ) : null}
                 </dl>
