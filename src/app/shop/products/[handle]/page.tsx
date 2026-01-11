@@ -15,7 +15,8 @@ type Variant = {
   availableForSale: boolean;
   price: Money;
   sku?: string | null;
-  barcode?: string | null; 
+  barcode?: string | null;
+  quantityAvailable?: number | null;
   image?: ProductImage | null;
 };
 
@@ -64,6 +65,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
                     price: { amount: string; currencyCode: string };
                     sku?: string | null;
                     barcode?: string | null;
+                    quantityAvailable?: number | null;
                     image?: { url: string; altText?: string | null } | null;
                   };
                 }>;
@@ -246,6 +248,8 @@ export default async function ProductPage({
   const displayVariant = selectedVariant || primaryVariant;
 
   const isSoldOut = !displayVariant || !displayVariant.availableForSale;
+  const qtyAvail = displayVariant?.quantityAvailable;
+  const hasStockLimit = typeof qtyAvail === "number" && Number.isFinite(qtyAvail);
 
   // Server-side config helpers
   function envString(name: string): string | undefined {
@@ -781,16 +785,22 @@ export default async function ProductPage({
                       name="quantity"
                       type="number"
                       min={1}
+                      max={hasStockLimit ? (qtyAvail as number) : undefined}
                       defaultValue={1}
                       disabled={isSoldOut}
                       className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                     />
+                      {hasStockLimit ? (
+                        <div className="mt-2 text-xs text-slate-600">
+                          Verfügbar: <span className="font-semibold text-slate-900">{qtyAvail}</span>
+                        </div>
+                      ) : null}
                   </div>
 
                   <div className="flex items-end">
                     <button
                       type="submit"
-                      disabled={isSoldOut || !displayVariant?.id}
+                      disabled={isSoldOut || !displayVariant?.id || (hasStockLimit && (qtyAvail as number) <= 0)}
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
                       {isSoldOut ? "Ausverkauft" : "In den Warenkorb"}

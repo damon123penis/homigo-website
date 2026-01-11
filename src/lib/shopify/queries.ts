@@ -88,6 +88,7 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
             id
             title
             availableForSale
+            quantityAvailable
             sku
             barcode
             image { url altText }
