@@ -3,29 +3,37 @@ import React from "react";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify/client";
+import { GET_PRODUCT_BY_HANDLE } from "@/lib/shopify/queries";
 
 type Money = { amount: string; currencyCode: string };
+
+type ProductImage = { url: string; altText?: string | null };
+
 type Variant = {
   id: string;
   title: string;
   availableForSale: boolean;
   price: Money;
   sku?: string | null;
+  barcode?: string | null; 
+  image?: ProductImage | null;
 };
+
 type Metafield = { key: string; value: string | null };
+
 type Product = {
   id: string;
   handle: string;
   title: string;
   descriptionHtml: string;
+  vendor?: string;
   featuredImage?: { url: string; altText?: string | null };
+  images: ProductImage[];
   variants: Variant[];
   metafields?: Metafield[];
-  vendor?: string;
 };
 
 function siteUrl(): string {
-  // Prefer an explicit env var; fall back to Vercel URL; finally default to production domain.
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
   if (explicit) return explicit.replace(/\/$/, "");
 
@@ -34,97 +42,51 @@ function siteUrl(): string {
 
   return "https://www.homigo.tech";
 }
+
 async function fetchProductByHandle(handle: string): Promise<Product | null> {
-  const query = /* GraphQL */ `
-    query ProductByHandle($handle: String!) {
-      productByHandle(handle: $handle) {
-        id
-        handle
-        title
-        vendor
-        descriptionHtml
-        featuredImage {
-          url
-          altText
-        }
-        metafields(
-          identifiers: [
-            { namespace: "custom", key: "steuerregime" }
-            { namespace: "custom", key: "steuerhinweis_anzeige" }
-            { namespace: "custom", key: "zustand" }
-            { namespace: "custom", key: "gtin" }
-            { namespace: "custom", key: "mpn" }
-
-            { namespace: "custom", key: "garantie" }
-
-            { namespace: "custom", key: "funkstandard" }
-            { namespace: "custom", key: "frequenz" }
-
-            { namespace: "custom", key: "hub_erforderlich" }
-            { namespace: "custom", key: "hub_kompatibilitaet" }
-
-            { namespace: "custom", key: "oecosysteme" }
-            { namespace: "custom", key: "thread" }
-            { namespace: "custom", key: "matter" }
-          ]
-        ) {
-          key
-          namespace
-          type
-          value
-        }
-        variants(first: 50) {
-          edges {
-            node {
-              id
-              title
-              availableForSale
-              price {
-                amount
-                currencyCode
-              }
-              sku
-            }
-          }
-        }
-      }
-    }
-  `;
-
   type Resp = {
-    productByHandle: {
-      id: string;
-      handle: string;
-      title: string;
-      vendor: string;
-      descriptionHtml: string;
-      featuredImage?: { url: string; altText?: string | null } | null;
-      metafields?: Array<
-        | {
-            key: string;
-            namespace: string;
-            type: string;
-            value: string | null;
-          }
-        | null
-      > | null;
-      variants?: {
-        edges: Array<{
-          node: {
-            id: string;
-            title: string;
-            availableForSale: boolean;
-            price: { amount: string; currencyCode: string };
-            sku: string | null;
-          };
-        }>;
-      } | null;
-    } | null;
+    productByHandle:
+      | {
+          id: string;
+          handle: string;
+          title: string;
+          vendor?: string | null;
+          descriptionHtml: string;
+          featuredImage?: { url: string; altText?: string | null } | null;
+          images?: { edges: Array<{ node: { url: string; altText?: string | null } }> } | null;
+          variants?:
+            | {
+                edges: Array<{
+                  node: {
+                    id: string;
+                    title: string;
+                    availableForSale: boolean;
+                    price: { amount: string; currencyCode: string };
+                    sku?: string | null;
+                    barcode?: string | null;
+                    image?: { url: string; altText?: string | null } | null;
+                  };
+                }>;
+              }
+            | null;
+          metafields?:
+            | Array<
+                | {
+                    key: string;
+                    namespace: string;
+                    type: string;
+                    value: string | null;
+                  }
+                | null
+              >
+            | null;
+        }
+      | null;
   };
 
   let data: Resp;
   try {
-    data = await shopifyFetch<Resp>(query, { handle }, { cache: "no-store" });
+    data = await shopifyFetch<Resp>(GET_PRODUCT_BY_HANDLE, { handle }, { cache: "no-store" });
   } catch {
     return null;
   }
@@ -133,22 +95,25 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   if (!p) return null;
 
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
+
   const metafields: Metafield[] = (p.metafields || [])
     .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
-    .map((m) => ({
-      key: m.key,
-      value: m.value,
-    }));
+    .map((m) => ({ key: m.key, value: m.value }));
+
+  const images: ProductImage[] = (p.images?.edges || [])
+    .map((e) => e.node)
+    .filter((img): img is ProductImage => Boolean(img?.url));
 
   return {
     id: p.id,
     handle: p.handle,
     title: p.title,
+    vendor: p.vendor ?? undefined,
     descriptionHtml: p.descriptionHtml,
-    featuredImage: p.featuredImage || undefined,
+    featuredImage: p.featuredImage ?? undefined,
+    images,
     variants,
     metafields,
-    vendor: p.vendor,
   };
 }
 
@@ -171,7 +136,6 @@ export async function generateMetadata(
   { params }: { params: { handle: string } }
 ): Promise<Metadata> {
   const handle = decodeURIComponent(params.handle);
-
   const product = await fetchProductByHandle(handle);
 
   if (!product) {
@@ -184,6 +148,7 @@ export async function generateMetadata(
 
   const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
   const title = `${product.title} | homigo Shop`;
+
   const description =
     truncate(stripHtml(product.descriptionHtml), 160) ||
     "Smart-Home-Komponenten und Bundles – kuratiert von homigo. Einfach auswählen und sicher checkouten.";
@@ -210,7 +175,13 @@ export async function generateMetadata(
   };
 }
 
-export default async function ProductPage({ params }: { params: { handle: string } }) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: {
+  params: { handle: string };
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const handle = decodeURIComponent(params.handle);
 
   const product = await fetchProductByHandle(handle);
@@ -223,36 +194,58 @@ export default async function ProductPage({ params }: { params: { handle: string
     );
   }
 
-const mf = Object.fromEntries(
-  (product.metafields || [])
-    .filter((m): m is Metafield => Boolean(m && typeof m.key === "string"))
-    .map((m) => [m.key, m.value])
-) as {
-  steuerregime?: string;
-  steuerhinweis_anzeige?: string;
-  zustand?: string;
-  gtin?: string;
-  mpn?: string;
+  const p = product;
 
-  garantie?: string;
+  const mf = Object.fromEntries(
+    (p.metafields || [])
+      .filter((m): m is Metafield => Boolean(m && typeof m.key === "string"))
+      .map((m) => [m.key, m.value])
+  ) as {
+    steuerregime?: string;
+    steuerhinweis_anzeige?: string;
+    zustand?: string;
+    mpn?: string;
 
-  funkstandard?: string;
-  frequenz?: string;
+    garantie?: string;
 
-  hub_erforderlich?: string;
-  hub_kompatibilitaet?: string;
-  hub_kompatibilitat?: string;
+    funkstandard?: string;
+    frequenz?: string;
 
-  oecosysteme?: string;
-  thread?: string;
-  matter?: string;
-};
+    hub_erforderlich?: string;
+    hub_kompatibilitaet?: string;
+    hub_kompatibilitat?: string;
+
+    oecosysteme?: string;
+    thread?: string;
+    matter?: string;
+  };
 
   const isDifferenz = mf.steuerregime === "differenz";
   const showTaxNotice = isDifferenz && mf.steuerhinweis_anzeige === "true";
-  const primaryVariant = (product.variants && product.variants.length > 0) ? product.variants[0] : null;
-  const hasMultipleVariants = (product.variants?.length || 0) > 1;
-  const isSoldOut = !primaryVariant || !primaryVariant.availableForSale;
+
+  const primaryVariant = p.variants && p.variants.length > 0 ? p.variants[0] : null;
+
+  // Shopify hat häufig genau 1 Variante "Default Title" -> das ist faktisch "keine Variante" fürs UI
+  const hasRealVariantChoice = (() => {
+    const count = p.variants?.length || 0;
+    if (count <= 1) {
+      const only = p.variants?.[0];
+      if (!only) return false;
+      return only.title.trim().toLowerCase() !== "default title";
+    }
+    return true;
+  })();
+
+  const selectedVariantId =
+    typeof searchParams?.variant === "string" ? searchParams.variant : undefined;
+
+  const selectedVariant = selectedVariantId
+    ? p.variants.find((v) => v.id === selectedVariantId) || null
+    : null;
+
+  const displayVariant = selectedVariant || primaryVariant;
+
+  const isSoldOut = !displayVariant || !displayVariant.availableForSale;
 
   // Server-side config helpers
   function envString(name: string): string | undefined {
@@ -263,50 +256,89 @@ const mf = Object.fromEntries(
     }
     return undefined;
   }
-  // Read env vars
+
   const SHOP_RETURN_POLICY_URL = envString("SHOP_RETURN_POLICY_URL");
   const SHOP_RETURN_DAYS_RAW = envString("SHOP_RETURN_DAYS");
-  const SHOP_RETURN_DAYS = SHOP_RETURN_DAYS_RAW && !isNaN(Number(SHOP_RETURN_DAYS_RAW)) ? parseInt(SHOP_RETURN_DAYS_RAW, 10) : undefined;
+  const SHOP_RETURN_DAYS =
+    SHOP_RETURN_DAYS_RAW && !isNaN(Number(SHOP_RETURN_DAYS_RAW))
+      ? parseInt(SHOP_RETURN_DAYS_RAW, 10)
+      : undefined;
+
   const SHOP_SHIPPING_COUNTRY = envString("SHOP_SHIPPING_COUNTRY") || undefined;
   const SHOP_SHIPPING_COST = envString("SHOP_SHIPPING_COST");
-  const SHOP_SHIPPING_CURRENCY = envString("SHOP_SHIPPING_CURRENCY") || primaryVariant?.price.currencyCode;
+  const SHOP_SHIPPING_CURRENCY =
+    envString("SHOP_SHIPPING_CURRENCY") || displayVariant?.price.currencyCode || "EUR";
+
   const NEXT_PUBLIC_BRAND_NAME = envString("NEXT_PUBLIC_BRAND_NAME") || "homigo";
 
   function conditionLabel(raw?: string): string | undefined {
     if (!raw) return undefined;
     const z = raw.toLowerCase();
     if (
-  z === "like_new" ||
-  z === "likenew" ||
-  z.includes("neuwertig") ||
-  z === "wie neu" ||
-  z === "wieneu"
-) return "Neuwertig";
+      z === "like_new" ||
+      z === "likenew" ||
+      z.includes("neuwertig") ||
+      z === "wie neu" ||
+      z === "wieneu"
+    )
+      return "Neuwertig";
     if (z === "new" || z.includes("neu")) return "Neu";
-    if (z === "refurbished" || z.includes("generalüberholt") || z.includes("generalueberholt")) return "Generalüberholt";
+    if (
+      z === "refurbished" ||
+      z.includes("generalüberholt") ||
+      z.includes("generalueberholt")
+    )
+      return "Generalüberholt";
     if (z === "used" || z.includes("gebraucht")) return "Gebraucht";
-    // Fallback: prettify snake_case
     return raw.replace(/_/g, " ");
   }
 
   const itemConditionUrl = (() => {
     const z = (mf.zustand || "").toLowerCase();
     if (!z) return undefined;
-
-    // Basic mapping to Schema.org itemCondition URLs
     if (z.includes("neu")) return "https://schema.org/NewCondition";
     if (z.includes("refurb") || z.includes("generalüberholt") || z.includes("generalueberholt")) {
       return "https://schema.org/RefurbishedCondition";
     }
-    // Treat "neuwertig" (like-new) and any other non-empty condition as used.
     return "https://schema.org/UsedCondition";
   })();
 
-  const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
+  const canonicalUrl = `${siteUrl()}/shop/products/${p.handle}`;
   const seoDescription =
-    truncate(stripHtml(product.descriptionHtml), 160) ||
+    truncate(stripHtml(p.descriptionHtml), 160) ||
     "Smart-Home-Komponenten und Bundles – kuratiert von homigo. Einfach auswählen und sicher checkouten.";
-  const seoImage = product.featuredImage?.url || `${siteUrl()}/images/Logo.png`;
+  const seoImage = p.featuredImage?.url || `${siteUrl()}/images/Logo.png`;
+
+  // Gallery: variant image -> featured -> remaining product images (dedup by url)
+  const gallery: ProductImage[] = (() => {
+    const out: ProductImage[] = [];
+    const seen = new Set<string>();
+
+    const push = (img?: ProductImage | null) => {
+      if (!img?.url) return;
+      if (seen.has(img.url)) return;
+      seen.add(img.url);
+      out.push(img);
+    };
+
+    push(displayVariant?.image ?? null);
+    push(p.featuredImage ?? null);
+    for (const img of p.images || []) push(img);
+
+    return out;
+  })();
+
+  const imgParam = typeof searchParams?.img === "string" ? searchParams.img : "0";
+  const imgIndex = Math.max(0, Math.min(gallery.length - 1, Number.parseInt(imgParam, 10) || 0));
+  const activeImage = gallery[imgIndex] || p.featuredImage || null;
+
+  const buildProductUrl = (next: { variant?: string; img?: number } = {}) => {
+    const url = new URL(`${siteUrl()}/shop/products/${encodeURIComponent(p.handle)}`);
+    const v = next.variant ?? selectedVariantId;
+    if (v) url.searchParams.set("variant", v);
+    if (typeof next.img === "number") url.searchParams.set("img", String(next.img));
+    return url.pathname + url.search;
+  };
 
   // Server Action: adds to cart via existing /api/cart route, preserving cookie-based cartId.
   async function addToCartAction(formData: FormData) {
@@ -320,7 +352,6 @@ const mf = Object.fromEntries(
       redirect(`/shop/products/${encodeURIComponent(handle)}?error=missing_variant`);
     }
 
-    // Call our API route on the same deployment.
     const base = siteUrl();
     const cookieHeader = cookies().toString();
     const userAgent = headers().get("user-agent") || "";
@@ -344,10 +375,8 @@ const mf = Object.fromEntries(
       redirect(`/shop/products/${encodeURIComponent(handle)}?error=add_failed`);
     }
 
-    // If the API returns a Set-Cookie (new cartId), persist it.
     const setCookie = res.headers.get("set-cookie");
     if (setCookie) {
-      // Best effort parsing: look for "cartId=..." in Set-Cookie
       const match = /(?:^|,\s*)cartId=([^;]+)/i.exec(setCookie);
       if (match?.[1]) {
         cookies().set("cartId", match[1], {
@@ -367,34 +396,32 @@ const mf = Object.fromEntries(
     "@context": "https://schema.org",
     "@type": "Product",
     url: canonicalUrl,
-    name: product.title,
-    description: stripHtml(product.descriptionHtml) || seoDescription,
-    image: product.featuredImage?.url ? [product.featuredImage.url] : [seoImage],
-    sku: product.handle,
+    name: p.title,
+    description: stripHtml(p.descriptionHtml) || seoDescription,
+    image: activeImage?.url ? [activeImage.url] : [seoImage],
+    sku: p.handle,
     brand: { "@type": "Brand", name: NEXT_PUBLIC_BRAND_NAME },
     ...(itemConditionUrl ? { itemCondition: itemConditionUrl } : null),
-    ...(mf.gtin
-      ? (mf.gtin.length === 13
-          ? { gtin13: mf.gtin }
-          : mf.gtin.length === 14
-          ? { gtin14: mf.gtin }
-          : { gtin: mf.gtin })
+    ...(displayVariant?.barcode
+      ? displayVariant?.barcode.length === 13
+        ? { gtin13: displayVariant?.barcode }
+        : displayVariant?.barcode.length === 14
+        ? { gtin14: displayVariant?.barcode }
+        : { gtin: displayVariant?.barcode }
       : {}),
     ...(mf.mpn ? { mpn: mf.mpn } : {}),
-    offers: primaryVariant
+    offers: displayVariant
       ? {
           "@type": "Offer",
-          priceCurrency: primaryVariant.price.currencyCode,
-          price: primaryVariant.price.amount,
+          priceCurrency: displayVariant.price.currencyCode,
+          price: displayVariant.price.amount,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            priceCurrency: primaryVariant.price.currencyCode,
-            price: primaryVariant.price.amount,
-            // For differenzbesteuerte Ware wird die USt. nicht separat ausgewiesen.
-            // In strukturierten Daten modellieren wir das als "VAT not included".
+            priceCurrency: displayVariant.price.currencyCode,
+            price: displayVariant.price.amount,
             valueAddedTaxIncluded: !isDifferenz,
           },
-          availability: primaryVariant.availableForSale
+          availability: displayVariant.availableForSale
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
           url: canonicalUrl,
@@ -425,8 +452,11 @@ const mf = Object.fromEntries(
                 hasMerchantReturnPolicy: {
                   "@type": "MerchantReturnPolicy",
                   ...(SHOP_RETURN_POLICY_URL ? { url: SHOP_RETURN_POLICY_URL } : {}),
-                  ...(typeof SHOP_RETURN_DAYS === "number" ? { merchantReturnDays: SHOP_RETURN_DAYS } : {}),
-                  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  ...(typeof SHOP_RETURN_DAYS === "number"
+                    ? { merchantReturnDays: SHOP_RETURN_DAYS }
+                    : {}),
+                  returnPolicyCategory:
+                    "https://schema.org/MerchantReturnFiniteReturnWindow",
                 },
               }
             : {}),
@@ -434,13 +464,12 @@ const mf = Object.fromEntries(
       : undefined,
   };
 
-  // Details & Kompatibilität reusable box
   function DetailsCompatibilityBox() {
     const hasAny =
-      product.vendor ||
-      primaryVariant?.sku ||
+      p.vendor ||
+      displayVariant?.sku ||
       mf.garantie ||
-      mf.gtin ||
+      displayVariant?.barcode ||
       mf.mpn ||
       mf.funkstandard ||
       mf.frequenz ||
@@ -450,33 +479,38 @@ const mf = Object.fromEntries(
       mf.oecosysteme ||
       mf.thread ||
       mf.matter;
+
     if (!hasAny) return null;
+
     return (
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
-        <div className="text-sm font-semibold text-slate-900">Details &amp; Kompatibilität</div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="text-sm font-semibold text-slate-900">
+          Details &amp; Kompatibilität
+        </div>
         <p className="mt-2 text-sm text-slate-600">
-          Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst, ob es zu deinem Setup passt.
+          Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst,
+          ob es zu deinem Setup passt.
         </p>
 
         <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {product.vendor ? (
+          {p.vendor ? (
             <div>
               <dt className="text-xs font-medium text-slate-500">Hersteller</dt>
-              <dd className="mt-1 text-sm text-slate-800">{product.vendor}</dd>
+              <dd className="mt-1 text-sm text-slate-800">{p.vendor}</dd>
             </div>
           ) : null}
 
-          {primaryVariant?.sku ? (
+          {displayVariant?.sku ? (
             <div>
               <dt className="text-xs font-medium text-slate-500">SKU</dt>
-              <dd className="mt-1 text-sm text-slate-800">{primaryVariant.sku}</dd>
+              <dd className="mt-1 text-sm text-slate-800">{displayVariant.sku}</dd>
             </div>
           ) : null}
 
-          {mf.gtin ? (
+          {displayVariant?.barcode ? (
             <div>
               <dt className="text-xs font-medium text-slate-500">GTIN</dt>
-              <dd className="mt-1 text-sm text-slate-800">{mf.gtin}</dd>
+              <dd className="mt-1 text-sm text-slate-800">{displayVariant?.barcode}</dd>
             </div>
           ) : null}
 
@@ -561,14 +595,22 @@ const mf = Object.fromEntries(
           {mf.oecosysteme ? (
             <div className="sm:col-span-2">
               <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
+                {mf.oecosysteme}
+              </dd>
             </div>
           ) : null}
         </dl>
 
-        {(mf.funkstandard || mf.hub_erforderlich || mf.hub_kompatibilitaet || mf.hub_kompatibilitat || mf.oecosysteme || mf.thread || mf.matter) ? (
+        {(mf.funkstandard ||
+          mf.hub_erforderlich ||
+          mf.hub_kompatibilitaet ||
+          mf.hub_kompatibilitat ||
+          mf.oecosysteme ||
+          mf.thread ||
+          mf.matter) ? (
           <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
-            Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub (z. B. Zigbee-Gateway) oder deinem System (Home Assistant,
+            Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub oder deinem System (Home Assistant,
             Apple Home, Alexa, Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
           </div>
         ) : null}
@@ -585,13 +627,14 @@ const mf = Object.fromEntries(
 
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-10 md:grid-cols-2 items-start">
+          {/* LEFT: Image + Details box (desktop below image) */}
           <div className="self-start">
             <div className="inline-block rounded-2xl border border-slate-200 bg-white p-4">
-              {product.featuredImage?.url ? (
+              {activeImage?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={product.featuredImage.url}
-                  alt={product.featuredImage.altText || product.title}
+                  src={activeImage.url}
+                  alt={activeImage.altText || p.title}
                   className="h-auto w-auto max-w-full max-h-[520px] rounded-xl object-contain"
                 />
               ) : (
@@ -599,68 +642,136 @@ const mf = Object.fromEntries(
                   Kein Bild
                 </div>
               )}
+
+              {gallery.length > 1 ? (
+                <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                  {gallery.map((img, idx) => {
+                    const href = buildProductUrl({ img: idx });
+                    const isActive = idx === imgIndex;
+
+                    return (
+                      <a
+                        key={`${img.url}-${idx}`}
+                        href={href}
+                        className={`shrink-0 rounded-xl border bg-white p-1 transition ${
+                          isActive
+                            ? "border-emerald-500 ring-2 ring-emerald-500/20"
+                            : "border-slate-200 hover:border-slate-300"
+                        }`}
+                        aria-label={`Bild ${idx + 1} anzeigen`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img.url}
+                          alt={img.altText || p.title}
+                          className="h-16 w-16 rounded-lg object-cover"
+                          loading="lazy"
+                        />
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
+
+            {/* Desktop: Details box under image */}
             <div className="mt-6 hidden md:block">
               <DetailsCompatibilityBox />
             </div>
           </div>
 
+          {/* RIGHT: Title + badges + checkout + (mobile details box) + description */}
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">{product.title}</h1>
+            <h1 className="text-3xl font-bold text-slate-900">{p.title}</h1>
+
             <div className="mt-2 flex flex-wrap gap-2">
-              {mf.zustand && (
+              {mf.zustand ? (
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                   Zustand: {conditionLabel(mf.zustand)}
                 </span>
-              )}
-              {isDifferenz && (
+              ) : null}
+
+              {isDifferenz ? (
                 <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
                   Differenzbesteuert (§25a UStG)
                 </span>
-              )}
-              {isSoldOut && (
+              ) : null}
+
+              {isSoldOut ? (
                 <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-800">
                   Ausverkauft
                 </span>
-              )}
+              ) : null}
             </div>
+
+            {/* Checkout box directly after badges */}
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
               {isSoldOut ? (
-  <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
-    <span className="font-semibold">Ausverkauft.</span> Dieses Produkt ist aktuell nicht verfügbar.
-    Wenn du willst, schreib uns kurz – wir informieren dich bei Verfügbarkeit.
-  </div>
-) : null}
+                <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
+                  <span className="font-semibold">Ausverkauft.</span> Dieses Produkt ist aktuell nicht verfügbar.
+                  Wenn du willst, schreib uns kurz – wir informieren dich bei Verfügbarkeit.
+                </div>
+              ) : null}
+
               <div className="flex items-baseline justify-between gap-4">
-                <div className="text-sm font-medium text-slate-700">{hasMultipleVariants ? "Variante" : "Preis"}</div>
-                {primaryVariant ? (
+                <div className="text-sm font-medium text-slate-700">Preis</div>
+                {displayVariant ? (
                   <div className="text-lg font-semibold text-slate-900">
-                    {Number(primaryVariant.price.amount).toFixed(2)} {primaryVariant.price.currencyCode}
+                    {Number(displayVariant.price.amount).toFixed(2)}{" "}
+                    {displayVariant.price.currencyCode}
                   </div>
                 ) : null}
               </div>
 
+              {/* Variant selection only if there is a real choice */}
+              {hasRealVariantChoice ? (
+                <form
+                  method="GET"
+                  action={`/shop/products/${encodeURIComponent(p.handle)}`}
+                  className="mt-3"
+                >
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium text-slate-700">
+                      Option wählen
+                    </label>
+
+                    <div className="flex gap-2">
+                      <select
+                        name="variant"
+                        defaultValue={displayVariant?.id || primaryVariant?.id || ""}
+                        className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                      >
+                        {p.variants.map((v) => (
+                          <option key={v.id} value={v.id} disabled={!v.availableForSale}>
+                            {v.title}
+                            {!v.availableForSale ? " (nicht verfügbar)" : ""}
+                          </option>
+                        ))}
+                      </select>
+
+                      <button
+                        type="submit"
+                        className="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                      >
+                        Anzeigen
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              ) : null}
+
               <form action={addToCartAction} className="mt-2">
-                {hasMultipleVariants ? (
-                  <select
-                    name="merchandiseId"
-                    defaultValue={primaryVariant?.id || ""}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-                  >
-                    {product.variants.map((v) => (
-                      <option key={v.id} value={v.id} disabled={!v.availableForSale}>
-                        {v.title}
-                        {!v.availableForSale ? " (nicht verfügbar)" : ""}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input type="hidden" name="merchandiseId" value={primaryVariant?.id || ""} />
-                )}
+                <input
+                  type="hidden"
+                  name="merchandiseId"
+                  value={displayVariant?.id || ""}
+                />
 
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Menge</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Menge
+                    </label>
                     <input
                       name="quantity"
                       type="number"
@@ -674,7 +785,7 @@ const mf = Object.fromEntries(
                   <div className="flex items-end">
                     <button
                       type="submit"
-                      disabled={isSoldOut}
+                      disabled={isSoldOut || !displayVariant?.id}
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
                       {isSoldOut ? "Ausverkauft" : "In den Warenkorb"}
@@ -687,22 +798,27 @@ const mf = Object.fromEntries(
                 </p>
               </form>
             </div>
+
+            {/* Mobile: Details box under checkout */}
             <div className="mt-6 md:hidden">
               <DetailsCompatibilityBox />
             </div>
-            {product.descriptionHtml ? (
+
+            {/* Description after checkout */}
+            {p.descriptionHtml ? (
               <div
-                className="mt-3 text-slate-600 leading-relaxed prose prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                className="mt-6 prose prose-slate max-w-none"
+                dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
               />
             ) : (
-              <p className="mt-3 text-slate-600">Keine Beschreibung vorhanden.</p>
+              <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
-            {showTaxNotice && (
+
+            {showTaxNotice ? (
               <p className="mt-4 text-sm text-slate-600">
                 Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
               </p>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export const GET_COLLECTION_BY_HANDLE = /* GraphQL */ `
 
 export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
   query ProductByHandle($handle: String!) {
-    product(handle: $handle) {
+    productByHandle(handle: $handle) {
       id
       handle
       title
@@ -65,6 +65,15 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
           { namespace: "custom", key: "steuerregime" }
           { namespace: "custom", key: "steuerhinweis_anzeige" }
           { namespace: "custom", key: "zustand" }
+          { namespace: "custom", key: "mpn" }
+          { namespace: "custom", key: "garantie" }
+          { namespace: "custom", key: "funkstandard" }
+          { namespace: "custom", key: "frequenz" }
+          { namespace: "custom", key: "hub_erforderlich" }
+          { namespace: "custom", key: "hub_kompatibilitaet" }
+          { namespace: "custom", key: "oecosysteme" }
+          { namespace: "custom", key: "thread" }
+          { namespace: "custom", key: "matter" }
         ]
       ) {
         key
@@ -80,6 +89,8 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
             title
             availableForSale
             sku
+            barcode
+            image { url altText }
             price { amount currencyCode }
           }
         }
