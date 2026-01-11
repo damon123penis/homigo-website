@@ -96,21 +96,21 @@ export default async function ProductsPage({
       ? [fRaw]
       : [];
 
-const decodedFilters = selectedF
-  .map((v) => {
-    try {
-      // searchParams sind in Next.js i.d.R. bereits decoded -> direkt JSON.parse
-      return JSON.parse(v);
-    } catch {
-      // fallback falls doch encoded ankommt
+  const decodedFilters = selectedF
+    .map((v) => {
       try {
-        return JSON.parse(decodeURIComponent(v));
+        // searchParams sind in Next.js i.d.R. bereits decoded -> direkt JSON.parse
+        return JSON.parse(v);
       } catch {
-        return null;
+        // fallback falls doch encoded ankommt
+        try {
+          return JSON.parse(decodeURIComponent(v));
+        } catch {
+          return null;
+        }
       }
-    }
-  })
-  .filter((v): v is Record<string, any> => Boolean(v && typeof v === "object"));
+    })
+    .filter((v): v is Record<string, any> => Boolean(v && typeof v === "object"));
 
   // Optional price range filter.
   const priceMinRaw = typeof searchParams?.price_min === "string" ? searchParams.price_min.trim() : "";
@@ -138,16 +138,6 @@ const decodedFilters = selectedF
 
   const selectedSet = new Set(selectedF);
   const filterDefs = data.products.filters || [];
-  const inputStr = typeof v?.input === "string" ? v.input : "";
-  const checked = selectedSet.has(inputStr);
-
-<input
-  type="checkbox"
-  name="f"
-  value={inputStr}
-  defaultChecked={checked}
-  className="h-4 w-4 rounded border-slate-300"
-/>
 
   return (
     <div className="space-y-8">
@@ -225,34 +215,35 @@ const decodedFilters = selectedF
                 <div key={f.id} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
                   <div className="text-sm font-semibold text-slate-900">{f.label}</div>
                   <div className="mt-3 space-y-2">
-                    {values.map((v) => {
-                      const inputStr = typeof v?.input === "string" ? v.input : "";
-                      if (!inputStr) return null;
-                      const encoded = encodeInput(inputStr);
-                      const checked = selectedSet.has(encoded);
-                      const count = typeof v?.count === "number" ? v.count : undefined;
+{values.map((v) => {
+  const inputStr = typeof v?.input === "string" ? v.input : "";
+  if (!inputStr) return null;
 
-                      return (
-                        <label
-                          key={v.id || encoded}
-                          className="flex items-center justify-between gap-3 text-sm text-slate-800"
-                        >
-                          <span className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              name="f"
-                              value={encoded}
-                              defaultChecked={checked}
-                              className="h-4 w-4 rounded border-slate-300"
-                            />
-                            <span>{v.label}</span>
-                          </span>
-                          {typeof count === "number" ? (
-                            <span className="text-xs text-slate-500">{count}</span>
-                          ) : null}
-                        </label>
-                      );
-                    })}
+  const checked = selectedSet.has(inputStr);
+  const count = typeof v?.count === "number" ? v.count : undefined;
+
+  return (
+    <label
+      key={v.id || inputStr}
+      className="flex items-center justify-between gap-3 text-sm text-slate-800"
+    >
+      <span className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          name="f"
+          value={inputStr}
+          defaultChecked={checked}
+          className="h-4 w-4 rounded border-slate-300"
+        />
+        <span>{v.label}</span>
+      </span>
+
+      {typeof count === "number" ? (
+        <span className="text-xs text-slate-500">{count}</span>
+      ) : null}
+    </label>
+  );
+})}
                   </div>
                 </div>
               );
