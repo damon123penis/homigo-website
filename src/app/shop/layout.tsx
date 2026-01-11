@@ -66,7 +66,13 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
                   href="/shop?view=collections"
                   className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100"
                 >
-                  Collections
+                  Kategorien
+                </Link>
+                <Link
+                  href="/shop?view=products"
+                  className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100"
+                >
+                  Produkte
                 </Link>
               </nav>
             </div>
@@ -123,17 +129,6 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-slate-600">
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <Link href="/impressum" className="hover:underline">
-              Impressum
-            </Link>
-            <Link href="/datenschutz" className="hover:underline">
-              Datenschutz
-            </Link>
-            <Link href="/kontakt" className="hover:underline">
-              Kontakt
-            </Link>
-          </div>
           <p className="mt-3 text-xs text-slate-500">
             Checkout und Zahlung erfolgen über Shopify.
           </p>

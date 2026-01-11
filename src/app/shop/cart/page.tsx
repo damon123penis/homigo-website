@@ -77,7 +77,7 @@ function persistCartIdFromSetCookie(setCookie: string | null) {
     const cartId = match[1];
     cookies().set({
       name: 'homigo_cart_id',
-      value: cartId,
+      value: homigo_cart_id,
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
