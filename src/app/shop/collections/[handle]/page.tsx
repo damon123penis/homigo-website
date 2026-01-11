@@ -29,14 +29,18 @@ type Resp = {
 };
 
 export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
+  const handle = decodeURIComponent(params.handle);
+  const canonicalHandle = encodeURIComponent(handle);
+
   return {
-    title: `Kategorie | ${params.handle} | homigo`,
-    alternates: { canonical: `https://www.homigo.tech/shop/collections/${params.handle}` },
+    title: `Kategorie | ${handle} | homigo`,
+    alternates: { canonical: `https://www.homigo.tech/shop/collections/${canonicalHandle}` },
   };
 }
 
 export default async function CollectionPage({ params }: { params: { handle: string } }) {
-  const data = await shopifyFetch<Resp>(GET_COLLECTION_BY_HANDLE, { handle: params.handle, first: 50 });
+  const handle = decodeURIComponent(params.handle);
+  const data = await shopifyFetch<Resp>(GET_COLLECTION_BY_HANDLE, { handle, first: 50 });
 
   if (!data.collection) {
     return <div className="text-slate-700">Kategorie nicht gefunden.</div>;
@@ -55,7 +59,7 @@ export default async function CollectionPage({ params }: { params: { handle: str
         {c.products.edges.map(({ node }) => (
           <Link
             key={node.id}
-            href={`/shop/products/${node.handle}`}
+            href={`/shop/products/${encodeURIComponent(node.handle)}`}
             className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition"
           >
             <div className="aspect-square overflow-hidden rounded-xl bg-slate-50">
