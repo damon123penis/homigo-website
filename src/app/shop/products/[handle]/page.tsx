@@ -340,7 +340,7 @@ export default async function ProductPage({
     return url.pathname + url.search;
   };
 
-  // Server Action: adds to cart via existing /api/cart route, preserving cookie-based cartId.
+  // Server Action: adds to cart via existing /api/cart route, preserving cookie-based homigo_cart_id.
   async function addToCartAction(formData: FormData) {
     "use server";
 
@@ -382,9 +382,9 @@ export default async function ProductPage({
 
     const setCookie = res.headers.get("set-cookie");
     if (setCookie) {
-      const match = /(?:^|,\s*)cartId=([^;]+)/i.exec(setCookie);
+      const match = /(?:^|,\s*)homigo_cart_id=([^;]+)/i.exec(setCookie);
       if (match?.[1]) {
-        cookies().set("cartId", match[1], {
+        cookies().set("homigo_cart_id", match[1], {
           httpOnly: true,
           sameSite: "lax",
           secure: true,
