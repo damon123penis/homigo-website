@@ -160,6 +160,15 @@ export default function RootLayout({
               aria-label="Hauptnavigation"
             >
               <Link
+                href="/shop"
+                className={navClass(isActive('/shop'))}
+                aria-current={
+                  isActive('/shop') ? 'page' : undefined
+                }
+              >
+                Shop
+              </Link>
+              <Link
                 href="/leistungen-im-detail"
                 className={navClass(isActive('/leistungen-im-detail'))}
                 aria-current={
