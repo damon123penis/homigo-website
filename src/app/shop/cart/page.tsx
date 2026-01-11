@@ -159,56 +159,32 @@ export default async function CartPage({
 
   const errorFromRedirect = typeof searchParams?.error === 'string' ? searchParams.error : null;
 
-  async function updateLineAction(formData: FormData) {
-    'use server';
+async function updateLineAction(formData: FormData) {
+  'use server';
 
-    const lineId = String(formData.get('lineId') || '');
+  const lineId = String(formData.get('lineId') || '');
+  if (!lineId) return;
 
-    // +/- buttons submit a delta; manual changes use the input `quantity`.
-    const deltaRaw = formData.get('delta');
-    const currentQtyRaw = formData.get('currentQty');
-    const inputQuantityRaw = formData.get('quantity');
+  const inputQuantityRaw = formData.get('quantity');
+  const raw = typeof inputQuantityRaw === 'string' && inputQuantityRaw.length > 0 ? inputQuantityRaw : '1';
+  const quantity = Math.max(1, Number.parseInt(raw, 10) || 1);
 
-    let nextQty: number | null = null;
+  const maxQtyRaw = String(formData.get('maxQty') || '');
+  const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
 
-    if (typeof deltaRaw === 'string' && deltaRaw.length > 0) {
-      const delta = Number.parseInt(deltaRaw, 10);
-      const current = typeof currentQtyRaw === 'string' && currentQtyRaw.length > 0 ? Number.parseInt(currentQtyRaw, 10) : NaN;
-      if (Number.isFinite(delta) && Number.isFinite(current)) {
-        nextQty = current + delta;
-      }
-    }
-
-    if (nextQty === null) {
-      const raw =
-        typeof inputQuantityRaw === 'string' && inputQuantityRaw.length > 0
-          ? inputQuantityRaw
-          : '1';
-      nextQty = Number.parseInt(raw, 10) || 1;
-    }
-
-    const quantity = Math.max(1, nextQty);
-
-    const maxQtyRaw = String(formData.get('maxQty') || '');
-    const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
-
-    if (typeof maxQty === 'number' && Number.isFinite(maxQty) && quantity > maxQty) {
-      redirect(`/shop/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
-    }
-
-    if (!lineId) return;
-
-    const result = await postCartAction({ action: 'update', lineId, quantity });
-
-    if (!result.ok) {
-      // Keep it simple: redirect-style error handling via query param
-      // (works without client-side state)
-      redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
-    }
-
-    revalidatePath('/shop/cart');
-    redirect('/shop/cart');
+  if (typeof maxQty === 'number' && Number.isFinite(maxQty) && quantity > maxQty) {
+    redirect(`/shop/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
   }
+
+  const result = await postCartAction({ action: 'update', lineId, quantity });
+
+  if (!result.ok) {
+    redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
+  }
+
+  revalidatePath('/shop/cart');
+  redirect('/shop/cart');
+}
 
   async function removeLineAction(formData: FormData) {
     'use server';
@@ -260,8 +236,9 @@ export default async function CartPage({
                 const quantityAvailable = l.merchandise?.quantityAvailable;
                 const qtyAvailNum = typeof quantityAvailable === 'number' ? quantityAvailable : undefined;
                 const hasStockLimit = typeof qtyAvailNum === 'number' && Number.isFinite(qtyAvailNum);
-                const isOverStock = hasStockLimit && l.quantity > (qtyAvailNum as number);
-                const atStockLimit = hasStockLimit && l.quantity >= (qtyAvailNum as number);
+                // Removed these two lines as per instructions:
+                // const isOverStock = hasStockLimit && l.quantity > (qtyAvailNum as number);
+                // const atStockLimit = hasStockLimit && l.quantity >= (qtyAvailNum as number);
 
                 return (
                   <div key={l.id} className="flex gap-4 border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
@@ -292,22 +269,10 @@ export default async function CartPage({
                         <div className="text-right text-sm text-slate-700">{formatMoney(l.cost?.totalAmount)}</div>
                       </div>
 
-                      <div className="mt-3 flex items-center justify-between gap-3">
+                      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <form action={updateLineAction} className="flex items-center gap-2">
                           <input type="hidden" name="lineId" value={l.id} />
                           <input type="hidden" name="maxQty" value={hasStockLimit ? String(qtyAvailNum) : ''} />
-                          <input type="hidden" name="currentQty" value={String(l.quantity)} />
-
-                          <button
-                            type="submit"
-                            name="delta"
-                            value={-1}
-                            className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
-                            aria-label="Menge reduzieren"
-                            disabled={l.quantity <= 1}
-                          >
-                            −
-                          </button>
 
                           <input
                             type="number"
@@ -315,24 +280,13 @@ export default async function CartPage({
                             min={1}
                             max={hasStockLimit ? (qtyAvailNum as number) : undefined}
                             defaultValue={l.quantity}
-                            className="h-10 w-14 rounded-xl border border-slate-300 bg-white px-2 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                            className="h-10 w-20 rounded-xl border border-slate-300 bg-white px-2 text-center text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                             aria-label="Menge"
                           />
 
                           <button
                             type="submit"
-                            name="delta"
-                            value={1}
-                            className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
-                            aria-label="Menge erhöhen"
-                            disabled={atStockLimit}
-                          >
-                            +
-                          </button>
-
-                          <button
-                            type="submit"
-                            className="ml-2 rounded-xl bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                            className="rounded-xl bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
                           >
                             Aktualisieren
                           </button>
@@ -342,7 +296,7 @@ export default async function CartPage({
                           <input type="hidden" name="lineId" value={l.id} />
                           <button
                             type="submit"
-                            className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                            className="h-10 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-900 hover:bg-slate-50"
                           >
                             Entfernen
                           </button>
@@ -351,11 +305,6 @@ export default async function CartPage({
                       {hasStockLimit ? (
                         <div className="mt-2 text-xs text-slate-600">
                           Verfügbar: <span className="font-semibold text-slate-900">{qtyAvailNum}</span>
-                          {isOverStock ? (
-                            <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-rose-800">
-                              Menge überschreitet den verfügbaren Bestand.
-                            </span>
-                          ) : null}
                         </div>
                       ) : null}
                     </div>
