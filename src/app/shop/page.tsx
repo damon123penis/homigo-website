@@ -4,7 +4,9 @@ import { shopifyFetch } from "@/lib/shopify/client";
 import { GET_COLLECTIONS } from "@/lib/shopify/queries";
 import type { Metadata } from "next";
 
-export const revalidate = 60 * 30; // 30 Minuten
+// Collections / images can be updated frequently in Shopify.
+// Force dynamic rendering so newly added collection images/products appear immediately.
+export const dynamic = "force-dynamic";
 
 const SITE_URL = (() => {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
@@ -60,7 +62,11 @@ type CollectionsResp = {
 };
 
 export default async function ShopHome() {
-  const data = await shopifyFetch<CollectionsResp>(GET_COLLECTIONS, { first: 20 });
+  const data = await shopifyFetch<CollectionsResp>(
+    GET_COLLECTIONS,
+    { first: 20 },
+    { cache: "no-store" }
+  );
 
   const canonicalUrl = `${SITE_URL}/shop`;
   const jsonLd = {
@@ -110,7 +116,11 @@ export default async function ShopHome() {
                   height={500}
                   className="h-full w-full object-cover group-hover:scale-[1.02] transition"
                 />
-              ) : null}
+              ) : (
+                <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-slate-400">
+                  Kein Kategoriebild
+                </div>
+              )}
             </div>
             <div className="mt-4">
               <div className="text-lg font-semibold text-slate-900">{node.title}</div>

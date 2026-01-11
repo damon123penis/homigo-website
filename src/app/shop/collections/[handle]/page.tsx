@@ -56,6 +56,21 @@ export default async function CollectionPage({ params }: { params: { handle: str
 
   return (
     <div className="space-y-8">
+      {c.image?.url ? (
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <div className="relative aspect-[16/6] w-full bg-slate-50">
+            <Image
+              src={c.image.url}
+              alt={c.image.altText || c.title}
+              fill
+              sizes="(min-width: 1024px) 960px, 100vw"
+              className="object-cover"
+              priority
+            />
+          </div>
+        </div>
+      ) : null}
+
       <div className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold text-slate-900">{c.title}</h1>
         {c.description ? <p className="text-slate-600 max-w-3xl">{c.description}</p> : null}
