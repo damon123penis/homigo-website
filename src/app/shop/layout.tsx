@@ -49,7 +49,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
   const cartCount = await getCartCount();
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-4">
           <div className="flex items-center justify-between gap-4">
@@ -125,15 +125,16 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 pt-10 pb-0">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 pt-10 pb-10">
+        {children}
 
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-8 text-center text-sm text-slate-600">
-          <p className="text-xs text-slate-500">
+        {/* Shop-Hinweis: soll direkt vor dem globalen Website-Footer enden (kein doppelter Footer). */}
+        <div className="mt-12 border-t border-slate-200 bg-white/0 pt-8">
+          <p className="text-center text-xs text-slate-500">
             Checkout und Zahlung erfolgen über Shopify.
           </p>
         </div>
-      </footer>
+      </main>
     </div>
   );
 }
