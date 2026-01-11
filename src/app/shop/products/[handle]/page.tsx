@@ -248,7 +248,7 @@ export default async function ProductPage({ params }: { params: { handle: string
     const quantity = Math.max(1, Number.parseInt(qtyRaw, 10) || 1);
 
     if (!merchandiseId) {
-      redirect(`/shop/products/${product.handle}?error=missing_variant`);
+      redirect(`/shop/products/${encodeURIComponent(handle)}?error=missing_variant`);
     }
 
     // Call our API route on the same deployment.
@@ -272,7 +272,7 @@ export default async function ProductPage({ params }: { params: { handle: string
     });
 
     if (!res.ok) {
-      redirect(`/shop/products/${product.handle}?error=add_failed`);
+      redirect(`/shop/products/${encodeURIComponent(handle)}?error=add_failed`);
     }
 
     // If the API returns a Set-Cookie (new cartId), persist it.
