@@ -20,9 +20,21 @@ export async function shopifyFetch<T>(
   // Merge headers safely (also fixes TS typing issues when env vars are optional types)
   const headers = new Headers(opts?.headers);
   headers.set("Content-Type", "application/json");
-  headers.set("X-Shopify-Storefront-Access-Token", SHOPIFY_STOREFRONT_ACCESS_TOKEN!);
 
-  // Avoid letting opts overwrite our required headers/body/method by controlling merge order
+  // Shopify hat zwei Token-Typen:
+  // - Public Storefront token: meist ein Hex-String (für client- und serverseitige Requests)
+  // - Private token (z. B. `shpat_...` / delegate tokens): nur serverseitig, anderer Header
+  // Docs: private/delegate tokens -> `Shopify-Storefront-Private-Token`
+  const token = SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+  if (token.startsWith("shpat_") || token.startsWith("shppa_")) {
+    headers.set("Shopify-Storefront-Private-Token", token);
+  } else {
+    headers.set("X-Shopify-Storefront-Access-Token", token);
+  }
+
+  // Hinweis: Für buyer-traffic empfiehlt Shopify zusätzlich `Shopify-Storefront-Buyer-IP`.
+  // Beim Build/SSG haben wir keinen Buyer-IP-Kontext – das ist ok.
+  // Wenn du es später für echte Requests setzen willst, kannst du es über `opts.headers` durchreichen.
   const res = await fetch(endpoint, {
     ...opts,
     method: "POST",
