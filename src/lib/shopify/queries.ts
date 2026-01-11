@@ -188,7 +188,7 @@ export const CART_LINES_UPDATE = /* GraphQL */ `
   }
 `;
 export const GET_PRODUCTS = /* GraphQL */ `
-  query Products($first: Int!, $query: String, $productFilters: [ProductFilter!]) {
+  query Products($first: Int!, $query: String!, $productFilters: [ProductFilter!]) {
     search(query: $query, first: $first, types: [PRODUCT], productFilters: $productFilters) {
       productFilters {
         id
