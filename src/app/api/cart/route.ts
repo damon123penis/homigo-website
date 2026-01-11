@@ -12,10 +12,21 @@ function shopifyEndpoint() {
 function shopifyHeaders() {
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
   if (!token) throw new Error("Missing SHOPIFY_STOREFRONT_ACCESS_TOKEN");
-  return {
+
+  // Shopify token types:
+  // - Public Storefront token -> header: X-Shopify-Storefront-Access-Token
+  // - Private / delegate token (often starts with shpat_/shppa_) -> header: Shopify-Storefront-Private-Token
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "X-Shopify-Storefront-Access-Token": token,
   };
+
+  if (token.startsWith("shpat_") || token.startsWith("shppa_")) {
+    headers["Shopify-Storefront-Private-Token"] = token;
+  } else {
+    headers["X-Shopify-Storefront-Access-Token"] = token;
+  }
+
+  return headers;
 }
 
 
@@ -28,14 +39,24 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, any>) {
     cache: "no-store",
   });
 
-  const json = await res.json();
-  if (!res.ok || json.errors) {
-    const msg =
-      json?.errors?.[0]?.message ||
-      `Shopify error (${res.status}): ${res.statusText}`;
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok || (json as any)?.errors) {
+    const firstMsg = (json as any)?.errors?.[0]?.message;
+    const msg = firstMsg || `Shopify error (${res.status}): ${res.statusText}`;
+
+    console.error("[cart][shopify]", {
+      status: res.status,
+      statusText: res.statusText,
+      message: msg,
+      // Avoid logging sensitive IDs/tokens; variables can include IDs, so only log keys.
+      variableKeys: variables ? Object.keys(variables) : [],
+    });
+
     throw new Error(msg);
   }
-  return json.data as T;
+
+  return (json as any).data as T;
 }
 
 const CART_FRAGMENT = /* GraphQL */ `
@@ -185,9 +206,27 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const cartIdCookie = req.cookies.get(CART_COOKIE)?.value;
 
+  const reqId = req.headers.get("x-vercel-id") || crypto.randomUUID();
+  const userAgent = req.headers.get("user-agent") || "";
+  console.info("[cart][in]", {
+    reqId,
+    method: "POST",
+    cartCookiePresent: Boolean(cartIdCookie),
+    cartCookieName: CART_COOKIE,
+    ua: userAgent,
+  });
+
   let body: any = null;
   try {
     body = await req.json();
+    console.info("[cart][body]", {
+      reqId,
+      action: body?.action,
+      // Do not log full IDs; just log whether they exist.
+      hasMerchandiseId: Boolean(body?.merchandiseId),
+      quantity: body?.quantity,
+      hasLineId: Boolean(body?.lineId),
+    });
   } catch {
     return jsonResponse({ error: "Invalid JSON body" }, { status: 400 });
   }
@@ -347,6 +386,11 @@ export async function POST(req: NextRequest) {
 
     return resp;
   } catch (e: any) {
-    return jsonResponse({ error: e?.message || "Server error" }, { status: 500 });
+    console.error("[cart][error]", {
+      reqId,
+      message: e?.message || "Server error",
+      name: e?.name,
+    });
+    return jsonResponse({ error: e?.message || "Server error", reqId }, { status: 500 });
   }
 }
