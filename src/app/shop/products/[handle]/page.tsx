@@ -352,9 +352,14 @@ export default async function ProductPage({
       redirect(`/shop/products/${encodeURIComponent(handle)}?error=missing_variant`);
     }
 
-    const base = siteUrl();
+    // Build origin from the current request (important for Preview/Prod on Vercel).
+    // Using siteUrl() here can point to the wrong environment and make the internal API call fail.
+    const h = headers();
+    const proto = h.get("x-forwarded-proto") ?? "https";
+    const host = h.get("x-forwarded-host") ?? h.get("host");
+    const base = host ? `${proto}://${host}` : siteUrl();
     const cookieHeader = cookies().toString();
-    const userAgent = headers().get("user-agent") || "";
+    const userAgent = h.get("user-agent") || "";
 
     const res = await fetch(`${base}/api/cart`, {
       method: "POST",
@@ -796,6 +801,11 @@ export default async function ProductPage({
                 <p className="mt-4 text-xs text-slate-500">
                   Hinweis: Der Checkout erfolgt sicher über Shopify.
                 </p>
+                {showTaxNotice ? (
+                  <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                    <span className="font-semibold">Hinweis zur Differenzbesteuerung:</span> Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
+                  </div>
+                ) : null}
               </form>
             </div>
 
@@ -814,11 +824,6 @@ export default async function ProductPage({
               <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
 
-            {showTaxNotice ? (
-              <p className="mt-4 text-sm text-slate-600">
-                Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
-              </p>
-            ) : null}
           </div>
         </div>
       </div>
