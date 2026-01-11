@@ -164,18 +164,30 @@ export default async function CartPage({
 
     const lineId = String(formData.get('lineId') || '');
 
-    // When clicking +/- we submit `setQuantity`. When clicking “Aktualisieren” we use the input `quantity`.
-    const setQuantityRaw = formData.get('setQuantity');
+    // +/- buttons submit a delta; manual changes use the input `quantity`.
+    const deltaRaw = formData.get('delta');
+    const currentQtyRaw = formData.get('currentQty');
     const inputQuantityRaw = formData.get('quantity');
 
-    const raw =
-      typeof setQuantityRaw === 'string' && setQuantityRaw.length > 0
-        ? setQuantityRaw
-        : typeof inputQuantityRaw === 'string' && inputQuantityRaw.length > 0
-        ? inputQuantityRaw
-        : '1';
+    let nextQty: number | null = null;
 
-    const quantity = Math.max(1, Number.parseInt(raw, 10) || 1);
+    if (typeof deltaRaw === 'string' && deltaRaw.length > 0) {
+      const delta = Number.parseInt(deltaRaw, 10);
+      const current = typeof currentQtyRaw === 'string' && currentQtyRaw.length > 0 ? Number.parseInt(currentQtyRaw, 10) : NaN;
+      if (Number.isFinite(delta) && Number.isFinite(current)) {
+        nextQty = current + delta;
+      }
+    }
+
+    if (nextQty === null) {
+      const raw =
+        typeof inputQuantityRaw === 'string' && inputQuantityRaw.length > 0
+          ? inputQuantityRaw
+          : '1';
+      nextQty = Number.parseInt(raw, 10) || 1;
+    }
+
+    const quantity = Math.max(1, nextQty);
 
     const maxQtyRaw = String(formData.get('maxQty') || '');
     const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
@@ -284,11 +296,12 @@ export default async function CartPage({
                         <form action={updateLineAction} className="flex items-center gap-2">
                           <input type="hidden" name="lineId" value={l.id} />
                           <input type="hidden" name="maxQty" value={hasStockLimit ? String(qtyAvailNum) : ''} />
+                          <input type="hidden" name="currentQty" value={String(l.quantity)} />
 
                           <button
                             type="submit"
-                            name="setQuantity"
-                            value={Math.max(1, l.quantity - 1)}
+                            name="delta"
+                            value={-1}
                             className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
                             aria-label="Menge reduzieren"
                             disabled={l.quantity <= 1}
@@ -308,8 +321,8 @@ export default async function CartPage({
 
                           <button
                             type="submit"
-                            name="setQuantity"
-                            value={l.quantity + 1}
+                            name="delta"
+                            value={1}
                             className="h-10 w-10 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 hover:bg-slate-50"
                             aria-label="Menge erhöhen"
                             disabled={atStockLimit}
