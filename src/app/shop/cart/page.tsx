@@ -384,8 +384,14 @@ export default async function CartPage({
               <p className="mt-3 text-xs text-slate-600">
                 Hinweis: Mindestens ein Artikel unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird hierfür nicht separat ausgewiesen.
               </p>
+            ) : tax ? (
+              <p className="mt-3 text-xs text-slate-500">
+                Preise zzgl. gesetzlicher MwSt. Die genaue Steuer wird im Checkout berechnet.
+              </p>
             ) : (
-              <p className="mt-3 text-xs text-slate-500">Du wirst für die Zahlung sicher zu Shopify weitergeleitet.</p>
+              <p className="mt-3 text-xs text-slate-500">
+                Preise inkl. gesetzlicher MwSt. Die endgültige Steuer wird im Checkout berechnet.
+              </p>
             )}
           </div>
         </div>
