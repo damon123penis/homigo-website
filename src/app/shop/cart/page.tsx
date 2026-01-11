@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 type Money = { amount: string; currencyCode: string };
 
@@ -180,8 +181,6 @@ export default async function CartPage({
     const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
 
     if (typeof maxQty === 'number' && Number.isFinite(maxQty) && quantity > maxQty) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { redirect } = require('next/navigation');
       redirect(`/shop/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
     }
 
@@ -192,12 +191,11 @@ export default async function CartPage({
     if (!result.ok) {
       // Keep it simple: redirect-style error handling via query param
       // (works without client-side state)
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { redirect } = require('next/navigation');
       redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
     }
 
     revalidatePath('/shop/cart');
+    redirect('/shop/cart');
   }
 
   async function removeLineAction(formData: FormData) {
@@ -209,12 +207,11 @@ export default async function CartPage({
     const result = await postCartAction({ action: 'remove', lineId });
 
     if (!result.ok) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { redirect } = require('next/navigation');
       redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
     }
 
     revalidatePath('/shop/cart');
+    redirect('/shop/cart');
   }
 
   return (
