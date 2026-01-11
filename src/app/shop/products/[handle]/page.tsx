@@ -74,7 +74,6 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
       }
     }
   `;
-}
 
   type Resp = {
     productByHandle: {
@@ -83,7 +82,12 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
       title: string;
       description: string;
       featuredImage?: { url: string; altText?: string | null } | null;
-      metafields?: Array<{ key: string; namespace: string; type: string; value: string | null }> | null;
+      metafields?: Array<{
+        key: string;
+        namespace: string;
+        type: string;
+        value: string | null;
+      }> | null;
       variants?: {
         edges: Array<{
           node: {
@@ -108,7 +112,10 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   if (!p) return null;
 
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
-  const metafields: Metafield[] = (p.metafields || []).map((m) => ({ key: m.key, value: m.value }));
+  const metafields: Metafield[] = (p.metafields || []).map((m) => ({
+    key: m.key,
+    value: m.value,
+  }));
 
   return {
     id: p.id,
@@ -119,6 +126,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     variants,
     metafields,
   };
+}
 
 function truncate(text: string, max = 160): string {
   const t = (text || "").trim().replace(/\s+/g, " ");
