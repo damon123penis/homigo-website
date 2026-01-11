@@ -120,34 +120,11 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   };
 }
 
-  const res = await fetch(shopifyEndpoint(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": shopifyToken(),
-    },
-    body: JSON.stringify({ query, variables: { handle } }),
-    cache: "no-store",
-  });
-
-  const json = await res.json();
-  if (!res.ok || json.errors) return null;
-
-  const p = json.data?.product;
-  if (!p) return null;
-
-  const variants: Variant[] = (p.variants?.edges || []).map((e: any) => e.node);
-  const metafields: Metafield[] = p.metafields || [];
-
-  return {
-    id: p.id,
-    handle: p.handle,
-    title: p.title,
-    description: p.description,
-    featuredImage: p.featuredImage || undefined,
-    variants,
-    metafields,
-  };
+function truncate(text: string, max = 160): string {
+  const t = (text || "").trim().replace(/\s+/g, " ");
+  if (!t) return "";
+  return t.length <= max ? t : `${t.slice(0, max - 1)}…`;
+}
 
 function truncate(text: string, max = 160): string {
   const t = (text || "").trim().replace(/\s+/g, " ");
