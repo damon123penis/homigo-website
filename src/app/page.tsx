@@ -118,7 +118,7 @@ const structuredData = {
       <section className="bg-white pb-8 md:pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-lg md:text-xl text-slate-600 leading-relaxed">
-            <strong className="font-semibold text-slate-800">Dein Amigo fürs Smart Home.</strong>
+            <strong className="font-semibold text-slate-800">Dein Amigo fürs Smart Home</strong>
             <br />
             Persönliche Beratung, einfache Systeme und Lösungen, die wirklich zu dir passen.
           </p>
@@ -164,7 +164,7 @@ const structuredData = {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-slate-800">Beratung, die zu dir passt</h2>
+              <h2 className="text-3xl font-bold text-slate-800">Beratung, die zu dir passt.</h2>
               <p className="mt-2 text-slate-600 max-w-2xl">
                 Du willst Smart Home nutzen – ohne dich durch Funkstandards, Apps und Kompatibilitätslisten zu kämpfen?
                 Ich helfe dir pragmatisch: passend zu Budget, Wohnsituation und dem, was im Alltag wirklich zählt.
@@ -232,7 +232,7 @@ const structuredData = {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-slate-800">Shop: kuratiert, kompatibel, klar</h2>
+              <h2 className="text-3xl font-bold text-slate-800">Shop: kuratiert, kompatibel, klar.</h2>
               <p className="mt-2 text-slate-600 max-w-2xl">
                 Keine endlosen Vergleichstabellen: Im Shop findest du ausgewählte Produkte mit Kompatibilitätsinfos.
               </p>
