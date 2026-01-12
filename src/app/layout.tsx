@@ -169,20 +169,13 @@ export default function RootLayout({
                 Shop
               </Link>
               <Link
-                href="/leistungen-im-detail"
-                className={navClass(isActive('/leistungen-im-detail'))}
+                href="/beratung"
+                className={navClass(isActive('/beratung'))}
                 aria-current={
-                  isActive('/leistungen-im-detail') ? 'page' : undefined
+                  isActive('/beratung') ? 'page' : undefined
                 }
               >
-                Leistungen
-              </Link>
-              <Link
-                href="/customerjourney"
-                className={navClass(isActive('/customerjourney'))}
-                aria-current={isActive('/customerjourney') ? 'page' : undefined}
-              >
-                So arbeiten wir
+                Beratung
               </Link>
               <Link
                 href="/smart-home-generator"
@@ -229,22 +222,22 @@ export default function RootLayout({
               >
                 <div className="flex flex-col p-2.5">
                   <Link
-                    href="/leistungen-im-detail"
-                    className={mobileNavClass(isActive('/leistungen-im-detail'))}
+                    href="/shop"
+                    className={mobileNavClass(isActive('/shop'))}
                     aria-current={
-                      isActive('/leistungen-im-detail') ? 'page' : undefined
+                      isActive('/shop') ? 'page' : undefined
                     }
                   >
-                    Leistungen
+                    Shop
                   </Link>
                   <Link
-                    href="/customerjourney"
-                    className={mobileNavClass(isActive('/customerjourney'))}
+                    href="/beratung"
+                    className={mobileNavClass(isActive('/beratung'))}
                     aria-current={
-                      isActive('/customerjourney') ? 'page' : undefined
+                      isActive('/beratung') ? 'page' : undefined
                     }
                   >
-                    So arbeiten wir
+                    Beratung
                   </Link>
                   <Link
                     href="/smart-home-generator"
@@ -272,30 +265,6 @@ export default function RootLayout({
                     Erstgespräch buchen
                   </a>
         {/* GA4 CTA Tracking – Erstgespräch buchen (consent-aware) */}
-        <Script id="ga4-cta-tracking" strategy="afterInteractive">
-          {`
-            (function () {
-              document.addEventListener('click', function (e) {
-                var el = e.target && e.target.closest && e.target.closest('[data-ga-cta="erstgespraech"]');
-                if (!el) return;
-
-                // Only track if GA is active (consent given)
-                if (typeof window.gtag !== 'function') return;
-
-                try {
-                  window.gtag('event', 'cta_erstgespraech_click', {
-                    event_category: 'engagement',
-                    event_label: 'erstgespraech',
-                    position: el.getAttribute('data-ga-position') || 'unknown',
-                    page_path: window.location.pathname
-                  });
-                } catch (e) {
-                  // ignore
-                }
-              }, true);
-            })();
-          `}
-        </Script>
                 </div>
               </div>
             </details>
@@ -319,7 +288,9 @@ export default function RootLayout({
                   <Link href="/datenschutz" className="hover:text-slate-900">
                     Datenschutz
                   </Link>
-                  Kontakt
+                  <Link href="/kontakt" className="hover:text-slate-900">
+                    Kontakt
+                  </Link>
               </div>
 
               {/* Center (always centered logo) */}
@@ -397,6 +368,30 @@ export default function RootLayout({
                   // ignore
                 }
               };
+            })();
+          `}
+        </Script>
+        <Script id="ga4-cta-tracking" strategy="afterInteractive">
+          {`
+            (function () {
+              document.addEventListener('click', function (e) {
+                var el = e.target && e.target.closest && e.target.closest('[data-ga-cta="erstgespraech"]');
+                if (!el) return;
+
+                // Only track if GA is active (consent given)
+                if (typeof window.gtag !== 'function') return;
+
+                try {
+                  window.gtag('event', 'cta_erstgespraech_click', {
+                    event_category: 'engagement',
+                    event_label: 'erstgespraech',
+                    position: el.getAttribute('data-ga-position') || 'unknown',
+                    page_path: window.location.pathname
+                  });
+                } catch (e) {
+                  // ignore
+                }
+              }, true);
             })();
           `}
         </Script>
