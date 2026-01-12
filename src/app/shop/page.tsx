@@ -104,9 +104,9 @@ export default async function ShopHome() {
         <div className="grid gap-8 md:grid-cols-2 md:items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-              Dein Amigo fürs Smart Home.
+              Dein Amigo fürs Smart Home
               <span className="relative ml-2 inline-block">
-                Shop
+                homigo Shop
                 <span className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-emerald-200/70" />
               </span>
             </h1>
@@ -152,7 +152,7 @@ export default async function ShopHome() {
                 </div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
-                <div className="text-sm font-semibold text-slate-900">B‑Stock & Zustände</div>
+                <div className="text-sm font-semibold text-slate-900">Lieber neu oder generalüberholt?</div>
                 <div className="mt-1 text-sm text-slate-600">
                   Neu, neuwertig, generalüberholt – immer transparent ausgewiesen.
                 </div>
