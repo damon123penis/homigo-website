@@ -154,7 +154,7 @@ export default async function ShopHome() {
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
                 <div className="text-sm font-semibold text-slate-900">Lieber neu oder generalüberholt?</div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Neu, neuwertig, generalüberholt – immer transparent ausgewiesen.
+                  Artikelzustände werden immer transparent ausgewiesen.
                 </div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">

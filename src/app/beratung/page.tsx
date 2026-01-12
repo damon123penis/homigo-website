@@ -380,7 +380,7 @@ export default function BeratungPage() {
               </p>
 
               <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-                Dein Amigo fürs Smart Home.
+                Beratung für dein Smart Home.
                 <span className="text-emerald-600"> Ohne Kabelsalat.</span>
               </h1>
 
