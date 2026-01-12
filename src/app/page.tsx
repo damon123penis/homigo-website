@@ -51,7 +51,7 @@ export default function HomePage() {
     },
     {
       question: 'Kann ich Hardware direkt über homigo beziehen?',
-      answer: 'Ja. Im homigo Shop findest du kuratierte Smart-Home-Hardware (auch B‑Stock/Differenzbesteuerung), inkl. Kompatibilitätsinfos – oder wir empfehlen dir passende Alternativen im Call.',
+      answer: 'Ja. Im homigo Shop findest du kuratierte Smart-Home-Hardware inkl. Kompatibilitätsinfos – oder wir empfehlen dir passende Alternativen in einem Gespräch.',
     },
   ];
 
@@ -234,8 +234,7 @@ const structuredData = {
             <div>
               <h2 className="text-3xl font-bold text-slate-800">Shop: kuratiert, kompatibel, klar</h2>
               <p className="mt-2 text-slate-600 max-w-2xl">
-                Keine endlosen Vergleichstabellen: Im Shop findest du ausgewählte Produkte mit Kompatibilitätsinfos –
-                inklusive B‑Stock/Differenzbesteuerung, wenn verfügbar.
+                Keine endlosen Vergleichstabellen: Im Shop findest du ausgewählte Produkte mit Kompatibilitätsinfos.
               </p>
             </div>
             <div className="flex gap-3">
@@ -266,7 +265,7 @@ const structuredData = {
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
               <div className="text-sm font-semibold text-slate-900">Faire Optionen</div>
               <p className="mt-2 text-sm text-slate-600">
-                Neuware, B‑Stock und Bundles – je nach Budget und Anspruch.
+                Neuware, Gebrauchtes und Bundles – je nach Budget und Anspruch.
               </p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
