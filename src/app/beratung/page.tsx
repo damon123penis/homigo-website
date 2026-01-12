@@ -1,17 +1,20 @@
+// src/app/beratung/page.tsx
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+const PAGE_URL = 'https://www.homigo.tech/beratung'
+const BRAND_NAME = 'homigo'
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.homigo.tech'),
   title: 'Beratung | homigo – Smart Home ohne Kabelsalat',
   description:
-    'Persönliche Smart-Home-Beratung von homigo: erst kostenloses Kennenlernen, dann ein klares Konzept mit Einkaufsliste – und auf Wunsch Umsetzung remote oder vor Ort in der Rhein‑Main‑Region.',
+    'Persönliche Smart-Home-Beratung von homigo: kostenloses Kennenlernen, dann ein klares Konzept mit Einkaufsliste – und auf Wunsch Umsetzung remote oder vor Ort in der Rhein-Main-Region.',
   keywords: [
     'Smart Home Beratung',
     'Smart Home Konzept',
     'Smart Home Setup',
     'Rhein-Main',
-    'Mörfelden-Walldorf',
+    'Mörfelden-Walldorf Smart Home',
     'Frankfurt Smart Home',
     'Philips Hue Einrichtung',
     'Shelly Einrichtung',
@@ -19,8 +22,15 @@ export const metadata: Metadata = {
     'Matter',
     'Zigbee',
   ],
-  alternates: {
-    canonical: '/beratung',
+  alternates: { canonical: PAGE_URL },
+  openGraph: {
+    title: 'Beratung | homigo',
+    description:
+      'Klarer Prozess, transparente Pakete: Kennenlernen, Konzept, Umsetzung (remote oder vor Ort) und optionaler Support.',
+    url: PAGE_URL,
+    siteName: BRAND_NAME,
+    locale: 'de_DE',
+    type: 'website',
   },
   robots: {
     index: true,
@@ -32,29 +42,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
       'max-video-preview': -1,
     },
-  },
-  openGraph: {
-    title: 'Beratung | homigo',
-    description:
-      'Klarer Prozess, transparente Pakete: Kennenlernen, Konzept, Umsetzung (remote oder vor Ort) und optionaler Support.',
-    url: '/beratung',
-    siteName: 'homigo',
-    locale: 'de_DE',
-    type: 'website',
-    images: [
-      {
-        url: '/images/Logo.png',
-        width: 1200,
-        height: 630,
-        alt: 'homigo – Smart Home ohne Kabelsalat',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Beratung | homigo',
-    description: 'Smart Home ohne Kabelsalat: Kennenlernen, Konzept, Umsetzung – passend zu deinem Zuhause.',
-    images: ['/images/Logo.png'],
   },
 }
 
@@ -70,31 +57,29 @@ type Step = {
 const STEPS: Step[] = [
   {
     step: '01',
-    title: 'Kennenlern‑Call',
+    title: 'Kennenlern-Call',
     duration: '15 Min (kostenlos)',
     badge: 'Unverbindlich',
     bullets: [
       'Wohnsituation & Ziele (Wohnung/Haus, Miete/Eigentum)',
-      'Technik‑Check: WLAN, Smartphone (iOS/Android), vorhandene Geräte',
-      'Grobe Budget‑ und Zeitrahmen‑Klärung',
+      'Technik-Check: WLAN, Smartphone (iOS/Android), vorhandene Geräte',
+      'Grobe Budget- und Zeitrahmen-Klärung',
       'Passt homigo zu deinem Projekt? Nächste Schritte',
     ],
-    outcome:
-      'Du erhältst eine klare Einschätzung und weißt, ob wir gemeinsam weitergehen — ohne Verkaufsdruck.',
+    outcome: 'Du erhältst eine klare Einschätzung und weißt, ob wir gemeinsam weitergehen — ohne Verkaufsdruck.',
   },
   {
     step: '02',
-    title: 'Individuelles Smart‑Home‑Konzept',
+    title: 'Individuelles Smart-Home-Konzept',
     duration: '30–60 Min + Ausarbeitung',
     badge: 'Kostenpflichtig',
     bullets: [
-      'Prioritäten & Use‑Cases: Licht, Heizung, Steckdosen, Sicherheit, Energie',
+      'Prioritäten & Use-Cases: Licht, Heizung, Steckdosen, Sicherheit, Energie',
       'Systemempfehlung (Plug & Play, Matter, Home Assistant – passend zu dir)',
-      'Konkrete Einkaufsliste inkl. Budget‑Optionen (Good / Better / Best)',
+      'Konkrete Einkaufsliste inkl. Budget-Optionen (Good / Better / Best)',
       'Umsetzungsplan: Reihenfolge, Stolpersteine, Best Practices',
     ],
-    outcome:
-      'Du bekommst ein umsetzbares Konzept (PDF/Notion), das du selbst umsetzen kannst — oder wir übernehmen die Einrichtung.',
+    outcome: 'Du bekommst ein umsetzbares Konzept (PDF/Notion), das du selbst umsetzen kannst — oder wir übernehmen die Einrichtung.',
   },
   {
     step: '03',
@@ -102,8 +87,8 @@ const STEPS: Step[] = [
     duration: 'Remote oder vor Ort',
     badge: 'Optional',
     bullets: [
-      'Remote‑Setup im Videocall oder Vor‑Ort‑Einrichtung (Rhein‑Main)',
-      'App‑Integration & Automationen nach Konzept',
+      'Remote-Setup im Videocall oder Vor-Ort-Einrichtung (Rhein-Main)',
+      'App-Integration & Automationen nach Konzept',
       'Einweisung: einfache Bedienung, Szenen, Routinen',
       'Qualitätscheck: Stabilität, Reichweite, Backups/Notfallplan',
     ],
@@ -115,7 +100,7 @@ const STEPS: Step[] = [
     duration: 'Flexibel',
     badge: 'Optional',
     bullets: [
-      'Erweiterungen (z. B. neue Räume, Sensorik, Energie‑Use‑Cases)',
+      'Erweiterungen (z. B. neue Räume, Sensorik, Energie-Use-Cases)',
       'Wartungspakete (Updates, Monitoring, Optimierungen)',
       'Troubleshooting bei Änderungen im Haushalt/WLAN/Apps',
     ],
@@ -126,75 +111,47 @@ const STEPS: Step[] = [
 const PACKAGES = {
   free: {
     badge: 'Kostenlos',
-    title: 'Kennenlern‑Call',
+    title: 'Kennenlern-Call',
     price: '0 €',
     highlight: 'Kurz, klar, unverbindlich. Wir sortieren gemeinsam ein, was sinnvoll ist — und was nicht.',
-    bullets: ['15 Minuten Videocall', 'Ziele + Bestand + Technik‑Check', 'Nächste Schritte & grober Fahrplan'],
+    bullets: ['15 Minuten Videocall', 'Ziele + Bestand + Technik-Check', 'Nächste Schritte & grober Fahrplan'],
     cta: { label: 'Kennenlernen buchen', href: 'https://calendly.com/homigo-de/30min' },
   },
   concept: {
     badge: 'Konzept',
-    title: 'Smart‑Home‑Konzept',
-    price: 'ab 69 €',
-    highlight:
-      'Du bekommst Klarheit: kompatibel, alltagstauglich, erweiterbar — mit Einkaufsliste und Umsetzungsplan.',
-    bullets: [
-      '30–60 Min Beratung + Ausarbeitung',
-      'Einkaufsliste (Good/Better/Best)',
-      'Umsetzungsreihenfolge + Best Practices',
-    ],
+    title: 'Smart-Home-Konzept',
+    price: '69 €',
+    highlight: 'Du bekommst Klarheit: kompatibel, alltagstauglich, erweiterbar — mit Einkaufsliste und Umsetzungsplan.',
+    bullets: ['30–60 Min Beratung + Ausarbeitung', 'Einkaufsliste (Good/Better/Best)', 'Umsetzungsreihenfolge + Best Practices'],
     cta: { label: 'Erst Kennenlernen', href: 'https://calendly.com/homigo-de/30min' },
   },
   setup: {
     badge: 'Umsetzung',
     title: 'Setup & Feinschliff',
-    price: 'ab 39 €',
-    highlight:
-      'Wenn du willst, setzen wir das Konzept gemeinsam um — remote im Videocall oder vor Ort im Rhein‑Main‑Gebiet.',
-    bullets: ['Remote‑Setup‑Hilfe (Videocall)', 'Vor‑Ort‑Einrichtung (Rhein‑Main)', 'Tests, Übergabe, Stabilitäts‑Check'],
+    price: '39 €',
+    highlight: 'Wenn du willst, setzen wir das Konzept gemeinsam um — remote im Videocall oder vor Ort im Rhein-Main-Gebiet.',
+    bullets: ['Remote-Setup-Hilfe (Videocall)', 'Vor-Ort-Einrichtung (Rhein-Main)', 'Tests, Übergabe, Stabilitäts-Check'],
     cta: { label: 'Anfrage stellen', href: '/kontakt' },
   },
 }
 
 const ADDONS: { name: string; price: string; desc: string; badge?: string }[] = [
-  { name: 'Remote‑Setup‑Hilfe', price: 'ab 39 €', desc: 'Gemeinsam einrichten – per Videocall, Schritt für Schritt.', badge: 'Remote' },
+  { name: 'Remote-Setup-Hilfe', price: 'ab 39 €', desc: 'Gemeinsam einrichten – per Videocall, Schritt für Schritt.', badge: 'Remote' },
   {
     name: 'Erweitertes System',
     price: 'ab 69 €',
     desc: 'Integration komplexerer Setups (z. B. Home Assistant) – sauber & wartbar.',
     badge: 'Advanced',
   },
-  {
-    name: 'Hardware‑Beschaffung',
-    price: 'individuell',
-    desc: 'Wenn gewünscht: Komponenten passend zum Budget (Good/Better/Best) beschaffen.',
-    badge: 'Optional',
-  },
-  {
-    name: 'Support & Erweiterung',
-    price: 'individuell',
-    desc: 'Neue Räume, neue Geräte, Troubleshooting, Updates – ohne wieder bei null anzufangen.',
-    badge: 'Optional',
-  },
+  { name: 'Hardware-Beschaffung', price: 'individuell', desc: 'Wenn gewünscht: Komponenten passend zum Budget (Good/Better/Best) beschaffen.', badge: 'Optional' },
+  { name: 'Support & Erweiterung', price: 'individuell', desc: 'Neue Räume, neue Geräte, Troubleshooting, Updates – ohne wieder bei null anzufangen.', badge: 'Optional' },
 ]
 
 const SUPPORTED_BRANDS = [
-  {
-    title: 'Beleuchtung & Ambiente',
-    items: ['Philips Hue', 'IKEA TRÅDFRI', 'Govee (je nach Use‑Case)'],
-  },
-  {
-    title: 'Schalter, Relais & Sensorik',
-    items: ['Shelly', 'Sonoff (je nach Modell)', 'Aqara (v. a. Sensorik)'],
-  },
-  {
-    title: 'Zentrale / Automationen',
-    items: ['Apple Home / HomeKit', 'Google Home', 'Amazon Alexa', 'Home Assistant (advanced)'],
-  },
-  {
-    title: 'Energie & Balkonkraftwerk‑Integration',
-    items: ['EcoFlow (PowerStream/Powerstations)', 'Tibber (preisbasierte Logik – sofern genutzt)'],
-  },
+  { title: 'Beleuchtung & Ambiente', items: ['Philips Hue', 'IKEA TRÅDFRI', 'Govee (je nach Use-Case)'] },
+  { title: 'Schalter, Relais & Sensorik', items: ['Shelly', 'Sonoff (je nach Modell)', 'Aqara (v. a. Sensorik)'] },
+  { title: 'Zentrale / Automationen', items: ['Apple Home / HomeKit', 'Google Home', 'Amazon Alexa', 'Home Assistant (advanced)'] },
+  { title: 'Energie & Balkonkraftwerk-Integration', items: ['EcoFlow (PowerStream/Powerstations)', 'Tibber (preisbasierte Logik – sofern genutzt)'] },
 ]
 
 function CTAButtons() {
@@ -243,10 +200,13 @@ function PackageCard({
 
         <div className="text-right">
           <div className="text-sm font-semibold text-slate-500">ab</div>
-          <div className="text-3xl font-bold tracking-tight text-slate-900">{price}</div>
+          <div className="whitespace-nowrap text-3xl font-bold tracking-tight leading-none text-slate-900">
+            {price}
+          </div>
         </div>
       </div>
 
+      {/* Content area grows, CTA pinned to bottom for equal button baseline */}
       <div className="mt-5 flex flex-1 flex-col rounded-2xl bg-slate-50 p-5">
         <p className="text-sm text-slate-600">{highlight}</p>
 
@@ -259,18 +219,18 @@ function PackageCard({
           ))}
         </ul>
 
-        <div className="mt-5">
+        <div className="mt-auto pt-5">
           <a
             href={cta.href}
             className="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
           >
             {cta.label}
           </a>
-        </div>
 
-        <p className="mt-4 text-xs text-slate-500">
-          Hinweis: Im Kennenlernen klären wir Ziele, Geräte, Handy‑System (iOS/Android), WLAN und Budget.
-        </p>
+          <p className="mt-4 text-xs text-slate-500">
+            Hinweis: Im Kennenlernen klären wir Ziele, Geräte, Handy-System (iOS/Android), WLAN und Budget.
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -281,7 +241,7 @@ function Brands() {
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-base font-bold text-slate-900">Systeme, mit denen wir häufig arbeiten</h2>
       <p className="mt-1 text-sm text-slate-600">
-        Hersteller‑übergreifend, pragmatisch, budgetbewusst – je nach Ziel empfehlen wir die passende Kombination.
+        Hersteller-übergreifend, pragmatisch, budgetbewusst – je nach Ziel empfehlen wir die passende Kombination.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -308,14 +268,80 @@ function Brands() {
   )
 }
 
+function HeroGraphic() {
+  // Simple inline SVG illustration in homigo colors (no external assets).
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-sm font-semibold text-slate-900">So fühlt sich „ohne Kabelsalat“ an</p>
+      <p className="mt-2 text-sm text-slate-700">
+        Ein pragmatisches Setup: wenige Apps, klare Zuständigkeiten, sauber erweiterbar – passend zu Budget und Alltag.
+      </p>
+
+      <div className="mt-5 rounded-2xl bg-slate-50 p-5 overflow-hidden">
+        <svg viewBox="0 0 640 240" role="img" aria-label="Illustration: Smart Home Setup" className="h-40 w-full">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stopColor="#34d399" stopOpacity="0.85" />
+              <stop offset="1" stopColor="#10b981" stopOpacity="0.35" />
+            </linearGradient>
+          </defs>
+
+          {/* background */}
+          <rect x="0" y="0" width="640" height="240" rx="24" fill="url(#g1)" opacity="0.18" />
+          <rect x="28" y="34" width="220" height="168" rx="18" fill="#ffffff" opacity="0.9" />
+          <rect x="268" y="54" width="344" height="58" rx="18" fill="#ffffff" opacity="0.9" />
+          <rect x="268" y="128" width="344" height="74" rx="18" fill="#ffffff" opacity="0.9" />
+
+          {/* left card icon */}
+          <rect x="54" y="62" width="168" height="16" rx="8" fill="#0f172a" opacity="0.12" />
+          <rect x="54" y="90" width="120" height="12" rx="6" fill="#0f172a" opacity="0.10" />
+          <circle cx="76" cy="132" r="12" fill="#10b981" opacity="0.9" />
+          <rect x="98" y="124" width="114" height="16" rx="8" fill="#0f172a" opacity="0.10" />
+          <circle cx="76" cy="164" r="12" fill="#10b981" opacity="0.55" />
+          <rect x="98" y="156" width="92" height="16" rx="8" fill="#0f172a" opacity="0.10" />
+
+          {/* right top card */}
+          <rect x="294" y="76" width="220" height="12" rx="6" fill="#0f172a" opacity="0.10" />
+          <rect x="294" y="96" width="160" height="10" rx="5" fill="#0f172a" opacity="0.08" />
+          <circle cx="566" cy="83" r="10" fill="#10b981" opacity="0.9" />
+          <circle cx="592" cy="83" r="10" fill="#10b981" opacity="0.55" />
+
+          {/* right bottom card: devices */}
+          <rect x="294" y="150" width="132" height="12" rx="6" fill="#0f172a" opacity="0.10" />
+          <rect x="294" y="170" width="92" height="10" rx="5" fill="#0f172a" opacity="0.08" />
+          <rect x="468" y="146" width="118" height="44" rx="14" fill="#10b981" opacity="0.18" />
+          <rect x="480" y="158" width="94" height="20" rx="10" fill="#10b981" opacity="0.35" />
+
+          {/* subtle "no cables" line */}
+          <path d="M40 214 C 140 190, 220 226, 320 206 S 520 184, 600 210" stroke="#10b981" strokeWidth="5" opacity="0.35" fill="none" strokeLinecap="round" />
+          <path d="M40 214 C 140 190, 220 226, 320 206 S 520 184, 600 210" stroke="#0f172a" strokeWidth="2" opacity="0.08" fill="none" strokeLinecap="round" />
+        </svg>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl bg-white px-4 py-3">
+            <p className="text-xs font-semibold text-slate-900">Weniger Fehlkäufe</p>
+            <p className="mt-1 text-xs text-slate-600">Empfehlungen passend zu dir</p>
+          </div>
+          <div className="rounded-2xl bg-white px-4 py-3">
+            <p className="text-xs font-semibold text-slate-900">Klarer Plan</p>
+            <p className="mt-1 text-xs text-slate-600">Reihenfolge + Best Practices</p>
+          </div>
+          <div className="rounded-2xl bg-white px-4 py-3">
+            <p className="text-xs font-semibold text-slate-900">Alltagstauglich</p>
+            <p className="mt-1 text-xs text-slate-600">Stabil, verständlich, erweiterbar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function BeratungPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: 'homigo',
-    description:
-      'Persönliche Smart‑Home‑Beratung und Setup – erst kostenloses Kennenlernen, dann Konzept und optional Umsetzung remote oder vor Ort in der Rhein‑Main‑Region. Plug & Play statt Kabelsalat.',
-    url: 'https://www.homigo.tech/beratung',
+    '@type': ['LocalBusiness', 'ProfessionalService'],
+    name: BRAND_NAME,
+    url: PAGE_URL,
     image: 'https://www.homigo.tech/images/Logo.png',
     telephone: '+49 152 27178595',
     address: {
@@ -327,10 +353,11 @@ export default function BeratungPage() {
     },
     areaServed: [
       { '@type': 'AdministrativeArea', name: 'Rhein-Main-Region' },
-      { '@type': 'AdministrativeArea', name: 'Frankfurt am Main' },
-      { '@type': 'AdministrativeArea', name: 'Mörfelden-Walldorf' },
       { '@type': 'Country', name: 'Deutschland' },
     ],
+    description:
+      'Persönliche Smart-Home-Beratung und Setup – kostenloses Kennenlernen, dann Konzept und optional Umsetzung remote oder vor Ort in der Rhein-Main-Region. Smart Home ohne Kabelsalat.',
+    sameAs: [],
   }
 
   return (
@@ -382,49 +409,8 @@ export default function BeratungPage() {
               </div>
             </div>
 
-            {/* Trust + value */}
             <div className="lg:col-span-5">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm font-semibold text-slate-900">Wofür du bezahlst</p>
-                <p className="mt-2 text-sm text-slate-700">
-                  Smart Home wirkt einfach – bis man vor 5 Apps, 20 Geräten und widersprüchlichen Tipps steht. Im Konzept bekommst du
-                  Klarheit: kompatibel, wartbar, alltagstauglich.
-                </p>
-
-                <div className="mt-5 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                    <p className="text-sm text-slate-700">
-                      <span className="font-semibold text-slate-900">Weniger Fehlkäufe:</span> gezielte Empfehlungen statt Trial & Error.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                    <p className="text-sm text-slate-700">
-                      <span className="font-semibold text-slate-900">Ein Plan, der hält:</span> Reihenfolge, Stolpersteine, Best Practices.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                    <p className="text-sm text-slate-700">
-                      <span className="font-semibold text-slate-900">Alltag statt Bastelprojekt:</span> stabil, verständlich, erweiterbar.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 rounded-2xl bg-slate-50 p-4">
-                  <p className="text-sm font-semibold text-slate-900">Optional</p>
-                  <p className="mt-1 text-sm text-slate-700">
-                    Wenn du nach dem Konzept die Umsetzung mit homigo machst, können Teile der Konzeptkosten angerechnet werden.
-                  </p>
-                </div>
-
-                <div className="mt-6">
-                  <a href="#pakete" className="text-sm font-semibold text-emerald-700 hover:text-emerald-600">
-                    Pakete ansehen →
-                  </a>
-                </div>
-              </div>
+              <HeroGraphic />
             </div>
           </div>
         </div>
@@ -475,7 +461,7 @@ export default function BeratungPage() {
           </div>
 
           <p className="mt-5 text-xs text-slate-500">
-            Hinweis: Preise sind Richtwerte (abhängig von Umfang/Komplexität). Im Kennenlern‑Call klären wir das transparent.
+            Hinweis: Preise sind Richtwerte (abhängig von Umfang/Komplexität). Im Kennenlern-Call klären wir das transparent.
           </p>
         </div>
       </section>
@@ -525,16 +511,7 @@ export default function BeratungPage() {
                 <p className="mt-1 text-sm text-slate-700">{s.outcome}</p>
               </div>
 
-              {s.step === '01' ? (
-                <div className="mt-5">
-                  <a
-                    href="https://calendly.com/homigo-de/30min"
-                    className="inline-flex items-center text-sm font-semibold text-emerald-700 hover:text-emerald-600"
-                  >
-                    Kostenloses Kennenlernen buchen →
-                  </a>
-                </div>
-              ) : null}
+              {/* Hinweis: bewusst KEIN Micro-CTA in Schritt 01, damit Karten optisch einheitlich bleiben */}
             </div>
           ))}
         </div>
@@ -546,35 +523,44 @@ export default function BeratungPage() {
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           <Brands />
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-bold text-slate-900">Für wen ist das ideal?</h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Für Menschen, die Smart Home im Alltag nutzen wollen – ohne stundenlang Foren zu lesen oder Geräte wieder zurückzuschicken.
-            </p>
-
-            <div className="mt-5 space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                <p className="text-sm text-slate-700">Du willst eine Lösung, die <span className="font-semibold text-slate-900">stabil</span> läuft.</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                <p className="text-sm text-slate-700">Du brauchst <span className="font-semibold text-slate-900">Klarheit</span>, welche Systeme zusammenpassen.</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
-                <p className="text-sm text-slate-700">Du möchtest <span className="font-semibold text-slate-900">ohne Baustelle</span> starten (Plug & Play).</p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-2xl bg-slate-50 p-4">
-              <p className="text-sm font-semibold text-slate-900">Nicht sicher?</p>
-              <p className="mt-1 text-sm text-slate-700">
-                Dann starte mit dem kostenlosen Kennenlernen. Danach weißt du, ob du ein Konzept brauchst – oder ob ein kleiner Quick‑Fix reicht.
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col">
+            <div>
+              <h2 className="text-base font-bold text-slate-900">Für wen ist das ideal?</h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Für Menschen, die Smart Home im Alltag nutzen wollen – ohne stundenlang Foren zu lesen oder Geräte wieder zurückzuschicken.
               </p>
+
+              <div className="mt-5 space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  <p className="text-sm text-slate-700">
+                    Du willst eine Lösung, die <span className="font-semibold text-slate-900">stabil</span> läuft.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  <p className="text-sm text-slate-700">
+                    Du brauchst <span className="font-semibold text-slate-900">Klarheit</span>, welche Systeme zusammenpassen.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
+                  <p className="text-sm text-slate-700">
+                    Du möchtest <span className="font-semibold text-slate-900">ohne Baustelle</span> starten (Plug & Play).
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Nicht sicher?</p>
+                <p className="mt-1 text-sm text-slate-700">
+                  Dann starte mit dem kostenlosen Kennenlernen. Danach weißt du, ob du ein Konzept brauchst – oder ob ein kleiner Quick-Fix reicht.
+                </p>
+              </div>
             </div>
 
-            <div className="mt-6">
+            {/* Buttons bottom-aligned */}
+            <div className="mt-auto pt-6">
               <CTAButtons />
             </div>
           </div>
@@ -586,9 +572,11 @@ export default function BeratungPage() {
         <div className="rounded-3xl bg-slate-900 px-6 py-10 text-white sm:px-10">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-8">
-              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Du willst erst sicher sein, ob Smart Home bei dir Sinn macht?</h2>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                Du willst erst sicher sein, ob Smart Home bei dir Sinn macht?
+              </h2>
               <p className="mt-2 text-sm text-slate-200 sm:text-base">
-                Dann starte mit dem kostenlosen Kennenlern‑Call. Wenn es passt, bekommst du danach ein echtes Konzept – ohne Verkaufsdruck, ohne Fachchinesisch.
+                Dann starte mit dem kostenlosen Kennenlern-Call. Wenn es passt, bekommst du danach ein echtes Konzept – ohne Verkaufsdruck, ohne Fachchinesisch.
               </p>
             </div>
             <div className="lg:col-span-4">
@@ -597,7 +585,7 @@ export default function BeratungPage() {
                   href="https://calendly.com/homigo-de/30min"
                   className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-emerald-400"
                 >
-                  Kennenlern‑Call buchen
+                  Kennenlern-Call buchen
                 </a>
                 <Link
                   href="/kontakt"

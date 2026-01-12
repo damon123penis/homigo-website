@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | homigo",
   },
   description:
-    "Smart-Home Hardware, Bundles und Services – passend zu deiner Beratung. Versand aus Deutschland, klare Zustandsangaben und transparente Hinweise.",
+    "Kuratierter Smart‑Home Shop: einfache, kompatible Produkte für den Alltag. Auf Wunsch mit Beratung, damit alles schnell funktioniert.",
   alternates: {
     canonical: "/shop",
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     url: "/shop",
     title: "Shop | homigo",
     description:
-      "Smart-Home Hardware, Bundles und Services – passend zu deiner Beratung.",
+      "Einfache, kompatible Smart‑Home Produkte. Auf Wunsch mit Beratung, damit alles schnell funktioniert.",
     siteName: "homigo",
     locale: "de_DE",
   },
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Shop | homigo",
     description:
-      "Smart-Home Hardware, Bundles und Services – passend zu deiner Beratung.",
+      "Einfache, kompatible Smart‑Home Produkte. Auf Wunsch mit Beratung, damit alles schnell funktioniert.",
   },
 };
 
@@ -104,34 +104,35 @@ export default async function ShopHome() {
         <div className="grid gap-8 md:grid-cols-2 md:items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-              Willkommen im <span className="relative inline-block">
-                homigo Shop
+              Dein Amigo fürs Smart Home.
+              <span className="relative ml-2 inline-block">
+                Shop
                 <span className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-emerald-200/70" />
               </span>
             </h1>
             <p className="mt-3 text-slate-600 leading-relaxed">
-              Hier findest du kuratierte Smart-Home-Komponenten – einzeln, als Bundle oder zusammen mit
-              einer Beratung. Fokus: kompatible Setups, klare Zustandsangaben und ein Checkout, der
-              sauber über Shopify läuft.
+              Hier findest du Produkte, die im Alltag einfach funktionieren – klar beschrieben, kompatibel gedacht.
+              Wenn du schon genau weißt, was du willst: schnapp dir unsere guten Deals. Wenn du unsicher bist: hol dir kurz
+              Orientierung und vermeide Fehlkäufe.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/shop/collections"
+                href="/shop/products"
                 className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
               >
-                Kategorien entdecken
+                Produkte entdecken
               </Link>
               <Link
-                href="/shop/products"
+                href="/beratung"
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/90 px-5 py-3 font-semibold text-slate-900 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
               >
-                Alle Produkte ansehen
+                Beratung: kurz Klarheit holen
               </Link>
             </div>
 
             <p className="mt-4 text-xs text-slate-500">
-              Hinweis: Preise in EUR. Versand &amp; Rückgabe gemäß den Angaben im Checkout.
+              Hinweis: Preise in EUR. Checkout &amp; Zahlung laufen sicher über Shopify.
             </p>
           </div>
 
@@ -139,27 +140,27 @@ export default async function ShopHome() {
           <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-slate-50 p-6">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
-                <div className="text-sm font-semibold text-slate-900">Kompatibilität zuerst</div>
+                <div className="text-sm font-semibold text-slate-900">Alltagstauglich ausgewählt</div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Funkstandard, Hub-Anforderung, Ökosysteme – alles sichtbar im Produktdetail.
+                  Du bekommst Produkte, die zusammenpassen – mit klaren Angaben zu Funkstandard, Hub und Ökosystem.
                 </div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
-                <div className="text-sm font-semibold text-slate-900">Bundles + Beratung</div>
+                <div className="text-sm font-semibold text-slate-900">Zwei Wege zum Ziel</div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Hardware-only, Beratung-only oder Bundle – so, wie es zu deinem Projekt passt.
+                  Direkt kaufen oder erst kurz beraten lassen – damit du schneller fertig bist und weniger zurückschickst.
                 </div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
-                <div className="text-sm font-semibold text-slate-900">Transparente Zustände</div>
+                <div className="text-sm font-semibold text-slate-900">B‑Stock & Zustände</div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Neu, neuwertig, generalüberholt – klar ausgewiesen statt versteckt.
+                  Neu, neuwertig, generalüberholt – immer transparent ausgewiesen.
                 </div>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
                 <div className="text-sm font-semibold text-slate-900">Sicherer Checkout</div>
                 <div className="mt-1 text-sm text-slate-600">
-                  Der Checkout läuft direkt über Shopify – schnell, sicher, bewährt.
+                  Checkout & Zahlung laufen direkt über Shopify. Du bleibst im Flow – ohne extra Accounts.
                 </div>
               </div>
             </div>
@@ -167,26 +168,26 @@ export default async function ShopHome() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Für wen ist der Shop? */}
       <section className="grid gap-6 md:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-semibold text-slate-900">1) Stöbern</div>
+          <div className="text-sm font-semibold text-slate-900">Für Einsteiger</div>
           <p className="mt-2 text-sm text-slate-600">
-            Starte in den Kategorien oder sieh dir alle Produkte an. Die Filter/Details helfen dir,
-            schnell passende Hardware zu finden.
+            Du willst Licht, Sensorik oder Steckdosen smart machen – ohne dich durch Foren zu wühlen.
+            Du bekommst klare Empfehlungen und Produkte, die einfach zusammenspielen.
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-semibold text-slate-900">2) Prüfen</div>
+          <div className="text-sm font-semibold text-slate-900">Für Pragmatiker</div>
           <p className="mt-2 text-sm text-slate-600">
-            Im Produktdetail findest du Kompatibilitätsinfos (z. B. Zigbee/Thread/Matter, Hub,
-            Ökosysteme) sowie Hersteller/SKU/GTIN.
+            Du willst ein stabiles Setup, das später erweiterbar ist. Hier findest du kompatible Komponenten
+            und saubere Produktdetails (Standard, Hub, Ökosystem).
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-semibold text-slate-900">3) Checkout</div>
+          <div className="text-sm font-semibold text-slate-900">Für Nerds & Deals</div>
           <p className="mt-2 text-sm text-slate-600">
-            Lege Artikel in den Warenkorb und schließe den Kauf im Shopify-Checkout ab.
+            Du weißt, was du tust – und willst gute Preise.
           </p>
         </div>
       </section>
@@ -197,7 +198,7 @@ export default async function ShopHome() {
           <div>
             <h2 className="text-xl font-bold text-slate-900">Beliebte Kategorien</h2>
             <p className="mt-1 text-sm text-slate-600">
-              Ein schneller Einstieg – oder nutze den Button oben, um alle Kategorien zu sehen.
+              Ein schneller Einstieg – oder spring direkt zu allen Produkten, wenn du schon ein Ziel hast.
             </p>
           </div>
           <Link
@@ -256,18 +257,18 @@ export default async function ShopHome() {
       <section className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm md:p-10">
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Unsicher bei der Auswahl?</h2>
+            <h2 className="text-xl font-bold text-slate-900">Unsicher? Hol dir 15 Minuten Orientierung.</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Wenn du willst, prüfe ich mit dir kurz die Kompatibilität (Hub/Ökosystem/Funkstandard)
-              und empfehle dir ein Set, das sauber zusammenläuft.
+              Wenn du willst, prüfen wir kurz dein Ziel (WLAN, Handy, Ökosystem) und ich empfehle dir ein Setup,
+              das sauber zusammenläuft – ohne Verkaufsdruck.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
             <Link
-              href="/kontakt"
+              href="/beratung"
               className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700"
             >
-              Beratung anfragen
+              Kennenlern-Call starten
             </Link>
             <Link
               href="/shop/products"
