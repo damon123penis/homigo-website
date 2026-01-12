@@ -106,7 +106,7 @@ export default async function ShopHome() {
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
               Dein Amigo fürs Smart Home
               <span className="relative ml-2 inline-block">
-                homigo Shop
+              homigo Shop
                 <span className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-emerald-200/70" />
               </span>
             </h1>
