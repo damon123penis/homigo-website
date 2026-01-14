@@ -797,10 +797,21 @@ export default async function ProductPage({
                       ) : null}
                   </div>
 
-                  <div className="flex items-end">
+                  <div>
+                    <label
+                      className="block text-sm font-medium text-transparent mb-2 select-none"
+                      aria-hidden="true"
+                    >
+                      Menge
+                    </label>
+
                     <button
                       type="submit"
-                      disabled={isSoldOut || !displayVariant?.id || (hasStockLimit && (qtyAvail as number) <= 0)}
+                      disabled={
+                        isSoldOut ||
+                        !displayVariant?.id ||
+                        (hasStockLimit && (qtyAvail as number) <= 0)
+                      }
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
                       {isSoldOut ? "Ausverkauft" : "In den Warenkorb"}
