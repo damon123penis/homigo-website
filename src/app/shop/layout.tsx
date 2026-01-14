@@ -63,6 +63,18 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
     !STOREFRONT_TOKEN.startsWith("shpat_") &&
     !STOREFRONT_TOKEN.startsWith("shppa_");
 
+  // Zahlungsarten (Shopify Payments) – im Shop-Footer als einfache Badges
+  const paymentMethods = [
+    { key: "visa", label: "Visa" },
+    { key: "mastercard", label: "Mastercard" },
+    { key: "amex", label: "American Express" },
+    { key: "paypal", label: "PayPal" },
+    { key: "applepay", label: "Apple Pay" },
+    { key: "googlepay", label: "Google Pay" },
+    { key: "klarna", label: "Klarna" },
+    { key: "shoppay", label: "Shop Pay" },
+  ] as const;
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -375,6 +387,27 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
           <p className="text-center text-xs text-slate-500">
             Checkout und Zahlung erfolgen über Shopify.
           </p>
+
+          {/* Zahlungsarten */}
+          <div className="mt-4 flex flex-col items-center gap-2" aria-label="Zahlungsarten">
+            <p className="text-[11px] font-medium text-slate-500">Zahlungsarten</p>
+            <ul className="flex flex-wrap items-center justify-center gap-2" role="list">
+              {paymentMethods.map((m) => (
+                <li key={m.key}>
+                  <span
+                    className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-700"
+                    aria-label={m.label}
+                    title={m.label}
+                  >
+                    {m.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="max-w-xl text-center text-[11px] leading-relaxed text-slate-500">
+              Die tatsächlich verfügbaren Zahlungsarten werden im Checkout angezeigt.
+            </p>
+          </div>
         </div>
       </main>
     </div>

@@ -59,17 +59,6 @@ export default function RootLayout({
       ? 'rounded-xl px-3 py-2 text-sm font-semibold text-slate-900 bg-slate-50'
       : 'rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900'
   
-    // Zahlungsarten (Shopify Payments) – als einfache Badges im Footer
-  const paymentMethods = [
-    { key: 'visa', label: 'Visa' },
-    { key: 'mastercard', label: 'Mastercard' },
-    { key: 'amex', label: 'American Express' },
-    { key: 'paypal', label: 'PayPal' },
-    { key: 'applepay', label: 'Apple Pay' },
-    { key: 'googlepay', label: 'Google Pay' },
-    { key: 'klarna', label: 'Klarna' },
-    { key: 'shoppay', label: 'Shop Pay' },
-  ] as const
 
   return (
     <html lang="de">
@@ -304,29 +293,6 @@ export default function RootLayout({
                     Kontakt
                   </Link>
               </div>
-
-                          {/* Zahlungsarten (Shopify Payments) */}
-                <div className="mt-8 flex flex-col items-center gap-3" aria-label="Zahlungsarten">
-                  <p className="text-xs font-medium text-slate-500">Zahlungsarten</p>
-
-                  <ul className="flex flex-wrap items-center justify-center gap-2" role="list">
-                    {paymentMethods.map((m) => (
-                      <li key={m.key}>
-                        <span
-                          className="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-700"
-                          aria-label={m.label}
-                          title={m.label}
-                        >
-                          {m.label}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className="max-w-xl text-center text-[11px] leading-relaxed text-slate-500">
-                    Die verfügbaren Zahlungsarten werden im Checkout angezeigt.
-                  </p>
-                </div>
 
               {/* Center (always centered logo) */}
               <div className="flex items-center justify-center">
