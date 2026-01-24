@@ -264,7 +264,7 @@ export async function generateMetadata({
   }
 
   const canonicalUrl = `${siteUrl()}/shop/products/${product.handle}`;
-  const title = `${product.title} | homigo Shop`;
+  const title = `${product.title}`;
 
   const description =
     truncate(stripHtml(product.descriptionHtml), 160) ||
