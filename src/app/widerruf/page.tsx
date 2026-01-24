@@ -75,7 +75,7 @@ export default function WiderrufPage() {
             </p>
             <p>
               Wir übernehmen die unmittelbaren Kosten der Rücksendung der Waren, sofern die Rücksendung
-              innerhalb von 14 Tagen ab Erhalt der Ware veranlasst wird (kostenlose Rücksendung).
+              innerhalb von 30 Tagen ab Erhalt der Ware veranlasst wird (kostenlose Rücksendung).
             </p>
             <p className="text-sm text-slate-600">
               Hinweis: Das gesetzliche Widerrufsrecht bleibt hiervon unberührt. Die kostenlose Rücksendung
