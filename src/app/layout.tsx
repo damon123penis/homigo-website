@@ -292,6 +292,9 @@ export default function RootLayout({
                   <Link href="/datenschutz" className="hover:text-slate-900">
                     Datenschutz
                   </Link>
+                  <Link href="/widerruf" className="hover:text-slate-900">
+                    Widerrufsbelehrung
+                  </Link>
                   <Link href="/kontakt" className="hover:text-slate-900">
                     Kontakt
                   </Link>
