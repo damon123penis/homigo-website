@@ -20,6 +20,14 @@ type Variant = {
   image?: ProductImage | null;
 };
 
+type MetafieldReferenceNode =
+  | {
+      __typename?: string;
+      id?: string;
+      fields?: Array<{ key: string; value: string } | null> | null;
+    }
+  | null;
+
 type Metafield = {
   key: string;
   namespace?: string | null;
@@ -28,13 +36,7 @@ type Metafield = {
   references?:
     | {
         edges?: Array<{
-          node:
-            | {
-                __typename?: string;
-                id?: string;
-                fields?: Array<{ key: string; value: string } | null> | null;
-              }
-            | null;
+          node: MetafieldReferenceNode;
         }>;
       }
     | null;
@@ -63,60 +65,59 @@ function siteUrl(): string {
 }
 
 async function fetchProductByHandle(handle: string): Promise<Product | null> {
-
   type Resp = {
-  productByHandle:
-    | {
-        id: string;
-        handle: string;
-        title: string;
-        vendor?: string | null;
-        descriptionHtml: string;
-        featuredImage?: { url: string; altText?: string | null } | null;
-        images?: { edges: Array<{ node: { url: string; altText?: string | null } }> } | null;
-        variants?:
-          | {
-              edges: Array<{
-                node: {
-                  id: string;
-                  title: string;
-                  availableForSale: boolean;
-                  price: { amount: string; currencyCode: string };
-                  sku?: string | null;
-                  barcode?: string | null;
-                  quantityAvailable?: number | null;
-                  image?: { url: string; altText?: string | null } | null;
-                };
-              }>;
-            }
-          | null;
-        metafields?:
-          | Array<
-              | {
-                  key: string;
-                  namespace?: string | null;
-                  type?: string | null;
-                  value: string | null;
-                  references?:
-                    | {
-                        edges: Array<{
-                          node:
-                            | {
-                                __typename?: string;
-                                id?: string;
-                                fields?: Array<{ key: string; value: string } | null> | null;
-                              }
-                            | null;
-                        }>;
-                      }
-                    | null;
-                }
-              | null
-            >
-          | null;
-      }
-    | null;
-};
+    productByHandle:
+      | {
+          id: string;
+          handle: string;
+          title: string;
+          vendor?: string | null;
+          descriptionHtml: string;
+          featuredImage?: { url: string; altText?: string | null } | null;
+          images?: { edges: Array<{ node: { url: string; altText?: string | null } }> } | null;
+          variants?:
+            | {
+                edges: Array<{
+                  node: {
+                    id: string;
+                    title: string;
+                    availableForSale: boolean;
+                    price: { amount: string; currencyCode: string };
+                    sku?: string | null;
+                    barcode?: string | null;
+                    quantityAvailable?: number | null;
+                    image?: { url: string; altText?: string | null } | null;
+                  };
+                }>;
+              }
+            | null;
+          metafields?:
+            | Array<
+                | {
+                    key: string;
+                    namespace?: string | null;
+                    type?: string | null;
+                    value: string | null;
+                    references?:
+                      | {
+                          edges?: Array<{
+                            node:
+                              | {
+                                  __typename?: string;
+                                  id?: string;
+                                  fields?: Array<{ key: string; value: string } | null> | null;
+                                }
+                              | null;
+                          }>;
+                        }
+                      | null;
+                  }
+                | null
+              >
+            | null;
+        }
+      | null;
+  };
 
   let data: Resp;
   try {
@@ -131,14 +132,14 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
 
   const metafields: Metafield[] = (p.metafields || [])
-  .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
-  .map((m) => ({
-    key: m.key,
-    namespace: m.namespace ?? null,
-    type: m.type ?? null,
-    value: m.value,
-    references: m.references ?? null,
-  }));
+    .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
+    .map((m) => ({
+      key: m.key,
+      namespace: m.namespace ?? null,
+      type: m.type ?? null,
+      value: m.value,
+      references: m.references ?? null,
+    }));
 
   const images: ProductImage[] = (p.images?.edges || [])
     .map((e) => e.node)
@@ -193,9 +194,7 @@ function humanizeKey(normalizedKey: string): string {
   };
   if (map[normalizedKey]) return map[normalizedKey];
 
-  return normalizedKey
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return normalizedKey.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function extractMetafieldDisplayValue(m: Metafield): string {
@@ -217,9 +216,32 @@ function extractMetafieldDisplayValue(m: Metafield): string {
   return Array.from(new Set(values)).join("\n");
 }
 
-export async function generateMetadata(
-  { params }: { params: { handle: string } }
-): Promise<Metadata> {
+function normalizeDescriptionHtml(html: string): string {
+  const input = (html || "").trim();
+  if (!input) return "";
+
+  // If we already have block elements, leave as is.
+  const hasBlock = /<(p|ul|ol|li|h[1-6]|table|blockquote|section|article|div)\b/i.test(input);
+  if (hasBlock) return input;
+
+  // Interpret double <br> or double newlines as paragraph breaks.
+  const brBreak = /(<br\s*\/?>(\s|&nbsp;)*){2,}/gi;
+  const singleBr = /<br\s*\/?>(\s|&nbsp;)*/gi;
+
+  const withParagraphs = input
+    .replace(brBreak, "</p><p>")
+    .replace(singleBr, "<br />")
+    .replace(/\n{2,}/g, "</p><p>")
+    .replace(/\n/g, "<br />");
+
+  return `<p>${withParagraphs}</p>`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { handle: string };
+}): Promise<Metadata> {
   const handle = decodeURIComponent(params.handle);
   const product = await fetchProductByHandle(handle);
 
@@ -317,6 +339,7 @@ export default async function ProductPage({
 
     hub_erforderlich?: string;
     hub_kompatibilitat?: string;
+    hub_kompabilitaet?: string;
 
     oecosysteme?: string;
     thread?: string;
@@ -339,12 +362,9 @@ export default async function ProductPage({
     return true;
   })();
 
-  const selectedVariantId =
-    typeof searchParams?.variant === "string" ? searchParams.variant : undefined;
+  const selectedVariantId = typeof searchParams?.variant === "string" ? searchParams.variant : undefined;
 
-  const selectedVariant = selectedVariantId
-    ? p.variants.find((v) => v.id === selectedVariantId) || null
-    : null;
+  const selectedVariant = selectedVariantId ? p.variants.find((v) => v.id === selectedVariantId) || null : null;
 
   const displayVariant = selectedVariant || primaryVariant;
 
@@ -365,35 +385,20 @@ export default async function ProductPage({
   const SHOP_RETURN_POLICY_URL = envString("SHOP_RETURN_POLICY_URL");
   const SHOP_RETURN_DAYS_RAW = envString("SHOP_RETURN_DAYS");
   const SHOP_RETURN_DAYS =
-    SHOP_RETURN_DAYS_RAW && !isNaN(Number(SHOP_RETURN_DAYS_RAW))
-      ? parseInt(SHOP_RETURN_DAYS_RAW, 10)
-      : undefined;
+    SHOP_RETURN_DAYS_RAW && !isNaN(Number(SHOP_RETURN_DAYS_RAW)) ? parseInt(SHOP_RETURN_DAYS_RAW, 10) : undefined;
 
   const SHOP_SHIPPING_COUNTRY = envString("SHOP_SHIPPING_COUNTRY") || undefined;
   const SHOP_SHIPPING_COST = envString("SHOP_SHIPPING_COST");
-  const SHOP_SHIPPING_CURRENCY =
-    envString("SHOP_SHIPPING_CURRENCY") || displayVariant?.price.currencyCode || "EUR";
+  const SHOP_SHIPPING_CURRENCY = envString("SHOP_SHIPPING_CURRENCY") || displayVariant?.price.currencyCode || "EUR";
 
   const NEXT_PUBLIC_BRAND_NAME = envString("NEXT_PUBLIC_BRAND_NAME") || "homigo";
 
   function conditionLabel(raw?: string): string | undefined {
     if (!raw) return undefined;
     const z = raw.toLowerCase();
-    if (
-      z === "like_new" ||
-      z === "likenew" ||
-      z.includes("neuwertig") ||
-      z === "wie neu" ||
-      z === "wieneu"
-    )
-      return "Neuwertig";
+    if (z === "like_new" || z === "likenew" || z.includes("neuwertig") || z === "wie neu" || z === "wieneu") return "Neuwertig";
     if (z === "new" || z.includes("neu")) return "Neu";
-    if (
-      z === "refurbished" ||
-      z.includes("generalüberholt") ||
-      z.includes("generalueberholt")
-    )
-      return "Generalüberholt";
+    if (z === "refurbished" || z.includes("generalüberholt") || z.includes("generalueberholt")) return "Generalüberholt";
     if (z === "used" || z.includes("gebraucht")) return "Gebraucht";
     return raw.replace(/_/g, " ");
   }
@@ -516,8 +521,8 @@ export default async function ProductPage({
       ? displayVariant?.barcode.length === 13
         ? { gtin13: displayVariant?.barcode }
         : displayVariant?.barcode.length === 14
-        ? { gtin14: displayVariant?.barcode }
-        : { gtin: displayVariant?.barcode }
+          ? { gtin14: displayVariant?.barcode }
+          : { gtin: displayVariant?.barcode }
       : {}),
     ...(mf.mpn ? { mpn: mf.mpn } : {}),
     offers: displayVariant
@@ -531,14 +536,11 @@ export default async function ProductPage({
             price: displayVariant.price.amount,
             valueAddedTaxIncluded: !isDifferenz,
           },
-          availability: displayVariant.availableForSale
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
+          availability: displayVariant.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           url: canonicalUrl,
           ...(isDifferenz
             ? {
-                description:
-                  "Differenzbesteuerung nach § 25a UStG. Umsatzsteuer wird nicht separat ausgewiesen.",
+                description: "Differenzbesteuerung nach § 25a UStG. Umsatzsteuer wird nicht separat ausgewiesen.",
               }
             : null),
           ...(SHOP_SHIPPING_COST && SHOP_SHIPPING_COUNTRY
@@ -562,11 +564,8 @@ export default async function ProductPage({
                 hasMerchantReturnPolicy: {
                   "@type": "MerchantReturnPolicy",
                   ...(SHOP_RETURN_POLICY_URL ? { url: SHOP_RETURN_POLICY_URL } : {}),
-                  ...(typeof SHOP_RETURN_DAYS === "number"
-                    ? { merchantReturnDays: SHOP_RETURN_DAYS }
-                    : {}),
-                  returnPolicyCategory:
-                    "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  ...(typeof SHOP_RETURN_DAYS === "number" ? { merchantReturnDays: SHOP_RETURN_DAYS } : {}),
+                  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
                 },
               }
             : {}),
@@ -575,6 +574,8 @@ export default async function ProductPage({
   };
 
   function DetailsCompatibilityBox() {
+    const hubCompat = mf.hub_kompatibilitat || mf.hub_kompabilitaet;
+
     const hasAny =
       p.vendor ||
       displayVariant?.sku ||
@@ -584,7 +585,7 @@ export default async function ProductPage({
       mf.funkstandard ||
       mf.frequenz ||
       mf.hub_erforderlich ||
-      mf.hub_kompatibilitat ||
+      hubCompat ||
       mf.oecosysteme ||
       mf.thread ||
       mf.matter ||
@@ -594,12 +595,9 @@ export default async function ProductPage({
 
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
-        <div className="text-sm font-semibold text-slate-900">
-          Details &amp; Kompatibilität
-        </div>
+        <div className="text-sm font-semibold text-slate-900">Details &amp; Kompatibilität</div>
         <p className="mt-2 text-sm text-slate-600">
-          Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst,
-          ob es zu deinem Setup passt.
+          Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst, ob es zu deinem Setup passt.
         </p>
 
         <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -661,8 +659,8 @@ export default async function ProductPage({
                 {mf.hub_erforderlich.toLowerCase() === "true"
                   ? "Ja"
                   : mf.hub_erforderlich.toLowerCase() === "false"
-                  ? "Nein"
-                  : mf.hub_erforderlich}
+                    ? "Nein"
+                    : mf.hub_erforderlich}
               </dd>
             </div>
           ) : null}
@@ -671,11 +669,7 @@ export default async function ProductPage({
             <div>
               <dt className="text-xs font-medium text-slate-500">Thread</dt>
               <dd className="mt-1 text-sm text-slate-800">
-                {mf.thread.toLowerCase() === "true"
-                  ? "Ja"
-                  : mf.thread.toLowerCase() === "false"
-                  ? "Nein"
-                  : mf.thread}
+                {mf.thread.toLowerCase() === "true" ? "Ja" : mf.thread.toLowerCase() === "false" ? "Nein" : mf.thread}
               </dd>
             </div>
           ) : null}
@@ -684,33 +678,24 @@ export default async function ProductPage({
             <div>
               <dt className="text-xs font-medium text-slate-500">Matter</dt>
               <dd className="mt-1 text-sm text-slate-800">
-                {mf.matter.toLowerCase() === "true"
-                  ? "Ja"
-                  : mf.matter.toLowerCase() === "false"
-                  ? "Nein"
-                  : mf.matter}
+                {mf.matter.toLowerCase() === "true" ? "Ja" : mf.matter.toLowerCase() === "false" ? "Nein" : mf.matter}
               </dd>
             </div>
           ) : null}
 
-          {mf.hub_kompatibilitat ? (
+          {hubCompat ? (
             <div className="sm:col-span-2">
               <dt className="text-xs font-medium text-slate-500">Hub-Kompatibilität</dt>
-              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
-                {mf.hub_kompatibilitat}
-              </dd>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{hubCompat}</dd>
             </div>
           ) : null}
 
           {mf.oecosysteme ? (
             <div className="sm:col-span-2">
               <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
-                {mf.oecosysteme}
-              </dd>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
             </div>
           ) : null}
-
         </dl>
 
         {categoryMetafields.length > 0 ? (
@@ -719,9 +704,7 @@ export default async function ProductPage({
             <dl className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {categoryMetafields.map((m) => (
                 <div key={`cat-${m.normalizedKey}`}>
-                  <dt className="text-xs font-medium text-slate-500">
-                    {humanizeKey(m.normalizedKey)}
-                  </dt>
+                  <dt className="text-xs font-medium text-slate-500">{humanizeKey(m.normalizedKey)}</dt>
                   <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{m.value}</dd>
                 </div>
               ))}
@@ -729,15 +712,10 @@ export default async function ProductPage({
           </div>
         ) : null}
 
-        {(mf.funkstandard ||
-          mf.hub_erforderlich ||
-          mf.hub_kompatibilitat ||
-          mf.oecosysteme ||
-          mf.thread ||
-          mf.matter) ? (
+        {(mf.funkstandard || mf.hub_erforderlich || hubCompat || mf.oecosysteme || mf.thread || mf.matter) ? (
           <div className="mt-4 rounded-xl bg-slate-50 p-4 text-xs text-slate-600">
-            Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub oder deinem System (Home Assistant,
-            Apple Home, Alexa, Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
+            Tipp: Wenn du unsicher bist, ob das Gerät mit deinem Hub oder deinem System (Home Assistant, Apple Home, Alexa,
+            Google Home) kompatibel ist, schreib uns kurz – wir prüfen es.
           </div>
         ) : null}
       </div>
@@ -746,10 +724,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-10 md:grid-cols-2 items-start">
@@ -834,8 +809,8 @@ export default async function ProductPage({
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
               {isSoldOut ? (
                 <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">
-                  <span className="font-semibold">Ausverkauft.</span> Dieses Produkt ist aktuell nicht verfügbar.
-                  Wenn du willst, schreib uns kurz – wir informieren dich bei Verfügbarkeit.
+                  <span className="font-semibold">Ausverkauft.</span> Dieses Produkt ist aktuell nicht verfügbar. Wenn du
+                  willst, schreib uns kurz – wir informieren dich bei Verfügbarkeit.
                 </div>
               ) : null}
 
@@ -843,23 +818,16 @@ export default async function ProductPage({
                 <div className="text-sm font-medium text-slate-700">Preis</div>
                 {displayVariant ? (
                   <div className="text-lg font-semibold text-slate-900">
-                    {Number(displayVariant.price.amount).toFixed(2)}{" "}
-                    {displayVariant.price.currencyCode}
+                    {Number(displayVariant.price.amount).toFixed(2)} {displayVariant.price.currencyCode}
                   </div>
                 ) : null}
               </div>
 
               {/* Variant selection only if there is a real choice */}
               {hasRealVariantChoice ? (
-                <form
-                  method="GET"
-                  action={`/shop/products/${encodeURIComponent(p.handle)}`}
-                  className="mt-3"
-                >
+                <form method="GET" action={`/shop/products/${encodeURIComponent(p.handle)}`} className="mt-3">
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium text-slate-700">
-                      Option wählen
-                    </label>
+                    <label className="text-sm font-medium text-slate-700">Option wählen</label>
 
                     <div className="flex gap-2">
                       <select
@@ -887,17 +855,11 @@ export default async function ProductPage({
               ) : null}
 
               <form action={addToCartAction} className="mt-2">
-                <input
-                  type="hidden"
-                  name="merchandiseId"
-                  value={displayVariant?.id || ""}
-                />
+                <input type="hidden" name="merchandiseId" value={displayVariant?.id || ""} />
 
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Menge
-                    </label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Menge</label>
                     <input
                       name="quantity"
                       type="number"
@@ -907,28 +869,21 @@ export default async function ProductPage({
                       disabled={isSoldOut}
                       className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                     />
-                      {hasStockLimit ? (
-                        <div className="mt-2 text-xs text-slate-600">
-                          Verfügbar: <span className="font-semibold text-slate-900">{qtyAvail}</span>
-                        </div>
-                      ) : null}
+                    {hasStockLimit ? (
+                      <div className="mt-2 text-xs text-slate-600">
+                        Verfügbar: <span className="font-semibold text-slate-900">{qtyAvail}</span>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div>
-                    <label
-                      className="block text-sm font-medium text-transparent mb-2 select-none"
-                      aria-hidden="true"
-                    >
+                    <label className="block text-sm font-medium text-transparent mb-2 select-none" aria-hidden="true">
                       Menge
                     </label>
 
                     <button
                       type="submit"
-                      disabled={
-                        isSoldOut ||
-                        !displayVariant?.id ||
-                        (hasStockLimit && (qtyAvail as number) <= 0)
-                      }
+                      disabled={isSoldOut || !displayVariant?.id || (hasStockLimit && (qtyAvail as number) <= 0)}
                       className="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                     >
                       {isSoldOut ? "Ausverkauft" : "In den Warenkorb"}
@@ -936,12 +891,12 @@ export default async function ProductPage({
                   </div>
                 </div>
 
-                <p className="mt-4 text-xs text-slate-500">
-                  Hinweis: Der Checkout erfolgt sicher über Shopify.
-                </p>
+                <p className="mt-4 text-xs text-slate-500">Hinweis: Der Checkout erfolgt sicher über Shopify.</p>
+
                 {showTaxNotice ? (
                   <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                    <span className="font-semibold">Hinweis zur Differenzbesteuerung:</span> Dieses Produkt unterliegt der Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
+                    <span className="font-semibold">Hinweis zur Differenzbesteuerung:</span> Dieses Produkt unterliegt der
+                    Differenzbesteuerung nach § 25a UStG. Die Umsatzsteuer wird nicht separat ausgewiesen.
                   </div>
                 ) : null}
               </form>
@@ -956,12 +911,11 @@ export default async function ProductPage({
             {p.descriptionHtml ? (
               <div
                 className="mt-6 prose prose-slate max-w-none prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:mt-4 prose-headings:mb-2"
-                dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
+                dangerouslySetInnerHTML={{ __html: normalizeDescriptionHtml(p.descriptionHtml) }}
               />
             ) : (
               <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
-
           </div>
         </div>
       </div>
