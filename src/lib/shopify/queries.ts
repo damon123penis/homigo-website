@@ -74,12 +74,32 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
           { namespace: "custom", key: "oecosysteme" }
           { namespace: "custom", key: "thread" }
           { namespace: "custom", key: "matter" }
+          { namespace: "custom", key: "gluehbirnensockeltyp" }
+          { namespace: "custom", key: "energieeffizienzklasse" }
+          { namespace: "custom", key: "leuchtmittelform" }
+          { namespace: "custom", key: "lichttemperatur" }
+          { namespace: "custom", key: "groesse_der_gluehbirne" }
+          { namespace: "custom", key: "farbe" }
+          { namespace: "custom", key: "hardwarematerial" }
         ]
       ) {
         key
         namespace
         type
         value
+        references(first: 20) {
+          nodes {
+            ... on Metaobject {
+              id
+              type
+              handle
+              fields {
+                key
+                value
+              }
+            }
+          }
+        }
       }
       images(first: 10) { edges { node { url altText } } }
       variants(first: 50) {

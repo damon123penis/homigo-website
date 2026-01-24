@@ -20,7 +20,25 @@ type Variant = {
   image?: ProductImage | null;
 };
 
-type Metafield = { key: string; value: string | null };
+type Metafield = {
+  key: string;
+  namespace?: string | null;
+  type?: string | null;
+  value: string | null;
+  references?:
+    | {
+        edges: Array<{
+          node:
+            | {
+                __typename?: string;
+                id?: string;
+                fields?: Array<{ key: string; value: string } | null> | null;
+              }
+            | null;
+        }>;
+      }
+    | null;
+};
 
 type Product = {
   id: string;
@@ -45,46 +63,60 @@ function siteUrl(): string {
 }
 
 async function fetchProductByHandle(handle: string): Promise<Product | null> {
+
   type Resp = {
-    productByHandle:
-      | {
-          id: string;
-          handle: string;
-          title: string;
-          vendor?: string | null;
-          descriptionHtml: string;
-          featuredImage?: { url: string; altText?: string | null } | null;
-          images?: { edges: Array<{ node: { url: string; altText?: string | null } }> } | null;
-          variants?:
-            | {
-                edges: Array<{
-                  node: {
-                    id: string;
-                    title: string;
-                    availableForSale: boolean;
-                    price: { amount: string; currencyCode: string };
-                    sku?: string | null;
-                    barcode?: string | null;
-                    quantityAvailable?: number | null;
-                    image?: { url: string; altText?: string | null } | null;
-                  };
-                }>;
-              }
-            | null;
-          metafields?:
-            | Array<
-                | {
-                    key: string;
-                    namespace: string;
-                    type: string;
-                    value: string | null;
-                  }
-                | null
-              >
-            | null;
-        }
-      | null;
-  };
+  productByHandle:
+    | {
+        id: string;
+        handle: string;
+        title: string;
+        vendor?: string | null;
+        descriptionHtml: string;
+        featuredImage?: { url: string; altText?: string | null } | null;
+        images?: { edges: Array<{ node: { url: string; altText?: string | null } }> } | null;
+        variants?:
+          | {
+              edges: Array<{
+                node: {
+                  id: string;
+                  title: string;
+                  availableForSale: boolean;
+                  price: { amount: string; currencyCode: string };
+                  sku?: string | null;
+                  barcode?: string | null;
+                  quantityAvailable?: number | null;
+                  image?: { url: string; altText?: string | null } | null;
+                };
+              }>;
+            }
+          | null;
+        metafields?:
+          | Array<
+              | {
+                  key: string;
+                  namespace?: string | null;
+                  type?: string | null;
+                  value: string | null;
+                  references?:
+                    | {
+                        edges: Array<{
+                          node:
+                            | {
+                                __typename?: string;
+                                id?: string;
+                                fields?: Array<{ key: string; value: string } | null> | null;
+                              }
+                            | null;
+                        }>;
+                      }
+                    | null;
+                }
+              | null
+            >
+          | null;
+      }
+    | null;
+};
 
   let data: Resp;
   try {
@@ -99,8 +131,14 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
   const variants: Variant[] = (p.variants?.edges || []).map((e) => e.node);
 
   const metafields: Metafield[] = (p.metafields || [])
-    .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
-    .map((m) => ({ key: m.key, value: m.value }));
+  .filter((m): m is NonNullable<typeof m> => Boolean(m && typeof m.key === "string"))
+  .map((m) => ({
+    key: m.key,
+    namespace: m.namespace ?? null,
+    type: m.type ?? null,
+    value: m.value,
+    references: m.references ?? null,
+  }));
 
   const images: ProductImage[] = (p.images?.edges || [])
     .map((e) => e.node)
@@ -132,6 +170,51 @@ function truncate(text: string, max = 160): string {
   const t = (text || "").trim().replace(/\s+/g, " ");
   if (!t) return "";
   return t.length <= max ? t : `${t.slice(0, max - 1)}…`;
+}
+
+function normalizeMetafieldKey(key: string): string {
+  return (key || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_\-]/g, "")
+    .replace(/-/g, "_");
+}
+
+function humanizeKey(normalizedKey: string): string {
+  const map: Record<string, string> = {
+    gluehbirnensockeltyp: "Glühbirnensockeltyp",
+    energieeffizienzklasse: "Energieeffizienzklasse",
+    leuchtmittelform: "Leuchtmittelform",
+    lichttemperatur: "Lichttemperatur",
+    groesse_der_gluehbirne: "Größe der Glühbirne",
+    farbe: "Farbe",
+    hardwarematerial: "Hardwarematerial",
+  };
+  if (map[normalizedKey]) return map[normalizedKey];
+
+  return normalizedKey
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function extractMetafieldDisplayValue(m: Metafield): string {
+  const direct = typeof m.value === "string" ? m.value.trim() : "";
+  if (direct) return direct;
+
+  const edges = m.references?.edges || [];
+  const values: string[] = [];
+
+  for (const e of edges) {
+    const node = e?.node;
+    const fields = node?.fields || [];
+    for (const f of fields) {
+      const v = f?.value ? String(f.value).trim() : "";
+      if (v) values.push(v);
+    }
+  }
+
+  return Array.from(new Set(values)).join("\n");
 }
 
 export async function generateMetadata(
@@ -197,6 +280,25 @@ export default async function ProductPage({
   }
 
   const p = product;
+
+  const CATEGORY_FIELD_KEYS = new Set([
+    "gluehbirnensockeltyp",
+    "energieeffizienzklasse",
+    "leuchtmittelform",
+    "lichttemperatur",
+    "groesse_der_gluehbirne",
+    "farbe",
+    "hardwarematerial",
+  ]);
+
+  const categoryMetafields = (p.metafields || [])
+    .map((m) => ({
+      normalizedKey: normalizeMetafieldKey(m.key),
+      rawKey: m.key,
+      value: extractMetafieldDisplayValue(m),
+    }))
+    .filter((x) => CATEGORY_FIELD_KEYS.has(x.normalizedKey))
+    .filter((x) => x.value && x.value.trim().length > 0);
 
   const mf = Object.fromEntries(
     (p.metafields || [])
@@ -487,9 +589,10 @@ export default async function ProductPage({
       mf.hub_kompatibilitat ||
       mf.oecosysteme ||
       mf.thread ||
-      mf.matter;
+      mf.matter || 
+      categoryMetafields.length > 0;
 
-    if (!hasAny) return null;
+    if (!hasAny) return null; 
 
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -609,7 +712,24 @@ export default async function ProductPage({
               </dd>
             </div>
           ) : null}
+
         </dl>
+
+        {categoryMetafields.length > 0 ? (
+          <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="text-xs font-semibold text-slate-700">Kategorie-Merkmale</div>
+            <dl className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {categoryMetafields.map((m) => (
+                <div key={`cat-${m.normalizedKey}`}>
+                  <dt className="text-xs font-medium text-slate-500">
+                    {humanizeKey(m.normalizedKey)}
+                  </dt>
+                  <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{m.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ) : null}
 
         {(mf.funkstandard ||
           mf.hub_erforderlich ||
@@ -837,11 +957,13 @@ export default async function ProductPage({
 
             {/* Description after checkout */}
             {p.descriptionHtml ? (
-              <div
-                className="mt-6 prose prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
-              />
-            ) : (
+  <div className="mt-6 prose prose-slate max-w-none">
+    <div
+      className="whitespace-normal"
+      dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
+    />
+  </div>
+) : (
               <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
 
