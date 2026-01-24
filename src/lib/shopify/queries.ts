@@ -7,7 +7,10 @@ export const GET_COLLECTIONS = /* GraphQL */ `
           handle
           title
           description
-          image { url altText }
+          image {
+            url
+            altText
+          }
         }
       }
     }
@@ -21,16 +24,25 @@ export const GET_COLLECTION_BY_HANDLE = /* GraphQL */ `
       handle
       title
       description
-      image { url altText }
+      image {
+        url
+        altText
+      }
       products(first: $first) {
         edges {
           node {
             id
             handle
             title
-            featuredImage { url altText }
+            featuredImage {
+              url
+              altText
+            }
             priceRange {
-              minVariantPrice { amount currencyCode }
+              minVariantPrice {
+                amount
+                currencyCode
+              }
             }
             metafields(
               identifiers: [
@@ -59,7 +71,10 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
       title
       descriptionHtml
       vendor
-      featuredImage { url altText }
+      featuredImage {
+        url
+        altText
+      }
       metafields(
         identifiers: [
           { namespace: "custom", key: "steuerregime" }
@@ -71,6 +86,8 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
           { namespace: "custom", key: "frequenz" }
           { namespace: "custom", key: "hub_erforderlich" }
           { namespace: "custom", key: "hub_kompatibilitaet" }
+          { namespace: "custom", key: "hub_kompatibilitat" }
+          { namespace: "custom", key: "hub_kompabilitaet" }
           { namespace: "custom", key: "oecosysteme" }
           { namespace: "custom", key: "thread" }
           { namespace: "custom", key: "matter" }
@@ -88,20 +105,29 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
         type
         value
         references(first: 20) {
-          nodes {
-            ... on Metaobject {
-              id
-              type
-              handle
-              fields {
-                key
-                value
+          edges {
+            node {
+              ... on Metaobject {
+                id
+                type
+                handle
+                fields {
+                  key
+                  value
+                }
               }
             }
           }
         }
       }
-      images(first: 10) { edges { node { url altText } } }
+      images(first: 10) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
       variants(first: 50) {
         edges {
           node {
@@ -111,8 +137,14 @@ export const GET_PRODUCT_BY_HANDLE = /* GraphQL */ `
             quantityAvailable
             sku
             barcode
-            image { url altText }
-            price { amount currencyCode }
+            image {
+              url
+              altText
+            }
+            price {
+              amount
+              currencyCode
+            }
           }
         }
       }
@@ -135,18 +167,30 @@ export const CART_CREATE = /* GraphQL */ `
                 ... on ProductVariant {
                   id
                   title
-                  product { title handle }
-                  price { amount currencyCode }
+                  product {
+                    title
+                    handle
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
           }
         }
         cost {
-          subtotalAmount { amount currencyCode }
+          subtotalAmount {
+            amount
+            currencyCode
+          }
         }
       }
-      userErrors { field message }
+      userErrors {
+        field
+        message
+      }
     }
   }
 `;
@@ -166,16 +210,30 @@ export const CART_LINES_ADD = /* GraphQL */ `
                 ... on ProductVariant {
                   id
                   title
-                  product { title handle }
-                  price { amount currencyCode }
+                  product {
+                    title
+                    handle
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
           }
         }
-        cost { subtotalAmount { amount currencyCode } }
+        cost {
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+        }
       }
-      userErrors { field message }
+      userErrors {
+        field
+        message
+      }
     }
   }
 `;
@@ -195,19 +253,34 @@ export const CART_LINES_UPDATE = /* GraphQL */ `
                 ... on ProductVariant {
                   id
                   title
-                  product { title handle }
-                  price { amount currencyCode }
+                  product {
+                    title
+                    handle
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
                 }
               }
             }
           }
         }
-        cost { subtotalAmount { amount currencyCode } }
+        cost {
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+        }
       }
-      userErrors { field message }
+      userErrors {
+        field
+        message
+      }
     }
   }
 `;
+
 export const GET_PRODUCTS = /* GraphQL */ `
   query Products($first: Int!, $query: String!, $productFilters: [ProductFilter!]) {
     search(query: $query, first: $first, types: [PRODUCT], productFilters: $productFilters) {
@@ -229,9 +302,15 @@ export const GET_PRODUCTS = /* GraphQL */ `
             handle
             title
             vendor
-            featuredImage { url altText }
+            featuredImage {
+              url
+              altText
+            }
             priceRange {
-              minVariantPrice { amount currencyCode }
+              minVariantPrice {
+                amount
+                currencyCode
+              }
             }
           }
         }
