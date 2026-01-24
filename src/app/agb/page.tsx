@@ -303,13 +303,6 @@ export default function AgbPage() {
           Sollten einzelne Bestimmungen dieser AGB ganz oder teilweise unwirksam sein oder werden, bleibt die
           Wirksamkeit der übrigen Bestimmungen unberührt.
         </p>
-
-        <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <strong>Hinweis:</strong> Diese AGB sind eine redaktionell überarbeitete Fassung auf Basis einer Shopify-Vorlage
-          und allgemeinen rechtlichen Standards für deutsche Online-Shops. Sie ersetzen keine individuelle Rechtsberatung.
-          Je nach Sortiment (z. B. digitale Inhalte/Services, Installation vor Ort, gebrauchte Ware, Batterien, WEEE,
-          Verpackungsgesetz, besondere Garantiezusagen) können zusätzliche Klauseln bzw. Pflichtinformationen erforderlich sein.
-        </div>
       </div>
     </div>
   );
