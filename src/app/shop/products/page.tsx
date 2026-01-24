@@ -144,7 +144,27 @@ export default async function ProductsPage({
     <div className="space-y-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Alle Produkte</h1>
+          <h1 className="flex items-center gap-3 text-4xl font-bold text-slate-900">
+            <span>Dein Amigo fürs Smart Home</span>
+            <span className="flex items-center gap-2">
+              <span>homigo Shop</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-7 w-7 text-emerald-600"
+                aria-hidden="true"
+              >
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+              </svg>
+            </span>
+          </h1>
           <p className="mt-1 text-slate-600">
             {q ? (
               <>

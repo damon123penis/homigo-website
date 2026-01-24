@@ -105,8 +105,24 @@ export default async function ShopHome() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
               Dein Amigo fürs Smart Home
-              <span className="relative ml-2 inline-block">
-              homigo Shop
+              <span className="relative ml-2 inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2">
+                  homigo Shop
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="h-6 w-6 text-emerald-700"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="9" cy="20" r="1" />
+                    <circle cx="17" cy="20" r="1" />
+                    <path d="M3 4h2l2.4 12.5a2 2 0 0 0 2 1.5h7.6a2 2 0 0 0 2-1.6L21 8H6" />
+                  </svg>
+                </span>
                 <span className="absolute -bottom-1 left-0 h-1 w-full rounded-full bg-emerald-200/70" />
               </span>
             </h1>
