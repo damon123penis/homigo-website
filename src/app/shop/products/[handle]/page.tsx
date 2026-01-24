@@ -201,11 +201,19 @@ function extractMetafieldDisplayValue(m: Metafield): string {
   const direct = typeof m.value === "string" ? m.value.trim() : "";
   if (direct) return direct;
 
-  const edges = m.references?.edges ?? [];
   const values: string[] = [];
 
-  for (const e of edges) {
-    const node = e?.node;
+  const nodesFromEdges = (m.references?.edges ?? [])
+    .map((e) => e?.node ?? null)
+    .filter(Boolean) as Array<NonNullable<MetafieldReferenceNode>>;
+
+  const nodesDirect = (m.references as any)?.nodes
+    ? ((m.references as any).nodes ?? []).filter(Boolean)
+    : [];
+
+  const nodes = [...nodesFromEdges, ...nodesDirect];
+
+  for (const node of nodes) {
     const fields = node?.fields || [];
     for (const f of fields) {
       const v = f?.value ? String(f.value).trim() : "";
@@ -220,32 +228,23 @@ function normalizeDescriptionHtml(html: string): string {
   const input = (html || "").trim();
   if (!input) return "";
 
-  // Convert common "line-break formatting" into paragraph formatting.
-  // We do this even if the HTML already contains <p> etc., because Shopify descriptions
-  // are often a single <p> with <br><br> instead of multiple paragraphs.
-  const brBreak = /(<br\s*\/?>(\s|&nbsp;|\u00a0)*){2,}/gi;
-  const singleBr = /<br\s*\/?>(\s|&nbsp;|\u00a0)*/gi;
+  // Wenn Shopify bereits Block-HTML liefert, NICHT umformatieren.
+  const hasBlock = /<(p|ul|ol|li|h[1-6]|table|blockquote|section|article|div)\b/i.test(input);
+  if (hasBlock) {
+    return input
+      .replace(/<p>\s*<\/p>/gi, "")
+      .replace(/<p>(\s|&nbsp;|\u00a0|<br\s*\/?\s*>)*<\/p>/gi, "");
+  }
 
-  let out = input
-    // turn multiple <br> into paragraph breaks
-    .replace(brBreak, "</p><p>")
-    // normalize remaining single <br>
-    .replace(singleBr, "<br />")
-    // treat double newlines as paragraph breaks
-    .replace(/\n{2,}/g, "</p><p>")
-    // treat single newline as <br>
-    .replace(/\n/g, "<br />");
+  // Sonst: \n\n => neue Absätze, \n => <br />
+  const normalized = input.replace(/\r\n/g, "\n");
+  const parts = normalized
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => p.replace(/\n/g, "<br />"));
 
-  // If the content still has no block tags, wrap it.
-  const hasAnyBlock = /<(p|ul|ol|li|h[1-6]|table|blockquote|section|article|div)\b/i.test(out);
-  if (!hasAnyBlock) out = `<p>${out}</p>`;
-
-  // Clean up empty paragraphs that can appear after transformations.
-  out = out
-    .replace(/<p>\s*<\/p>/gi, "")
-    .replace(/<p>(\s|&nbsp;|\u00a0|<br\s*\/?\s*>)*<\/p>/gi, "");
-
-  return out;
+  return parts.map((p) => `<p>${p}</p>`).join("");
 }
 
 export async function generateMetadata({
@@ -611,7 +610,7 @@ export default async function ProductPage({
           Technische Daten und Hinweise zur Einbindung – damit du schnell prüfen kannst, ob es zu deinem Setup passt.
         </p>
 
-        <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:grid-flow-row-dense">
           {p.vendor ? (
             <div>
               <dt className="text-xs font-medium text-slate-500">Hersteller</dt>
@@ -922,7 +921,7 @@ export default async function ProductPage({
             {/* Description after checkout */}
             {p.descriptionHtml ? (
               <div
-                className="mt-6 prose prose-slate max-w-none prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:mt-4 prose-headings:mb-2"
+                className="mt-6 prose prose-slate max-w-none prose-p:my-2 prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:mt-4 prose-headings:mb-2"
                 dangerouslySetInnerHTML={{ __html: normalizeDescriptionHtml(p.descriptionHtml) }}
               />
             ) : (
