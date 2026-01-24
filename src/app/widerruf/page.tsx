@@ -74,7 +74,12 @@ export default function WiderrufPage() {
               der Frist von 14 Tagen absendest.
             </p>
             <p>
-              Du trägst die unmittelbaren Kosten der Rücksendung der Waren.
+              Wir übernehmen die unmittelbaren Kosten der Rücksendung der Waren, sofern die Rücksendung
+              innerhalb von 14 Tagen ab Erhalt der Ware veranlasst wird (kostenlose Rücksendung).
+            </p>
+            <p className="text-sm text-slate-600">
+              Hinweis: Das gesetzliche Widerrufsrecht bleibt hiervon unberührt. Die kostenlose Rücksendung
+              ist ein zusätzlicher Service von homigo.
             </p>
             <p>
               Du musst für einen etwaigen Wertverlust der Waren nur aufkommen, wenn dieser
@@ -84,7 +89,59 @@ export default function WiderrufPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900">3. Ausschluss bzw. Erlöschen des Widerrufsrechts</h2>
+            <h2 className="text-lg font-semibold text-slate-900">3. Rückgabe- &amp; Rücksendeprozess (30 Tage kostenlos)</h2>
+            <p>
+              Zusätzlich zum gesetzlichen Widerrufsrecht bieten wir dir eine kostenlose Rücksendung innerhalb
+              von 30 Tagen ab Erhalt der Ware an. Damit es für dich unkompliziert bleibt, läuft die Rückgabe
+              so ab:
+            </p>
+
+            <ol className="list-decimal space-y-2 pl-5 text-slate-700">
+              <li>
+                <span className="font-medium text-slate-900">Kontakt aufnehmen:</span> Schreibe uns kurz an
+                <span className="font-semibold"> hallo@homigo.tech</span> mit deiner Bestellnummer und dem
+                Artikel, den du zurücksenden möchtest.
+              </li>
+              <li>
+                <span className="font-medium text-slate-900">Rücksendeetikett erhalten:</span> Wir senden dir
+                ein kostenloses Rücksendeetikett bzw. die Rücksendeanweisungen per E-Mail.
+              </li>
+              <li>
+                <span className="font-medium text-slate-900">Sicher verpacken:</span> Bitte sende die Ware
+                nach Möglichkeit in der Originalverpackung oder einer gleichwertigen, transportsicheren
+                Verpackung zurück.
+              </li>
+              <li>
+                <span className="font-medium text-slate-900">Abgeben &amp; Nachweis aufbewahren:</span> Gib das
+                Paket beim Versanddienstleister ab und bewahre den Einlieferungsbeleg auf.
+              </li>
+              <li>
+                <span className="font-medium text-slate-900">Erstattung:</span> Nach Eingang und Prüfung der
+                Rücksendung erstatten wir den Kaufbetrag gemäß den Regeln unter „Folgen des Widerrufs“.
+              </li>
+            </ol>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+              <div className="font-semibold text-slate-900">Wichtige Hinweise</div>
+              <ul className="mt-2 list-disc space-y-2 pl-5">
+                <li>
+                  Die kostenlose Rücksendung gilt für Rückgaben innerhalb von 30 Tagen ab Erhalt. Danach ist
+                  eine Rückgabe nur möglich, wenn gesetzliche Rechte (z. B. Gewährleistung) greifen.
+                </li>
+                <li>
+                  Bitte vermeide Beschädigungen und entferne keine zwingend erforderlichen Siegel/Schutzfolien,
+                  sofern diese für eine Rückgabe relevant sind.
+                </li>
+                <li>
+                  Wenn du nur einen Teil einer Bestellung zurücksendest, erstatten wir die entsprechenden
+                  Zahlungen für die zurückgesendeten Artikel.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-slate-900">4. Ausschluss bzw. Erlöschen des Widerrufsrechts</h2>
             <p>
               Das Widerrufsrecht besteht, soweit gesetzlich zulässig, nicht bzw. erlischt bei
               Verträgen:
@@ -124,7 +181,7 @@ export default function WiderrufPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900">4. Muster-Widerrufsformular</h2>
+            <h2 className="text-lg font-semibold text-slate-900">5. Muster-Widerrufsformular</h2>
             <p className="text-slate-700">
               (Wenn du den Vertrag widerrufen willst, dann fülle bitte dieses Formular aus und sende
               es zurück.)
@@ -179,7 +236,7 @@ export default function WiderrufPage() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-lg font-semibold text-slate-900">5. Kontakt</h2>
+            <h2 className="text-lg font-semibold text-slate-900">6. Kontakt</h2>
             <p className="text-slate-700">
               Wenn du Fragen zum Widerruf oder zur Rücksendung hast, melde dich kurz bei uns:
               <span className="font-semibold"> hallo@homigo.tech</span>.
@@ -189,8 +246,7 @@ export default function WiderrufPage() {
       </div>
 
       <p className="mt-6 text-xs text-slate-500">
-        Stand: {new Date().toLocaleDateString("de-DE")} – Diese Informationen ersetzen keine
-        individuelle Rechtsberatung.
+        Stand: {new Date().toLocaleDateString("de-DE")}
       </p>
     </div>
   );
