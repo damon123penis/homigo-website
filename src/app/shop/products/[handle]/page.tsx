@@ -220,21 +220,32 @@ function normalizeDescriptionHtml(html: string): string {
   const input = (html || "").trim();
   if (!input) return "";
 
-  // If we already have block elements, leave as is.
-  const hasBlock = /<(p|ul|ol|li|h[1-6]|table|blockquote|section|article|div)\b/i.test(input);
-  if (hasBlock) return input;
+  // Convert common "line-break formatting" into paragraph formatting.
+  // We do this even if the HTML already contains <p> etc., because Shopify descriptions
+  // are often a single <p> with <br><br> instead of multiple paragraphs.
+  const brBreak = /(<br\s*\/?>(\s|&nbsp;|\u00a0)*){2,}/gi;
+  const singleBr = /<br\s*\/?>(\s|&nbsp;|\u00a0)*/gi;
 
-  // Interpret double <br> or double newlines as paragraph breaks.
-  const brBreak = /(<br\s*\/?>(\s|&nbsp;)*){2,}/gi;
-  const singleBr = /<br\s*\/?>(\s|&nbsp;)*/gi;
-
-  const withParagraphs = input
+  let out = input
+    // turn multiple <br> into paragraph breaks
     .replace(brBreak, "</p><p>")
+    // normalize remaining single <br>
     .replace(singleBr, "<br />")
+    // treat double newlines as paragraph breaks
     .replace(/\n{2,}/g, "</p><p>")
+    // treat single newline as <br>
     .replace(/\n/g, "<br />");
 
-  return `<p>${withParagraphs}</p>`;
+  // If the content still has no block tags, wrap it.
+  const hasAnyBlock = /<(p|ul|ol|li|h[1-6]|table|blockquote|section|article|div)\b/i.test(out);
+  if (!hasAnyBlock) out = `<p>${out}</p>`;
+
+  // Clean up empty paragraphs that can appear after transformations.
+  out = out
+    .replace(/<p>\s*<\/p>/gi, "")
+    .replace(/<p>(\s|&nbsp;|\u00a0|<br\s*\/?\s*>)*<\/p>/gi, "");
+
+  return out;
 }
 
 export async function generateMetadata({
@@ -674,6 +685,13 @@ export default async function ProductPage({
             </div>
           ) : null}
 
+          {mf.oecosysteme ? (
+            <div className="sm:col-start-2">
+              <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
+              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
+            </div>
+          ) : null}
+
           {typeof mf.matter === "string" && mf.matter.length > 0 ? (
             <div>
               <dt className="text-xs font-medium text-slate-500">Matter</dt>
@@ -690,12 +708,6 @@ export default async function ProductPage({
             </div>
           ) : null}
 
-          {mf.oecosysteme ? (
-            <div className="sm:col-span-2">
-              <dt className="text-xs font-medium text-slate-500">Ökosysteme</dt>
-              <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">{mf.oecosysteme}</dd>
-            </div>
-          ) : null}
         </dl>
 
         {categoryMetafields.length > 0 ? (
