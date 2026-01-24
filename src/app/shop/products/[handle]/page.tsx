@@ -27,7 +27,7 @@ type Metafield = {
   value: string | null;
   references?:
     | {
-        edges: Array<{
+        edges?: Array<{
           node:
             | {
                 __typename?: string;
@@ -202,7 +202,7 @@ function extractMetafieldDisplayValue(m: Metafield): string {
   const direct = typeof m.value === "string" ? m.value.trim() : "";
   if (direct) return direct;
 
-  const edges = m.references?.edges || [];
+  const edges = m.references?.edges ?? [];
   const values: string[] = [];
 
   for (const e of edges) {
@@ -316,7 +316,6 @@ export default async function ProductPage({
     frequenz?: string;
 
     hub_erforderlich?: string;
-    hub_kompatibilitaet?: string;
     hub_kompatibilitat?: string;
 
     oecosysteme?: string;
@@ -585,14 +584,13 @@ export default async function ProductPage({
       mf.funkstandard ||
       mf.frequenz ||
       mf.hub_erforderlich ||
-      mf.hub_kompatibilitaet ||
       mf.hub_kompatibilitat ||
       mf.oecosysteme ||
       mf.thread ||
-      mf.matter || 
+      mf.matter ||
       categoryMetafields.length > 0;
 
-    if (!hasAny) return null; 
+    if (!hasAny) return null;
 
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -695,11 +693,11 @@ export default async function ProductPage({
             </div>
           ) : null}
 
-          {(mf.hub_kompatibilitaet || mf.hub_kompatibilitat) ? (
+          {mf.hub_kompatibilitat ? (
             <div className="sm:col-span-2">
               <dt className="text-xs font-medium text-slate-500">Hub-Kompatibilität</dt>
               <dd className="mt-1 text-sm text-slate-800 whitespace-pre-line">
-                {mf.hub_kompatibilitaet || mf.hub_kompatibilitat}
+                {mf.hub_kompatibilitat}
               </dd>
             </div>
           ) : null}
@@ -733,7 +731,6 @@ export default async function ProductPage({
 
         {(mf.funkstandard ||
           mf.hub_erforderlich ||
-          mf.hub_kompatibilitaet ||
           mf.hub_kompatibilitat ||
           mf.oecosysteme ||
           mf.thread ||
@@ -957,13 +954,11 @@ export default async function ProductPage({
 
             {/* Description after checkout */}
             {p.descriptionHtml ? (
-  <div className="mt-6 prose prose-slate max-w-none">
-    <div
-      className="whitespace-normal"
-      dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
-    />
-  </div>
-) : (
+              <div
+                className="mt-6 prose prose-slate max-w-none prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:mt-4 prose-headings:mb-2"
+                dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
+              />
+            ) : (
               <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
 
