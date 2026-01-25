@@ -3,9 +3,10 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { remark } from "remark";
-import html from "remark-html";
 import remarkGfm from "remark-gfm";
-import remarkSlug from "remark-slug";
+import remarkRehype from "remark-rehype";
+import rehypeSlug from "rehype-slug";
+import rehypeStringify from "rehype-stringify";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
@@ -25,8 +26,9 @@ export async function getPage(slug: string) {
 
   const processed = await remark()
     .use(remarkGfm)
-    .use(remarkSlug)
-    .use(html)
+    .use(remarkRehype)     // Markdown -> HTML-AST
+    .use(rehypeSlug)       // setzt IDs auf Überschriften (für TOC-Links)
+    .use(rehypeStringify)  // HTML-AST -> HTML-String
     .process(content);
 
   return {
