@@ -333,7 +333,7 @@ export default async function ProductsPage({
       )}
 
       <p className="text-xs text-slate-500">
-        Hinweis: Checkout erfolgt über Shopify. Preise in EUR (sofern so im Shop gepflegt).
+        Hinweis: Checkout erfolgt über Shopify. Preise in EUR.
       </p>
     </div>
   );
