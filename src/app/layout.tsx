@@ -325,6 +325,14 @@ export default function RootLayout({
                 <a href="tel:+4915227178595" className="hover:text-slate-900">
                   +49 152 27178595
                 </a>
+                <a
+                  href="https://www.instagram.com/homigo_de"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-slate-900"
+                >
+                  Instagram: @homigo_de
+                </a>
               </div>
             </div>
 
