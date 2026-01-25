@@ -1,3 +1,11 @@
+import fs from "fs";
+import path from "path"; // ✅ DAS FEHLT
+import matter from "gray-matter";
+import { remark } from "remark";
+import html from "remark-html";
+
+const CONTENT_ROOT = path.join(process.cwd(), "content");
+
 export async function getPage(slug: string) {
   const filePath = path.join(CONTENT_ROOT, "pages", `${slug}.md`);
 
