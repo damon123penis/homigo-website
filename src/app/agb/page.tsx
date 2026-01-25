@@ -7,7 +7,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const page = await getPage(params.slug);
+  const page = await getPage("agb");
 
   return {
     title: page.title ? `${page.title} | homigo` : "homigo",
