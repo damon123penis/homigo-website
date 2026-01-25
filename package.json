@@ -2,6 +2,7 @@
   "name": "homigo-website",
   "version": "0.1.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,28 +10,41 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit"
   },
+
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@supabase/supabase-js": "^2.90.1",
     "@vercel/analytics": "^1.1.1",
+
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.16",
-    "gray-matter": "^4.0.3",
     "lucide-react": "^0.294.0",
+
     "next": "14.2.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+
     "react-hook-form": "^7.48.2",
+
+    "gray-matter": "^4.0.3",
+
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-slug": "^8.0.0",
+
     "resend": "^2.1.0",
     "zod": "^3.22.4"
-},
+  },
+
   "devDependencies": {
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
+
+    "@tailwindcss/typography": "^0.5.15",
+
     "autoprefixer": "^10.4.21",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.2.35",
@@ -39,4 +53,3 @@
     "typescript": "^5.3.3"
   }
 }
-
