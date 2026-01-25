@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: page.seoDescription || "",
     robots: { index: true, follow: true },
   };
-}
+} 
 
 export default async function ContentPage({ params }: Props) {
   const page = await getPage(params.slug);
