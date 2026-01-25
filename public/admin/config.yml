@@ -1,7 +1,7 @@
 backend:
   name: github
-  repo: DEIN_GITHUB_USERNAME/homigo-website
-  branch: production
+  repo: damon123penis/homigo-website
+  branch: test
   commit_messages:
     create: "content: create {{collection}} “{{slug}}”"
     update: "content: update {{collection}} “{{slug}}”"
