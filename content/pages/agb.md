@@ -5,13 +5,9 @@ seo_description: Allgemeine Geschäftsbedingungen (AGB) für den Online-Shop von
   Gewährleistung und Haftung.
 updated: "Stand: 24.01.2026"
 ---
-<a id="geltungsbereich"></a>
-
 ## 1) Geltungsbereich
 
 1.1 Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB“) der **homigo**, Frankenallee 23a, 60327 Frankfurt am Main (nachfolgend „Verkäufer“), gelten für alle Verträge zur Lieferung von Waren, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde“) mit dem Verkäufer über den Online-Shop unter der Domain **homigo.tech** abschließt.
-
-
 
 1.2 Verbraucher im Sinne dieser AGB ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit zugerechnet werden können (§ 13 BGB).
 
@@ -20,8 +16,6 @@ updated: "Stand: 24.01.2026"
 1.4 Der Einbeziehung von eigenen Bedingungen des Kunden wird widersprochen, sofern nichts anderes ausdrücklich vereinbart ist.
 
 - - -
-
-<a id="angebot-und-vertrag"></a>
 
 ## 2) Vertragsschluss
 
@@ -43,8 +37,6 @@ Der Vertrag kommt zu dem Zeitpunkt zustande, an dem eine dieser Annahmehandlunge
 
 - - -
 
-<a id="widerruf"></a>
-
 ## 3) Widerrufsrecht
 
 3.1 Verbrauchern steht grundsätzlich ein gesetzliches Widerrufsrecht zu.
@@ -52,8 +44,6 @@ Der Vertrag kommt zu dem Zeitpunkt zustande, an dem eine dieser Annahmehandlunge
 3.2 Nähere Informationen zum Widerrufsrecht, insbesondere zu Fristen, Ausnahmen und dem Rücksendeprozess, ergeben sich aus der separaten **Widerrufsbelehrung** des Verkäufers.
 
 - - -
-
-<a id="preise-zahlung"></a>
 
 ## 4) Preise und Zahlungsbedingungen
 
@@ -67,8 +57,6 @@ Der Vertrag kommt zu dem Zeitpunkt zustande, an dem eine dieser Annahmehandlunge
 
 - - -
 
-<a id="lieferung"></a>
-
 ## 5) Liefer- und Versandbedingungen
 
 5.1 Die Lieferung erfolgt an die vom Kunden angegebene Lieferanschrift innerhalb des vom Verkäufer angegebenen Liefergebiets.
@@ -79,15 +67,11 @@ Der Vertrag kommt zu dem Zeitpunkt zustande, an dem eine dieser Annahmehandlunge
 
 - - -
 
-<a id="eigentuervorbehalt"></a>
-
 ## 6) Eigentumsvorbehalt
 
 Die gelieferte Ware bleibt bis zur vollständigen Bezahlung des Kaufpreises Eigentum des Verkäufers.
 
 - - -
-
-<a id="gewaehrleistung"></a>
 
 ## 7) Mängelhaftung (Gewährleistung)
 
@@ -96,8 +80,6 @@ Es gelten die gesetzlichen Vorschriften zur Mängelhaftung.
 Bei gebrauchten Waren kann die Gewährleistungsfrist – soweit gesetzlich zulässig – auf ein Jahr verkürzt sein, sofern dies in der Produktbeschreibung ausdrücklich angegeben ist.
 
 - - -
-
-<a id="haftung"></a>
 
 ## 8) Haftung
 
@@ -109,8 +91,6 @@ Eine weitergehende Haftung ist ausgeschlossen.
 
 - - -
 
-<a id="verarbeitung"></a>
-
 ## 9) Besondere Bedingungen für kundenspezifische Leistungen
 
 Schuldet der Verkäufer neben der Warenlieferung auch eine Verarbeitung nach Vorgaben des Kunden, hat der Kunde sicherzustellen, dass er über die erforderlichen Rechte an den bereitgestellten Inhalten verfügt und keine Rechte Dritter verletzt werden.
@@ -119,8 +99,6 @@ Der Kunde stellt den Verkäufer von sämtlichen Ansprüchen Dritter frei, die au
 
 - - -
 
-<a id="schlussbestimmungen"></a>
-
 ## 10) Schlussbestimmungen
 
 10.1 Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.
@@ -128,8 +106,6 @@ Der Kunde stellt den Verkäufer von sämtlichen Ansprüchen Dritter frei, die au
 10.2 Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.
 
 - - -
-
-<a id="streitbeilegung"></a>
 
 ## 11) Alternative Streitbeilegung
 
