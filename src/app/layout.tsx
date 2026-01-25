@@ -283,7 +283,7 @@ export default function RootLayout({
             <div className="grid items-center gap-6 md:grid-cols-3">
               {/* Left */}
               <div className="flex flex-col items-center gap-2 text-center text-sm text-slate-600 md:items-start md:text-left">
-                  <Link href="/agb" className="hover:text-slate-900">
+                  <Link href="/pages/agb" className="hover:text-slate-900">
                     AGB
                   </Link>
                   <Link href="/impressum" className="hover:text-slate-900">
