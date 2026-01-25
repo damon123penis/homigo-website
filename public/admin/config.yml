@@ -9,7 +9,7 @@ backend:
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
-
+ 
 locale: "de"
 
 collections:
