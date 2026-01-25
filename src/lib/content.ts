@@ -1,4 +1,6 @@
 // src/lib/content.ts
+import "server-only";
+
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -16,7 +18,6 @@ export async function getPage(slug: string) {
   }
 
   const filePath = path.join(CONTENT_ROOT, "pages", `${slug}.md`);
-
   if (!fs.existsSync(filePath)) {
     throw new Error(`Content page not found: ${slug}`);
   }
@@ -26,9 +27,9 @@ export async function getPage(slug: string) {
 
   const processed = await remark()
     .use(remarkGfm)
-    .use(remarkRehype)     // Markdown -> HTML-AST
-    .use(rehypeSlug)       // setzt IDs auf Überschriften (für TOC-Links)
-    .use(rehypeStringify)  // HTML-AST -> HTML-String
+    .use(remarkRehype)     // mdast -> hast
+    .use(rehypeSlug)       // IDs an headings
+    .use(rehypeStringify)  // hast -> HTML string
     .process(content);
 
   return {
