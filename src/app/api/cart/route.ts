@@ -19,9 +19,6 @@ function publicShopHost() {
 }
 
 function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
-  // IMPORTANT: Do not rewrite checkout URLs to our custom domain.
-  // Shopify checkout endpoints (/checkouts/... or /cart/c/...) are served by Shopify.
-  // Rewriting them to shop.homigo.tech will 404 unless a reverse proxy/worker handles those paths.
   return checkoutUrl;
 }
 
