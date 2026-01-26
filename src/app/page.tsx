@@ -29,6 +29,8 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
 
+  const SHOP_URL = process.env.NEXT_PUBLIC_SHOP_URL || "https://shop.homigo.tech";
+
   const faqItems = [
     {
       question: 'Was ist alles möglich mit Smart Home?',
@@ -124,14 +126,13 @@ const structuredData = {
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Link
-              href="/shop"
+            <a
+              href={SHOP_URL}
               className="group inline-flex items-center justify-center rounded-xl bg-emerald-600 px-6 py-4 text-white font-semibold shadow-sm hover:bg-emerald-700 transition"
             >
               Zum Shop
-              <ShoppingBag className="ml-2 h-5 w-5" />
-            </Link>
-
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
             <Link
               href="/kontakt"
               className="group inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-4 text-slate-900 font-semibold shadow-sm hover:bg-slate-50 transition"
@@ -238,20 +239,20 @@ const structuredData = {
               </p>
             </div>
             <div className="flex gap-3">
-              <Link
-                href="/shop/products"
+              <a
+                href={`${SHOP_URL}/products`}
                 className="inline-flex items-center rounded-xl bg-emerald-600 px-5 py-3 text-white font-semibold hover:bg-emerald-700"
               >
                 Alle Produkte
                 <PackageSearch className="ml-2 h-5 w-5" />
-              </Link>
-              <Link
-                href="/shop/collections"
+              </a>
+              <a
+                href={`${SHOP_URL}/collections`}
                 className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-slate-900 font-semibold hover:bg-slate-50"
               >
                 Kategorien
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              </a>
             </div>
           </div>
 

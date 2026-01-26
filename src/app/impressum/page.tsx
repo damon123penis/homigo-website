@@ -52,7 +52,7 @@ export default function ImpressumPage() {
 
                   <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
                     <address className="not-italic text-sm text-slate-700">
-                      <p className="text-base font-semibold text-slate-900">Damon Schacht</p>
+                      <p className="text-base font-semibold text-slate-900">Damon Marcel Schacht</p>
                       <p className="mt-1">homigo – Smart Home Beratung</p>
 
                       <div className="mt-4 flex items-start gap-3">
@@ -62,6 +62,10 @@ export default function ImpressumPage() {
                           <p className="text-slate-600">Frankenallee 23A</p>
                           <p className="text-slate-600">60327 Frankfurt am Main</p>
                           <p className="text-xs text-slate-500">Deutschland</p>
+                          <div className="mt-4">
+                            <p className="font-semibold text-slate-900">Steuer-ID</p>
+                            <p className="text-slate-600">DE454607218</p>
+                          </div>
                         </div>
                       </div>
                     </address>
