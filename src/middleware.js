@@ -14,6 +14,14 @@ export function middleware(req) {
     host === "homigo.tech" ||
     host.endsWith(".vercel.app");
 
+    const isCheckoutPath =
+    url.pathname.startsWith("/checkouts") ||
+    url.pathname.startsWith("/cart/c/") ||
+    url.pathname.startsWith("/payments") ||
+    url.pathname.startsWith("/wallets");
+
+if (isCheckoutPath) return NextResponse.next();
+
   // 1) MARKETING → Shop weiterleiten
   if (isMarketingHost && (url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
     const target = new URL(`https://shop.homigo.tech${url.pathname}${url.search}`, req.url);
