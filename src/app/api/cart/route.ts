@@ -3,9 +3,38 @@ import { NextRequest, NextResponse } from "next/server";
 const CART_COOKIE = "homigo_cart_id";
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 
+function normalizeHost(value: string) {
+  // Accept values like "shop.homigo.tech", "https://shop.homigo.tech", "shop.homigo.tech/"
+  // and normalize to a plain host (no protocol, no path, no trailing slash).
+  return value
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/\/$/, "")
+    .split("/")[0];
+}
+
+function publicShopHost() {
+  const v = process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL || "shop.homigo.tech";
+  return normalizeHost(v);
+}
+
+function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
+  if (!checkoutUrl) return checkoutUrl;
+  try {
+    const u = new URL(checkoutUrl);
+    u.protocol = "https:";
+    u.host = publicShopHost();
+    return u.toString();
+  } catch {
+    // If Shopify ever returns a non-absolute URL, leave as-is.
+    return checkoutUrl;
+  }
+}
+
 function shopifyEndpoint() {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  if (!domain) throw new Error("Missing SHOPIFY_STORE_DOMAIN");
+  const raw = process.env.SHOPIFY_STORE_DOMAIN;
+  if (!raw) throw new Error("Missing SHOPIFY_STORE_DOMAIN");
+  const domain = normalizeHost(raw);
   return `https://${domain}/api/2024-07/graphql.json`;
 }
 
@@ -200,6 +229,7 @@ export async function GET(req: NextRequest) {
     cart: cart
       ? {
           ...cart,
+          checkoutUrl: rewriteCheckoutUrl(cart.checkoutUrl),
           lines: extractCartLines(cart),
         }
       : null,
@@ -355,7 +385,7 @@ export async function POST(req: NextRequest) {
 
         const lineIds = extractCartLines(cart).map((l: any) => l.id);
         if (lineIds.length === 0) {
-          return jsonResponse({ cart: { ...cart, lines: [] } });
+          return jsonResponse({ cart: { ...cart, checkoutUrl: rewriteCheckoutUrl(cart.checkoutUrl), lines: [] } });
         }
 
         const cleared = await shopifyFetch<{
@@ -382,6 +412,7 @@ export async function POST(req: NextRequest) {
       cart: cart
         ? {
             ...cart,
+            checkoutUrl: rewriteCheckoutUrl(cart.checkoutUrl),
             lines: extractCartLines(cart),
           }
         : null,
