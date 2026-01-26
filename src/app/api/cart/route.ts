@@ -19,35 +19,10 @@ function publicShopHost() {
 }
 
 function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
-  if (!checkoutUrl) return checkoutUrl;
-
-  const desiredHost = publicShopHost(); // "shop.homigo.tech"
-
-  try {
-    const u = new URL(checkoutUrl);
-
-    // A) Shopify klassische Checkouts
-    const isShopifyCheckout =
-      u.pathname.startsWith("/checkouts") ||
-      u.hostname.endsWith(".myshopify.com") ||
-      u.hostname.endsWith(".shopify.com") ||
-      u.hostname === "checkout.shopify.com" ||
-      u.hostname.endsWith(".checkout.shopify.com");
-
-    // B) “/cart/c/<token>?key=…” (diese müssen ebenfalls auf shop.homigo.tech laufen)
-    const isCartTokenCheckout = u.pathname.startsWith("/cart/c/");
-
-    if (isShopifyCheckout || isCartTokenCheckout) {
-      u.protocol = "https:";
-      u.hostname = desiredHost;
-      u.port = "";
-      return u.toString();
-    }
-
-    return checkoutUrl;
-  } catch {
-    return checkoutUrl;
-  }
+  // IMPORTANT: Do not rewrite checkout URLs to our custom domain.
+  // Shopify checkout endpoints (/checkouts/... or /cart/c/...) are served by Shopify.
+  // Rewriting them to shop.homigo.tech will 404 unless a reverse proxy/worker handles those paths.
+  return checkoutUrl;
 }
 
 function shopifyEndpoint() {
