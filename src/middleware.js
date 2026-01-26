@@ -4,17 +4,6 @@ export const config = {
   matcher: ["/((?!_next|api|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
 
-function normalizeBaseUrl(input, fallback) {
-  const raw = (input || fallback || "").trim();
-  if (!raw) return "";
-
-  // Accept either `https://shop.homigo.tech` OR `shop.homigo.tech`
-  const withProto = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-
-  // Remove trailing slashes for safe concatenation
-  return withProto.replace(/\/+$/, "");
-}
-
 export function middleware(req) {
   const host = req.headers.get("host") || "";
   const url = req.nextUrl;
@@ -25,26 +14,23 @@ export function middleware(req) {
     host === "homigo.tech" ||
     host.endsWith(".vercel.app");
 
-  // Canonical shop base URL (robust against env values with/without protocol)
-  const SHOP_BASE = normalizeBaseUrl(
-    process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL,
-    "https://shop.homigo.tech"
-  );
-
-  // Marketing-Domain: /shop und /shop/* auf Shop-Subdomain umleiten
+  // 1) MARKETING → Shop weiterleiten
   if (isMarketingHost && (url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
-    const rest = url.pathname.replace(/^\/shop\/?/, "");
-    const target = rest ? `${SHOP_BASE}/${rest}` : SHOP_BASE;
-
-    // Use an absolute URL string to avoid accidental double-prefixing.
+    const target = new URL(`https://shop.homigo.tech${url.pathname}${url.search}`, req.url);
     return NextResponse.redirect(target, 308);
   }
 
-  // Shop-Subdomain: Root "/" -> intern "/shop" (URL bleibt clean; kein Redirect)
+  // 2) SHOP host: Root "/" intern auf "/shop" rewriten
   if (isShopHost && url.pathname === "/") {
     const rewriteUrl = url.clone();
     rewriteUrl.pathname = "/shop";
     return NextResponse.rewrite(rewriteUrl);
+  }
+
+  // 3) SHOP host: Alles außerhalb von /shop zurück zur Marketing-Seite
+  if (isShopHost && !(url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
+    const target = new URL(`https://www.homigo.tech${url.pathname}${url.search}`, req.url);
+    return NextResponse.redirect(target, 308);
   }
 
   return NextResponse.next();
