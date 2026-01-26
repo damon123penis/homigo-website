@@ -19,7 +19,35 @@ function publicShopHost() {
 }
 
 function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
-  return checkoutUrl;
+  if (!checkoutUrl) return checkoutUrl;
+
+  const desiredHost = publicShopHost(); // "shop.homigo.tech"
+
+  try {
+    const u = new URL(checkoutUrl);
+
+    // A) Shopify klassische Checkouts
+    const isShopifyCheckout =
+      u.pathname.startsWith("/checkouts") ||
+      u.hostname.endsWith(".myshopify.com") ||
+      u.hostname.endsWith(".shopify.com") ||
+      u.hostname === "checkout.shopify.com" ||
+      u.hostname.endsWith(".checkout.shopify.com");
+
+    // B) “/cart/c/<token>?key=…” (diese müssen ebenfalls auf shop.homigo.tech laufen)
+    const isCartTokenCheckout = u.pathname.startsWith("/cart/c/");
+
+    if (isShopifyCheckout || isCartTokenCheckout) {
+      u.protocol = "https:";
+      u.hostname = desiredHost;
+      u.port = "";
+      return u.toString();
+    }
+
+    return checkoutUrl;
+  } catch {
+    return checkoutUrl;
+  }
 }
 
 function shopifyEndpoint() {
