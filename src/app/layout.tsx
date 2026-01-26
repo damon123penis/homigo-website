@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
+const SHOP_URL = process.env.NEXT_PUBLIC_SHOP_URL || "https://shop.homigo.tech";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.homigo.tech'),
@@ -160,15 +161,9 @@ export default function RootLayout({
               className="hidden items-center gap-6 md:flex"
               aria-label="Hauptnavigation"
             >
-              <Link
-                href="/shop"
-                className={navClass(isActive('/shop'))}
-                aria-current={
-                  isActive('/shop') ? 'page' : undefined
-                }
-              >
-                Shop
-              </Link>
+              <a href={SHOP_URL} className={navClass(false)}>
+               Shop
+              </a>
               <Link
                 href="/beratung"
                 className={navClass(isActive('/beratung'))}
@@ -222,15 +217,9 @@ export default function RootLayout({
                 className="absolute left-0 w-64 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
               >
                 <div className="flex flex-col p-2.5">
-                  <Link
-                    href="/shop"
-                    className={mobileNavClass(isActive('/shop'))}
-                    aria-current={
-                      isActive('/shop') ? 'page' : undefined
-                    }
-                  >
+                  <a href={SHOP_URL} className={mobileNavClass(false)}>
                     Shop
-                  </Link>
+                  </a>  
                   <Link
                     href="/beratung"
                     className={mobileNavClass(isActive('/beratung'))}

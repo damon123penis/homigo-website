@@ -8,16 +8,29 @@ import type { Metadata } from "next";
 // Force dynamic rendering so newly added collection images/products appear immediately.
 export const dynamic = "force-dynamic";
 
-const SITE_URL = (() => {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
+const SHOP_URL = (() => {
+  // Preferred: explicit shop base (e.g. https://shop.homigo.tech)
+  const explicit = process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL;
   if (explicit) return explicit.replace(/\/$/, "");
+
+  // Fallbacks
+  const site = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
+  if (site) return site.replace(/\/$/, "");
+
   const vercel = process.env.VERCEL_URL;
   if (vercel) return `https://${vercel}`;
+
+  return "https://shop.homigo.tech";
+})();
+
+const MARKETING_URL = (() => {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
   return "https://www.homigo.tech";
 })();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(SHOP_URL),
   title: {
     default: "Shop | homigo",
     template: "%s | homigo",
@@ -68,7 +81,7 @@ export default async function ShopHome() {
     { cache: "no-store" }
   );
 
-  const canonicalUrl = `${SITE_URL}/shop`;
+  const canonicalUrl = `${SHOP_URL}/shop`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -140,7 +153,7 @@ export default async function ShopHome() {
                 Produkte entdecken
               </Link>
               <Link
-                href="/beratung"
+                href={`${MARKETING_URL}/beratung`}
                 className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white/90 px-5 py-3 font-semibold text-slate-900 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
               >
                 Beratung: kurz Klarheit holen
@@ -281,7 +294,7 @@ export default async function ShopHome() {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
             <Link
-              href="/beratung"
+              href={`${MARKETING_URL}/beratung`}
               className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700"
             >
               Kennenlern-Call starten

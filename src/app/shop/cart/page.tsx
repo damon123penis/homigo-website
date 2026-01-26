@@ -36,7 +36,7 @@ type Cart = {
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Warenkorb – homigo Shop',
+  title: 'Warenkorb – homigo',
   robots: {
     index: false,
     follow: true,
@@ -73,7 +73,13 @@ function getBaseUrl() {
   const proto = h.get('x-forwarded-proto') || 'https';
   const host = h.get('x-forwarded-host') || h.get('host');
   if (host) return `${proto}://${host}`;
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://www.homigo.tech';
+  // Fallback for local/dev or non-proxied environments.
+  // Prefer a dedicated shop URL if provided.
+  return (
+    process.env.NEXT_PUBLIC_SHOP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    'https://shop.homigo.tech'
+  );
 }
 
 function getCookieHeader() {
@@ -173,17 +179,17 @@ async function updateLineAction(formData: FormData) {
   const maxQty = maxQtyRaw !== '' && !Number.isNaN(Number(maxQtyRaw)) ? Number(maxQtyRaw) : undefined;
 
   if (typeof maxQty === 'number' && Number.isFinite(maxQty) && quantity > maxQty) {
-    redirect(`/shop/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
+    redirect(`/cart?error=${encodeURIComponent(`Maximal verfügbar: ${maxQty} Stück`)}`);
   }
 
   const result = await postCartAction({ action: 'update', lineId, quantity });
 
   if (!result.ok) {
-    redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
+    redirect(`/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
   }
 
-  revalidatePath('/shop/cart');
-  redirect('/shop/cart');
+  revalidatePath('/cart');
+  redirect('/cart');
 }
 
   async function removeLineAction(formData: FormData) {
@@ -195,11 +201,11 @@ async function updateLineAction(formData: FormData) {
     const result = await postCartAction({ action: 'remove', lineId });
 
     if (!result.ok) {
-      redirect(`/shop/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
+      redirect(`/cart?error=${encodeURIComponent(result.error || 'Fehler')}`);
     }
 
-    revalidatePath('/shop/cart');
-    redirect('/shop/cart');
+    revalidatePath('/cart');
+    redirect('/cart');
   }
 
   return (
@@ -217,7 +223,7 @@ async function updateLineAction(formData: FormData) {
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
           <p className="text-slate-700">Dein Warenkorb ist noch leer.</p>
           <a
-            href="/shop"
+            href="/"
             className="mt-4 inline-flex rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700"
           >
             Zum Shop
@@ -257,7 +263,7 @@ async function updateLineAction(formData: FormData) {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           {handle ? (
-                            <a className="font-semibold text-slate-900 hover:underline" href={`/shop/products/${handle}`}>
+                            <a className="font-semibold text-slate-900 hover:underline" href={`/products/${handle}`}>
                               {title}
                             </a>
                           ) : (
