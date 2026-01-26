@@ -14,15 +14,20 @@ export function middleware(req) {
     host === "homigo.tech" ||
     host.endsWith(".vercel.app");
 
-    const isCheckoutPath =
+  // IMPORTANT: Never redirect/rewrite Shopify checkout/cart/session/account paths.
+  // If these are touched by middleware, you will get 301 loops, Shopify interstitial redirects, or 404s.
+  const isCheckoutPath =
     url.pathname.startsWith("/checkouts") ||
-    url.pathname.startsWith("/cart/c/") ||
+    url.pathname.startsWith("/cart") ||
     url.pathname.startsWith("/payments") ||
-    url.pathname.startsWith("/wallets");
+    url.pathname.startsWith("/wallets") ||
+    url.pathname.startsWith("/account") ||
+    url.pathname.startsWith("/challenge") ||
+    url.pathname.startsWith("/sessions");
 
-if (isCheckoutPath) return NextResponse.next();
+  if (isCheckoutPath) return NextResponse.next();
 
-  // 1) MARKETING → Shop weiterleiten
+  // 1) MARKETING → Shop weiterleiten (nur für /shop Pfad)
   if (isMarketingHost && (url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
     const target = new URL(`https://shop.homigo.tech${url.pathname}${url.search}`, req.url);
     return NextResponse.redirect(target, 308);
@@ -36,6 +41,7 @@ if (isCheckoutPath) return NextResponse.next();
   }
 
   // 3) SHOP host: Alles außerhalb von /shop zurück zur Marketing-Seite
+  // (Checkout-Pfade sind oben bereits ausgeschlossen.)
   if (isShopHost && !(url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
     const target = new URL(`https://www.homigo.tech${url.pathname}${url.search}`, req.url);
     return NextResponse.redirect(target, 308);
