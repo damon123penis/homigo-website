@@ -9,16 +9,26 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 const SHOP_URL = (() => {
-  // Preferred: explicit shop base (e.g. https://shop.homigo.tech)
   const explicit = process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL;
-  if (explicit) return explicit.replace(/\/$/, "");
+  if (explicit) {
+    const v = explicit.trim();
+    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
+    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+  }
 
-  // Fallbacks
   const site = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
-  if (site) return site.replace(/\/$/, "");
+  if (site) {
+    const v = site.trim();
+    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
+    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+  }
 
   const vercel = process.env.VERCEL_URL;
-  if (vercel) return `https://${vercel}`;
+  if (vercel) {
+    const v = vercel.trim();
+    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
+    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+  }
 
   return "https://shop.homigo.tech";
 })();
