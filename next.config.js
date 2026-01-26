@@ -21,16 +21,6 @@ const nextConfig = {
         source: '/customerjourney',
         destination: '/beratung',
         permanent: true, // 308
-      },
-      {
-        source: "/shop",
-        destination: "https://shop.homigo.tech",
-        permanent: true,
-      },
-      {
-        source: "/shop/:path*",
-        destination: "https://shop.homigo.tech/:path*",
-        permanent: true,
       }
     ];
   },
