@@ -22,11 +22,15 @@ function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
   if (!checkoutUrl) return checkoutUrl;
   try {
     const u = new URL(checkoutUrl);
-    u.protocol = "https:";
-    u.host = publicShopHost();
+
+    // Nur dann umschreiben, wenn Shopify auf myshopify.com liefert
+    if (u.hostname.endsWith(".myshopify.com")) {
+      u.protocol = "https:";
+      u.host = publicShopHost();
+    }
+
     return u.toString();
   } catch {
-    // If Shopify ever returns a non-absolute URL, leave as-is.
     return checkoutUrl;
   }
 }
