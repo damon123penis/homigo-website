@@ -4,6 +4,17 @@ export const config = {
   matcher: ["/((?!_next|api|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
 
+function normalizeBaseUrl(input, fallback) {
+  const raw = (input || fallback || "").trim();
+  if (!raw) return "";
+
+  // Accept either `https://shop.homigo.tech` OR `shop.homigo.tech`
+  const withProto = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+  // Remove trailing slashes for safe concatenation
+  return withProto.replace(/\/+$/, "");
+}
+
 export function middleware(req) {
   const host = req.headers.get("host") || "";
   const url = req.nextUrl;
@@ -14,14 +25,19 @@ export function middleware(req) {
     host === "homigo.tech" ||
     host.endsWith(".vercel.app");
 
-  // Marketing-Domain: /shop und /shop/* auf shop.homigo.tech umleiten
-  if (isMarketingHost && url.pathname === "/shop") {
-    return NextResponse.redirect(new URL("https://shop.homigo.tech", url), 308);
-  }
+  // Canonical shop base URL (robust against env values with/without protocol)
+  const SHOP_BASE = normalizeBaseUrl(
+    process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL,
+    "https://shop.homigo.tech"
+  );
 
-  if (isMarketingHost && url.pathname.startsWith("/shop/")) {
-    const rest = url.pathname.replace(/^\/shop\//, "");
-    return NextResponse.redirect(new URL(`https://shop.homigo.tech/${rest}`, url), 308);
+  // Marketing-Domain: /shop und /shop/* auf Shop-Subdomain umleiten
+  if (isMarketingHost && (url.pathname === "/shop" || url.pathname.startsWith("/shop/"))) {
+    const rest = url.pathname.replace(/^\/shop\/?/, "");
+    const target = rest ? `${SHOP_BASE}/${rest}` : SHOP_BASE;
+
+    // Use an absolute URL string to avoid accidental double-prefixing.
+    return NextResponse.redirect(target, 308);
   }
 
   // Shop-Subdomain: Root "/" -> intern "/shop" (URL bleibt clean; kein Redirect)

@@ -8,7 +8,33 @@ import Image from 'next/image'
 import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
-const SHOP_URL = process.env.NEXT_PUBLIC_SHOP_URL || "https://shop.homigo.tech";
+
+// Normalize shop base URL to avoid malformed links like "https://https//shop..."
+// Accepts values like:
+// - https://shop.homigo.tech
+// - shop.homigo.tech
+// - https//shop.homigo.tech   (common typo)
+const SHOP_URL = (() => {
+  const raw = (process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL || 'https://shop.homigo.tech').trim()
+
+  if (!raw) return 'https://shop.homigo.tech'
+
+  // Fix common missing-colon typo: "https//..." or "http//..."
+  const fixedSchemeTypo = raw
+    .replace(/^https\//i, 'https://')
+    .replace(/^http\//i, 'http://')
+
+  // Ensure scheme exists
+  const withScheme = /^https?:\/\//i.test(fixedSchemeTypo)
+    ? fixedSchemeTypo
+    : `https://${fixedSchemeTypo.replace(/^\/+/, '')}`
+
+  // Remove accidental double scheme like "https://https//..." if it ever slips in
+  const deDoubled = withScheme.replace(/^https?:\/\/https\//i, 'https://')
+
+  // Drop trailing slashes
+  return deDoubled.replace(/\/+$/, '')
+})()
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.homigo.tech'),
