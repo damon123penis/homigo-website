@@ -20,11 +20,30 @@ function publicShopHost() {
 
 function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
   if (!checkoutUrl) return checkoutUrl;
+
   try {
     const u = new URL(checkoutUrl);
 
-    // Nur dann umschreiben, wenn Shopify auf myshopify.com liefert
-    if (u.hostname.endsWith(".myshopify.com")) {
+    // Shopify can return different checkout hosts depending on API/version/config.
+    // Common patterns are:
+    // - {shop}.myshopify.com
+    // - checkout.shopify.com
+    // - {shop}.checkout.shopify.com (less common)
+    // We want customers to stay on the public shop host where possible.
+
+    const shopDomain = process.env.SHOPIFY_STORE_DOMAIN
+      ? normalizeHost(process.env.SHOPIFY_STORE_DOMAIN)
+      : null;
+
+    const isShopifyHost =
+      u.hostname.endsWith(".myshopify.com") ||
+      u.hostname === "checkout.shopify.com" ||
+      u.hostname.endsWith(".checkout.shopify.com") ||
+      u.hostname.endsWith(".shopify.com") ||
+      (shopDomain ? u.hostname === shopDomain : false);
+
+    if (isShopifyHost) {
+      // Force https and public shop host
       u.protocol = "https:";
       u.host = publicShopHost();
     }
