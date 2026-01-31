@@ -18,44 +18,26 @@ function publicShopHost() {
   return normalizeHost(v);
 }
 
-function rewriteCheckoutUrl(checkoutUrl: string | null | undefined) {
-  // Goal ("back to Shopify domain"): ensure we never hand out a custom-domain checkout URL
-  // (e.g. shop.homigo.tech / homigo.tech) which can trigger redirect ping-pong or 404s.
+function rewriteCheckoutUrl(checkoutUrl?: string | null) {
   if (!checkoutUrl) return checkoutUrl;
 
-  // Shopify Storefront API returns a checkoutUrl that can vary depending on shop/domain config.
-  // We normalize it back to the canonical Shopify store domain.
-  const storeDomainRaw = process.env.SHOPIFY_STORE_DOMAIN;
-  if (!storeDomainRaw) return checkoutUrl;
-
-  const storeHost = normalizeHost(storeDomainRaw);
+  const checkoutHost =
+    process.env.NEXT_PUBLIC_CHECKOUT_DOMAIN || "checkout.homigo.tech";
 
   try {
     const u = new URL(checkoutUrl);
 
-    // Only ever rewrite Shopify-owned paths; never touch your headless routes like /shop/cart.
-    const isShopifyOwnedPath =
+    // Nur Shopify-eigene Checkout-Pfade anfassen
+    if (
       u.pathname.startsWith("/checkouts") ||
-      u.pathname === "/cart" ||
-      u.pathname.startsWith("/cart/") ||
-      u.pathname.startsWith("/payments") ||
-      u.pathname.startsWith("/wallets") ||
-      u.pathname.startsWith("/account") ||
-      u.pathname.startsWith("/challenge") ||
-      u.pathname.startsWith("/sessions");
+      u.pathname.startsWith("/cart")
+    ) {
+      u.protocol = "https:";
+      u.hostname = checkoutHost;
+      return u.toString();
+    }
 
-    if (!isShopifyOwnedPath) return checkoutUrl;
-
-    // If already on the canonical store host, keep it.
-    if (normalizeHost(u.hostname) === storeHost) return checkoutUrl;
-
-    // Some setups return checkout.shopify.com or other shopify hosts.
-    // In all those cases we point back to the shop's myshopify domain.
-    const rewritten = new URL(u.toString());
-    rewritten.protocol = "https:";
-    rewritten.hostname = storeHost;
-
-    return rewritten.toString();
+    return checkoutUrl;
   } catch {
     return checkoutUrl;
   }
