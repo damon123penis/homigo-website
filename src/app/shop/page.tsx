@@ -8,31 +8,6 @@ import type { Metadata } from "next";
 // Force dynamic rendering so newly added collection images/products appear immediately.
 export const dynamic = "force-dynamic";
 
-const SHOP_URL = (() => {
-  const explicit = process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL;
-  if (explicit) {
-    const v = explicit.trim();
-    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
-    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
-  }
-
-  const site = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
-  if (site) {
-    const v = site.trim();
-    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
-    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
-  }
-
-  const vercel = process.env.VERCEL_URL;
-  if (vercel) {
-    const v = vercel.trim();
-    if (/^https?:\/\//i.test(v)) return v.replace(/\/+$/, "");
-    return `https://${v.replace(/^\/+/, "").replace(/\/+$/, "")}`;
-  }
-
-  return "https://shop.homigo.tech";
-})();
-
 const MARKETING_URL = (() => {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
   if (explicit) return explicit.replace(/\/$/, "");
@@ -40,7 +15,7 @@ const MARKETING_URL = (() => {
 })();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SHOP_URL),
+  metadataBase: new URL("https://www.homigo.tech/shop"),
   title: {
     default: "Shop | homigo",
     template: "%s | homigo",
@@ -91,7 +66,7 @@ export default async function ShopHome() {
     { cache: "no-store" }
   );
 
-  const canonicalUrl = `${SHOP_URL}/shop`;
+  const canonicalUrl = `https://www.homigo.tech/shop`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
