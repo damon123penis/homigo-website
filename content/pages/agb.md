@@ -1,5 +1,5 @@
 ---
-title: Allgemeine Geschäftsbedingungen
+title: AGB
 seo_description: Allgemeine Geschäftsbedingungen (AGB) für den Online-Shop von
   homigo – Informationen zu Bestellung, Zahlung, Versand, Widerruf,
   Gewährleistung und Haftung.
