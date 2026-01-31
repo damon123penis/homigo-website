@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
+import Script from "next/script";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify/client";
@@ -312,6 +313,13 @@ export default async function ProductPage({
   }
 
   const p = product;
+
+  const productNumericId = (() => {
+    // GraphQL IDs look like: gid://shopify/Product/1234567890
+    const raw = String(p.id || "");
+    const last = raw.split("/").pop();
+    return last && /^\d+$/.test(last) ? last : raw;
+  })();
 
   const CATEGORY_FIELD_KEYS = new Set([
     "gluehbirnensockeltyp",
@@ -927,6 +935,37 @@ export default async function ProductPage({
             ) : (
               <p className="mt-6 text-slate-600">Keine Beschreibung vorhanden.</p>
             )}
+
+            {/* Judge.me Reviews */}
+            <div className="mt-10">
+              <div className="text-sm font-semibold text-slate-900">Bewertungen</div>
+              <p className="mt-2 text-sm text-slate-600">Erfahrungen anderer Kund:innen mit diesem Produkt.</p>
+
+              <div style={{ clear: "both" }} />
+
+              <div
+                id="judgeme_product_reviews"
+                className="jdgm-widget jdgm-review-widget"
+                data-widget="review"
+                data-auto-install="false"
+                data-id={productNumericId}
+                data-product-id={productNumericId}
+                data-product-title={p.title}
+              />
+
+              <Script
+                src="https://judge.me/widget_preloader.js"
+                strategy="afterInteractive"
+              />
+
+              <Script
+                id="jdgm-init"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                  __html: `window.jdgm = window.jdgm || {}; window.jdgm.SHOP_DOMAIN = "homigo-4.myshopify.com";`,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

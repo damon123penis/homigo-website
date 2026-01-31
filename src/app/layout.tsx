@@ -290,10 +290,10 @@ export default function RootLayout({
                   <Link href="/impressum" className="hover:text-slate-900">
                     Impressum
                   </Link>
-                  <Link href="/datenschutz" className="hover:text-slate-900">
+                  <Link href="/pages/datenschutz" className="hover:text-slate-900">
                     Datenschutz
                   </Link>
-                  <Link href="/widerruf" className="hover:text-slate-900">
+                  <Link href="/pages/widerruf" className="hover:text-slate-900">
                     Widerrufsbelehrung
                   </Link>
                   <Link href="/kontakt" className="hover:text-slate-900">
