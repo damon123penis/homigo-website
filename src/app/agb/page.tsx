@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { getPage } from "@/lib/content";
 
-type Props = {
-  params: { slug: string };
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("agb");
 
   return {
@@ -16,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 } 
 
-export default async function ContentPage({ params }: Props) {
+export default async function AgbPage() {
   const page = await getPage("agb");
 
   return (
