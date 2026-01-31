@@ -68,6 +68,18 @@ function isDifferenzLine(l: CartLine) {
   return typeof v === 'string' && v.toLowerCase() === 'differenz';
 }
 
+function getBaseUrl() {
+  const h = headers();
+  const proto = h.get('x-forwarded-proto') || 'https';
+  const host = h.get('x-forwarded-host') || h.get('host');
+  if (host) return `${proto}://${host}`;
+  // Fallback for local/dev or non-proxied environments.
+  // Prefer a dedicated shop URL if provided.
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL
+  );
+}
+
 function getCookieHeader() {
   // Forward all cookies to the API route so the cookie-based cartId works.
   return cookies()
@@ -96,6 +108,7 @@ function persistCartIdFromSetCookie(setCookie: string | null) {
 }
 
 async function fetchCart(): Promise<Cart | null> {
+  const baseUrl = getBaseUrl();
   const cookieHeader = getCookieHeader();
 
   const res = await fetch(`${baseUrl}/api/cart`, {
@@ -112,6 +125,7 @@ async function fetchCart(): Promise<Cart | null> {
 }
 
 async function postCartAction(payload: any): Promise<{ ok: boolean; error?: string }> {
+  const baseUrl = getBaseUrl();
   const cookieHeader = getCookieHeader();
 
   const res = await fetch(`${baseUrl}/api/cart`, {
