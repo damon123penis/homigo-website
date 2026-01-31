@@ -164,7 +164,7 @@ function CTAButtons() {
         Kostenloses Kennenlernen buchen
       </a>
       <Link
-        href="https://shop.homigo.tech"
+        href="https://www.homigo.tech/shop"
         className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300"
       >
         Zum Shop
