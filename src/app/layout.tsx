@@ -187,9 +187,15 @@ export default function RootLayout({
               className="hidden items-center gap-6 md:flex"
               aria-label="Hauptnavigation"
             >
-              <a href={SHOP_URL} className={navClass(false)}>
-               Shop
-              </a>
+              <Link
+                href="/shop"
+                className={navClass(isActive('/shop'))}
+                aria-current={
+                  isActive('/shop') ? 'page' : undefined
+                }
+              >
+                Shop
+              </Link>
               <Link
                 href="/beratung"
                 className={navClass(isActive('/beratung'))}
