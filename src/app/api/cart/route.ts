@@ -14,7 +14,7 @@ function normalizeHost(value: string) {
 }
 
 function publicShopHost() {
-  const v = process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL || "shop.homigo.tech";
+  const v = process.env.NEXT_PUBLIC_SITE_URL || "homigo.tech/shop";
   return normalizeHost(v);
 }
 
