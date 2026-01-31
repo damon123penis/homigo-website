@@ -1,6 +1,9 @@
 ---
-title: Datenschutzerklärung
-seo_description: Nachfolgend informieren wir dich über die Verarbeitung personenbezogener Daten beim Besuch und bei der Nutzung unserer Website sowie des integrierten Shops (Bestellung, Zahlung, Versand) und der eingebundenen Dienste (z. B. Terminbuchung, Analytics, Marketing).
+title: Datenschutz
+seo_description: Nachfolgend informieren wir dich über die Verarbeitung
+  personenbezogener Daten beim Besuch und bei der Nutzung unserer Website sowie
+  des integrierten Shops (Bestellung, Zahlung, Versand) und der eingebundenen
+  Dienste (z. B. Terminbuchung, Analytics, Marketing).
 updated: "Stand: 31.01.2026"
 ---
 
