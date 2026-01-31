@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 } 
 
 export default async function ContentPage({ params }: Props) {
-  const page = await getPage(params.slug);
+  const page = await getPage("agb");
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
