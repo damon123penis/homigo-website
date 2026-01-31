@@ -9,32 +9,6 @@ import { headers } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
 
-// Normalize shop base URL to avoid malformed links like "https://https//shop..."
-// Accepts values like:
-// - https://shop.homigo.tech
-// - shop.homigo.tech
-// - https//shop.homigo.tech   (common typo)
-const SHOP_URL = (() => {
-  const raw = (process.env.NEXT_PUBLIC_SHOP_URL || process.env.SHOP_URL || 'https://shop.homigo.tech').trim()
-
-  if (!raw) return 'https://shop.homigo.tech'
-
-  // Fix common missing-colon typo: "https//..." or "http//..."
-  const fixedSchemeTypo = raw
-    .replace(/^https\//i, 'https://')
-    .replace(/^http\//i, 'http://')
-
-  // Ensure scheme exists
-  const withScheme = /^https?:\/\//i.test(fixedSchemeTypo)
-    ? fixedSchemeTypo
-    : `https://${fixedSchemeTypo.replace(/^\/+/, '')}`
-
-  // Remove accidental double scheme like "https://https//..." if it ever slips in
-  const deDoubled = withScheme.replace(/^https?:\/\/https\//i, 'https://')
-
-  // Drop trailing slashes
-  return deDoubled.replace(/\/+$/, '')
-})()
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.homigo.tech'),
@@ -249,9 +223,15 @@ export default function RootLayout({
                 className="absolute left-0 w-64 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
               >
                 <div className="flex flex-col p-2.5">
-                  <a href={SHOP_URL} className={mobileNavClass(false)}>
+                  <Link
+                    href="/shop"
+                    className={mobileNavClass(isActive('/shop'))}
+                    aria-current={
+                      isActive('/shop') ? 'page' : undefined
+                    }
+                  >
                     Shop
-                  </a>  
+                  </Link>
                   <Link
                     href="/beratung"
                     className={mobileNavClass(isActive('/beratung'))}
