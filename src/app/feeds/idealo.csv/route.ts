@@ -78,6 +78,46 @@ function csvRow(values: unknown[]) {
 }
 
 // ------------------------------------------------------------
+// idealo mappings
+// ------------------------------------------------------------
+function normalizeText(v: unknown): string {
+  return String(v ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function mapIdealoConditionType(shopifyZustand: unknown): "NEW" | "AS_NEW" | "REFURBISHED" | "USED" | "" {
+  const z = normalizeText(shopifyZustand);
+  if (!z) return "";
+
+  // Shopify values: neu, wie neu, generalüberholt, gebraucht
+  if (z === "neu") return "NEW";
+  if (z === "wie neu" || z === "wieneu" || z === "as new") return "AS_NEW";
+  if (z === "generaluberholt" || z === "generalüberholt" || z === "refurbished") return "REFURBISHED";
+  if (z === "gebraucht" || z === "used") return "USED";
+
+  return "";
+}
+
+function mapIdealoConditionQuality(
+  shopifyZustandsqualitat: unknown
+): "EXCELLENT" | "VERY_GOOD" | "GOOD" | "ACCEPTABLE" | "" {
+  const q = normalizeText(shopifyZustandsqualitat);
+  if (!q) return "";
+
+  // Shopify values: Exzellent (neu), Sehr gut, Gut, Akzeptabel
+  if (q.startsWith("exzellent")) return "EXCELLENT";
+  if (q === "sehr gut" || q === "sehrgut" || q === "very good") return "VERY_GOOD";
+  if (q === "gut" || q === "good") return "GOOD";
+  if (q === "akzeptabel" || q === "acceptable") return "ACCEPTABLE";
+
+  return "";
+}
+
+// ------------------------------------------------------------
 // Route
 // ------------------------------------------------------------
 export async function GET() {
@@ -90,7 +130,21 @@ export async function GET() {
               title
               handle
               vendor
-              metafield(namespace: "custom", key: "steuerregime") {
+              productType
+              collections(first: 1) {
+                edges {
+                  node {
+                    title
+                  }
+                }
+              }
+              steuerregime: metafield(namespace: "custom", key: "steuerregime") {
+                value
+              }
+              zustand: metafield(namespace: "custom", key: "zustand") {
+                value
+              }
+              zustandsqualitat: metafield(namespace: "custom", key: "zustandsqualitat") {
                 value
               }
               images(first: 1) {
@@ -140,6 +194,9 @@ export async function GET() {
         "deliveryComment",
         "eans",
         "packagingUnit",
+        "categoryPath",
+        "conditionType",
+        "condition",
       ])
     );
 
@@ -147,8 +204,17 @@ export async function GET() {
       const product = edge?.node;
       if (!product) continue;
 
-      const steuerregime = product.metafield?.value;
-      const isDifferenz = steuerregime === "differenz";
+      const steuerregime = product.steuerregime?.value;
+      const conditionType = mapIdealoConditionType(product.zustand?.value);
+      const condition = mapIdealoConditionQuality(product.zustandsqualitat?.value);
+
+      const collectionTitle =
+        Array.isArray(product.collections?.edges) && product.collections.edges.length > 0
+          ? String(product.collections.edges[0]?.node?.title || "").trim()
+          : "";
+
+      const productType = String(product.productType || "").trim();
+      const categoryPath = (collectionTitle || productType || "Shop").trim();
 
       const productTitle = String(product.title || "").trim();
       const handle = String(product.handle || "").trim();
@@ -177,9 +243,12 @@ export async function GET() {
         const price = typeof amountRaw === "string" || typeof amountRaw === "number" ? String(amountRaw) : "";
         if (!price) continue;
 
+        const priceNum = Number.parseFloat(price);
+        const deliveryCosts = Number.isFinite(priceNum) && priceNum > 49.99 ? "0" : SHIPPING_COST;
+
         const title =
           productTitle +
-          (isDifferenz ? " | Differenzbesteuerung nach §25a UStG" : "");
+          (steuerregime === "differenz" ? " | Differenzbesteuerung nach §25a UStG" : "");
 
         const imageUrl = String(variant.image?.url || productImage || "");
         const ean = String(variant.barcode || "");
@@ -193,10 +262,13 @@ export async function GET() {
             `${BASE_URL}/shop/products/${handle}?variant=${encodeURIComponent(variantId)}`,
             imageUrl,
             DELIVERY_TEXT,
-            SHIPPING_COST,
+            deliveryCosts,
             SHIPPING_COMMENT,
             ean,
             "1", // Varianten einzeln
+            categoryPath,
+            conditionType,
+            condition,
           ])
         );
       }
