@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 
 const SHOPIFY_DOMAIN = (process.env.SHOPIFY_STORE_DOMAIN || "").trim();
-const STOREFRONT_TOKEN = (process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "").trim();
+const STOREFRONT_TOKEN = (process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || "").trim();
 const API_VERSION = (process.env.SHOPIFY_API_VERSION || "2024-07").trim();
 
 // feste Vorgaben
@@ -22,12 +22,22 @@ async function shopifyFetch(query: string, variables?: any) {
     throw new Error("Missing SHOPIFY_STOREFRONT_ACCESS_TOKEN");
   }
 
+  // Shopify token types:
+  // - Public Storefront token -> header: X-Shopify-Storefront-Access-Token
+  // - Private / delegate token (often starts with shpat_/shppa_) -> header: Shopify-Storefront-Private-Token
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (STOREFRONT_TOKEN.startsWith("shpat_") || STOREFRONT_TOKEN.startsWith("shppa_")) {
+    headers["Shopify-Storefront-Private-Token"] = STOREFRONT_TOKEN;
+  } else {
+    headers["X-Shopify-Storefront-Access-Token"] = STOREFRONT_TOKEN;
+  }
+
   const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
-    },
+    headers,
     body: JSON.stringify({ query, variables }),
     cache: "no-store",
   });
@@ -43,7 +53,10 @@ async function shopifyFetch(query: string, variables?: any) {
     const details = json?.errors?.[0]?.message
       ? String(json.errors[0].message)
       : `${res.status} ${res.statusText}`;
-    throw new Error(`Shopify API error: ${details}`);
+    const hint = res.status === 401
+      ? " (Unauthorized: check token type/header and that the token is valid for Storefront API)"
+      : "";
+    throw new Error(`Shopify API error: ${details}${hint}`);
   }
 
   return json?.data;
