@@ -131,7 +131,7 @@ export async function GET() {
               handle
               vendor
               productType
-              collections(first: 1) {
+              collections(first: 10) {
                 edges {
                   node {
                     title
@@ -145,6 +145,9 @@ export async function GET() {
                 value
               }
               zustandsqualitat: metafield(namespace: "custom", key: "zustandsqualitat") {
+                value
+              }
+              category_path: metafield(namespace: "custom", key: "category_path") {
                 value
               }
               images(first: 1) {
@@ -208,13 +211,28 @@ export async function GET() {
       const conditionType = mapIdealoConditionType(product.zustand?.value);
       const condition = mapIdealoConditionQuality(product.zustandsqualitat?.value);
 
-      const collectionTitle =
-        Array.isArray(product.collections?.edges) && product.collections.edges.length > 0
-          ? String(product.collections.edges[0]?.node?.title || "").trim()
-          : "";
+      // idealo expects a full path with hierarchy levels. Shopify collections are not hierarchical by default,
+      // so we support a manual full path via metafield `custom.category_path` (recommended).
+      // Fallback: join all assigned collection titles with " > " (best-effort, not true hierarchy).
+      const categoryPathOverride = String(product.category_path?.value || "").trim();
+
+      const collectionTitles =
+        Array.isArray(product.collections?.edges)
+          ? product.collections.edges
+              .map((e: any) => String(e?.node?.title || "").trim())
+              .filter((t: string) => t.length > 0)
+          : [];
+
+      const uniqueCollectionTitles = Array.from(new Set(collectionTitles));
 
       const productType = String(product.productType || "").trim();
-      const categoryPath = (collectionTitle || productType || "Shop").trim();
+
+      const categoryPath = (
+        categoryPathOverride ||
+        (uniqueCollectionTitles.length ? uniqueCollectionTitles.join(" > ") : "") ||
+        productType ||
+        "Shop"
+      ).trim();
 
       const productTitle = String(product.title || "").trim();
       const handle = String(product.handle || "").trim();
