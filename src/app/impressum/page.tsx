@@ -59,8 +59,8 @@ export default function ImpressumPage() {
                         <MapPin className="mt-0.5 h-5 w-5 text-emerald-700" />
                         <div>
                           <p className="font-semibold text-slate-900">Anschrift</p>
-                          <p className="text-slate-600">Frankenallee 23A</p>
-                          <p className="text-slate-600">60327 Frankfurt am Main</p>
+                          <p className="text-slate-600">Waldenserstr. 55</p>
+                          <p className="text-slate-600">64546 Mörfelden-Walldorf</p>
                           <p className="text-xs text-slate-500">Deutschland</p>
                           <div className="mt-4">
                             <p className="font-semibold text-slate-900">Steuer-ID</p>
