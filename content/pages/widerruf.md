@@ -1,9 +1,9 @@
 ---
 title: Widerrufsbelehrung
-seo_description: Hier findest du die Widerrufsbelehrung für Bestellungen im homigo Shop sowie ein Muster-Widerrufsformular.
+seo_description: Hier findest du die Widerrufsbelehrung für Bestellungen im
+  homigo Shop sowie ein Muster-Widerrufsformular.
 updated: "Stand: 31.01.2026"
 ---
-
 <div>
 <h2>A. Widerrufsbelehrung</h2>
 <h3>Einleitung</h3>
@@ -11,7 +11,7 @@ updated: "Stand: 31.01.2026"
 <h3>Widerrufsrecht</h3>
 <p>Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
 <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die letzte Ware in Besitz genommen haben bzw. hat.</p>
-<p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Damon Marcel Schacht, homigo, Frankenallee 23a, 60327 Frankfurt am Main, Deutschland, Tel.: 015227178595, E-Mail: hallo@homigo.tech) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
+<p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Damon Marcel Schacht, homigo, Waldenserstr. 55, 64546 Mörfelden-Walldorf, Deutschland, Tel.: 015227178595, E-Mail: hallo@homigo.tech) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
 <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
 <h3>Folgen des Widerrufs</h3>
 <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet. Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.</p>
@@ -23,7 +23,7 @@ updated: "Stand: 31.01.2026"
 <h2>B. Widerrufsformular</h2>
 <p>Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden es zurück.</p>
 <p>An</p>
-<p>Damon Marcel Schacht<br>homigo<br>Frankenallee 23a<br>60327 Frankfurt am Main<br>Deutschland</p>
+<p>Damon Marcel Schacht<br>homigo<br>Waldenserstr. 55<br>64546 Mörfelden-Walldorf<br>Deutschland</p>
 <p>E-Mail: hallo@homigo.tech</p>
 <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*)</p>
 <p>_______________________________________________________</p>
@@ -37,6 +37,6 @@ updated: "Stand: 31.01.2026"
 </div>
 <div style="font-size: 12px; margin-top: 8em;" id="itkanzlei_txt_copyright">
 <div style="display: inline-block; vertical-align: top;"><a href="https://www.it-recht-kanzlei.de/" target="_blank"><img style="margin-top: -20px; border-style: none; max-width: 100%;" title="© IT-Recht Kanzlei" alt="© IT-Recht Kanzlei" id="itkanzlei_img_copyright" src="https://www.it-recht-kanzlei.de/logo/Copyright-Logo_Widerrufsbelehrung.png?i=68b8c-4f30e-39c9-907f-1"></a></div>
-<div style="display: inline-block; vertical-align: top; margin-left: 5px; float: right; white-space: nowrap;">Stand: 31.01.2026, 20:04:12 Uhr</div>
+<div style="display: inline-block; vertical-align: top; margin-left: 5px; float: right; white-space: nowrap;">Stand: 10.02.2026, 21:57:03</div>
 <div style="clear: right;"><br></div>
 </div>
