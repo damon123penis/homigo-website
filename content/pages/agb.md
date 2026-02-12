@@ -47,7 +47,7 @@ updated: "Stand: 31.01.2026"
 
 <p><b>2.4</b>&nbsp;Bei Auswahl einer von PayPal angebotenen Zahlungsart erfolgt die Zahlungsabwicklung über den Zahlungsdienstleister PayPal (Europe) S.à r.l. et Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxemburg (im Folgenden: „PayPal“), unter Geltung der PayPal-Nutzungsbedingungen, einsehbar unter <a data-sanitized-target="_blank" href="https://www.paypal.com/de/legalhub/paypal/useragreement-full">https://www.paypal.com<wbr>/de<wbr>/legalhub<wbr>/paypal<wbr>/useragreement-full</a> oder - falls der Kunde nicht über ein PayPal-Konto verfügt – unter Geltung der Bedingungen für Zahlungen ohne PayPal-Konto, einsehbar unter <a data-sanitized-target="_blank" href="https://www.paypal.com/de/legalhub/paypal/privacywax-full">https://www.paypal.com<wbr>/de<wbr>/legalhub<wbr>/paypal<wbr>/privacywax-full</a>. Zahlt der Kunde mittels einer im Online-Bestellvorgang auswählbaren von PayPal angebotenen Zahlungsart, erklärt der Verkäufer schon jetzt die Annahme des Angebots des Kunden in dem Zeitpunkt, in dem der Kunde den Button anklickt, welcher den Bestellvorgang abschließt.</p>
 
-<p><b>2.5</b>&nbsp;Bei der Abgabe eines Angebots über das Online-Bestellformular des Verkäufers wird der Vertragstext nach dem Vertragsschluss vom Verkäufer gespeichert und dem Kunden nach Absendung von dessen Bestellung in Textform (z. B. E-Mail, Fax oder Brief) übermittelt. Eine darüber hinausgehende Zugänglichmachung des Vertragstextes durch den Verkäufer erfolgt nicht.</p>
+<p><b>2.5</b>&nbsp;Bei der Abgabe eines Angebots über das Online-Bestellformular des Verkäufers wird der Vertragstext nach dem Vertragsschluss vom Verkäufer gespeichert und dem Kunden nach Absendung von dessen Bestellung in Textform (z. B. E-Mail, Fax oder Brief) übermittelt. Eine darüber hinausgehende Zugänglichmachung des Vertragstextes durch den Verkäufer erfolgt nicht. Sofern der Kunde vor Absendung seiner Bestellung ein Nutzerkonto im Online-Shop des Verkäufers eingerichtet hat, werden die Bestelldaten auf der Website des Verkäufers archiviert und können vom Kunden über dessen passwortgeschütztes Nutzerkonto unter Angabe der entsprechenden Login-Daten kostenlos abgerufen werden.</p>
 
 <p><b>2.6</b>&nbsp;Vor verbindlicher Abgabe der Bestellung über das Online-Bestellformular des Verkäufers kann der Kunde mögliche Eingabefehler durch aufmerksames Lesen der auf dem Bildschirm dargestellten Informationen erkennen. Ein wirksames technisches Mittel zur besseren Erkennung von Eingabefehlern kann dabei die Vergrößerungsfunktion des Browsers sein, mit deren Hilfe die Darstellung auf dem Bildschirm vergrößert wird. Seine Eingaben kann der Kunde im Rahmen des elektronischen Bestellprozesses so lange über die üblichen Tastatur- und Mausfunktionen korrigieren, bis er den Button anklickt, welcher den Bestellvorgang abschließt.</p>
 
@@ -100,7 +100,9 @@ updated: "Stand: 31.01.2026"
 <li>beginnt die Verjährung nicht erneut, wenn im Rahmen der Mängelhaftung eine Ersatzlieferung erfolgt.</li>
 </ul>
 
-<p><b>7.2</b>&nbsp;Die vorstehend geregelten Haftungsbeschränkungen und Fristverkürzungen gelten nicht</p>
+<p><b>7.2</b>&nbsp;Handelt der Kunde als Verbraucher gilt bei Verträgen zur Lieferung gebrauchter Waren mit der Einschränkung der nachfolgenden Ziffer: Die Verjährungsfrist für Mängelansprüche beträgt ein Jahr ab Ablieferung der Ware, wenn dies zwischen den Parteien ausdrücklich und gesondert vertraglich vereinbart wurde und der Kunde vor der Abgabe seiner Vertragserklärung von der Verkürzung der Verjährungsfrist eigens in Kenntnis gesetzt wurde.</p>
+
+<p><b>7.3</b>&nbsp;Die vorstehend geregelten Haftungsbeschränkungen und Fristverkürzungen gelten nicht</p>
 
 <ul>
 <li>für Schadensersatz- und Aufwendungsersatzansprüche des Kunden,</li>
@@ -109,11 +111,11 @@ updated: "Stand: 31.01.2026"
 <li>für eine ggf. bestehende Verpflichtung des Verkäufers zur Bereitstellung von Aktualisierungen für digitale Produkte, bei Verträgen zur Lieferung von Waren mit digitalen Elementen.</li>
 </ul>
 
-<p><b>7.3</b>&nbsp;Darüber hinaus gilt für Unternehmer, dass die gesetzlichen Verjährungsfristen für einen ggf. bestehenden gesetzlichen Rückgriffsanspruch unberührt bleiben.</p>
+<p><b>7.4</b>&nbsp;Darüber hinaus gilt für Unternehmer, dass die gesetzlichen Verjährungsfristen für einen ggf. bestehenden gesetzlichen Rückgriffsanspruch unberührt bleiben.</p>
 
-<p><b>7.4</b>&nbsp;Handelt der Kunde als Kaufmann i.S.d. § 1 HGB, trifft ihn die kaufmännische Untersuchungs- und Rügepflicht gemäß § 377 HGB. Unterlässt der Kunde die dort geregelten Anzeigepflichten, gilt die Ware als genehmigt.</p>
+<p><b>7.5</b>&nbsp;Handelt der Kunde als Kaufmann i.S.d. § 1 HGB, trifft ihn die kaufmännische Untersuchungs- und Rügepflicht gemäß § 377 HGB. Unterlässt der Kunde die dort geregelten Anzeigepflichten, gilt die Ware als genehmigt.</p>
 
-<p><b>7.5</b>&nbsp;Handelt der Kunde als Verbraucher, so wird er gebeten, angelieferte Waren mit offensichtlichen Transportschäden bei dem Zusteller zu reklamieren und den Verkäufer hiervon in Kenntnis zu setzen. Kommt der Kunde dem nicht nach, hat dies keinerlei Auswirkungen auf seine gesetzlichen oder vertraglichen Mängelansprüche.</p>
+<p><b>7.6</b>&nbsp;Handelt der Kunde als Verbraucher, so wird er gebeten, angelieferte Waren mit offensichtlichen Transportschäden bei dem Zusteller zu reklamieren und den Verkäufer hiervon in Kenntnis zu setzen. Kommt der Kunde dem nicht nach, hat dies keinerlei Auswirkungen auf seine gesetzlichen oder vertraglichen Mängelansprüche.</p>
 
 <h2>8) Haftung</h2>
 
@@ -140,4 +142,4 @@ updated: "Stand: 31.01.2026"
 
 <h2>10) Alternative Streitbeilegung</h2>
 
-<p>Der Verkäufer ist zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle weder verpflichtet noch bereit.</p></div><div style="font-size: 12px; margin-top: 8em;" id="itkanzlei_txt_copyright"><div style="display: inline-block; vertical-align: top;"><a data-sanitized-target="_blank" href="https://www.it-recht-kanzlei.de/"><img style="margin-top: -20px; border-style: none; max-width: 100%;" title="© IT-Recht Kanzlei" alt="© IT-Recht Kanzlei" id="itkanzlei_img_copyright" src="https://www.it-recht-kanzlei.de/logo/Copyright-Logo_AGB.png?i=68b8c-4f30e-39c7-907d-1"></a></div><div style="display: inline-block; vertical-align: top; margin-left: 5px; float: right; white-space: nowrap;">Stand: 31.01.2026, 19:58:04 Uhr</div><div style="clear: right;"></div></div>
+<p>Der Verkäufer ist zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle weder verpflichtet noch bereit.</p></div><div style="font-size: 12px; margin-top: 8em;" id="itkanzlei_txt_copyright"><div style="display: inline-block; vertical-align: top;"><a data-sanitized-target="_blank" href="https://www.it-recht-kanzlei.de/"><img style="margin-top: -20px; border-style: none; max-width: 100%;" title="© IT-Recht Kanzlei" alt="© IT-Recht Kanzlei" id="itkanzlei_img_copyright" src="https://www.it-recht-kanzlei.de/logo/Copyright-Logo_AGB.png?i=68b8c-4f30e-39c7-907d-1"></a></div><div style="display: inline-block; vertical-align: top; margin-left: 5px; float: right; white-space: nowrap;">Stand: 12.02.2026, 16:00:34</div><div style="clear: right;"></div></div>
