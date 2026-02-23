@@ -262,7 +262,7 @@ export async function GET() {
         if (!price) continue;
 
         const priceNum = Number.parseFloat(price);
-        const deliveryCosts = Number.isFinite(priceNum) && priceNum > 49.99 ? "0" : SHIPPING_COST;
+        const deliveryCosts = Number.isFinite(priceNum) && priceNum > 34.90 ? "0" : SHIPPING_COST;
 
         const title =
           productTitle +
