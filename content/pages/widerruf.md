@@ -2,7 +2,7 @@
 title: Widerrufsbelehrung
 seo_description: Hier findest du die Widerrufsbelehrung für Bestellungen im
   homigo Shop sowie ein Muster-Widerrufsformular.
-updated: "Stand: 31.01.2026"
+updated: "Stand: 10.02.2026"
 ---
 <div>
 <h2>A. Widerrufsbelehrung</h2>

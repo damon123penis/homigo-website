@@ -4,7 +4,7 @@ seo_description: Nachfolgend informieren wir dich über die Verarbeitung
   personenbezogener Daten beim Besuch und bei der Nutzung unserer Website sowie
   des integrierten Shops (Bestellung, Zahlung, Versand) und der eingebundenen
   Dienste (z. B. Terminbuchung, Analytics, Marketing).
-updated: "Stand: 31.01.2026"
+updated: "Stand: 02.03.2026"
 ---
 <div>
 <h2>1) Einleitung und Kontaktdaten des Verantwortlichen</h2>
