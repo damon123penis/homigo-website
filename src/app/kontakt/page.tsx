@@ -169,18 +169,6 @@ export default function KontaktPage() {
 
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100">
-                          <Phone className="h-5 w-5 text-emerald-700" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900">Telefon</p>
-                          <a href="tel:+4915227178595" className="text-sm text-emerald-700 hover:underline">
-                            +49 152 27178595
-                          </a>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100">
                           <MapPin className="h-5 w-5 text-emerald-700" />
                         </div>
                         <div>

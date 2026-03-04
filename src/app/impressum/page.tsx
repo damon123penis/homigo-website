@@ -87,21 +87,6 @@ export default function ImpressumPage() {
                         </a>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100">
-                        <Phone className="h-5 w-5 text-emerald-700" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-slate-900">Telefon</p>
-                        <a
-                          href="tel:+4915227178595"
-                          className="block truncate text-sm text-emerald-700 hover:text-emerald-600 hover:underline"
-                        >
-                          +49 152 27178595
-                        </a>
-                      </div>
-                    </div>
                   </div>
 
                   <h3 className="mt-8 text-lg font-bold text-slate-900">Geschäftstätigkeit</h3>
