@@ -9,7 +9,7 @@ const API_VERSION = (process.env.SHOPIFY_API_VERSION || "2024-07").trim();
 const BASE_URL = "https://www.homigo.tech";
 const SHIPPING_COST = "5.99";
 const SHIPPING_COMMENT = "Versandkostenfrei ab 35€ Bestellwert!";
-const DELIVERY_TEXT = "Lieferung in 1-3 Werktagen";
+const DELIVERY_TEXT = "Lieferung in 1-2 Werktagen";
 
 // ------------------------------------------------------------
 // Shopify GraphQL
@@ -266,7 +266,7 @@ export async function GET() {
 
         const title =
           productTitle +
-          (steuerregime === "differenz" ? " | Differenzbesteuerung nach §25a UStG" : "");
+          (steuerregime === "differenz" ? " | differenzbesteuert" : "");
 
         const imageUrl = String(variant.image?.url || productImage || "");
         const ean = String(variant.barcode || "");
