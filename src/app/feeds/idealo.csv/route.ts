@@ -8,7 +8,7 @@ const API_VERSION = (process.env.SHOPIFY_API_VERSION || "2024-07").trim();
 // feste Vorgaben
 const BASE_URL = "https://www.homigo.tech";
 const SHIPPING_COST = "5.99";
-const SHIPPING_COMMENT = "Versandkostenfrei ab 35€ Bestellwert!";
+const SHIPPING_COMMENT = "Versandkostenfrei ab 30€ Bestellwert!";
 const DELIVERY_TEXT = "Lieferung in 1-2 Werktagen";
 
 // ------------------------------------------------------------
